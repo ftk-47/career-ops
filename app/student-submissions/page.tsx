@@ -72,15 +72,14 @@ export default function StudentSubmissions() {
   const [cohortFilter, setCohortFilter] = useState<string>("all");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: "asc" | "desc" } | null>(null);
 
-  const cohorts = Array.from(new Set(mockData.map((item) => item.cohort)));
   const submissionTypes: SubmissionType[] = ["Resume", "Cover Letter", "Interview"];
   const statuses: SubmissionStatus[] = ["Pending", "In Review", "Completed", "Rejected"];
 
   const filteredAndSortedData = useMemo(() => {
-    let filtered = mockData.filter((item) => {
+    const filtered = mockData.filter((item) => {
       const matchesSearch = item.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.studentEmail.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesType = typeFilter === "all" || item.submissionType === typeFilter;

@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -78,16 +77,14 @@ export default function ReviewCenter() {
   const [reviewerFilter, setReviewerFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<SubmissionStatus | "all">("all");
   const [cohortFilter, setCohortFilter] = useState<string>("all");
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize] = useState(10);
   const [sortConfig, setSortConfig] = useState<{ key: keyof ReviewItem; direction: "asc" | "desc" } | null>(null);
 
-  const cohorts = Array.from(new Set(mockData.map((item) => item.cohort)));
   const statuses: SubmissionStatus[] = ["Pending", "In Review", "Completed", "Rejected"];
 
   const filteredAndSortedData = useMemo(() => {
-    let filtered = mockData.filter((item) => {
+    const filtered = mockData.filter((item) => {
       const matchesSearch = item.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.studentEmail.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesReviewer = reviewerFilter === "all" || item.assignedReviewer === reviewerFilter;
@@ -126,24 +123,6 @@ export default function ReviewCenter() {
       }
       return null;
     });
-  };
-
-  const toggleSelectAll = () => {
-    if (selectedIds.size === paginatedData.length) {
-      setSelectedIds(new Set());
-    } else {
-      setSelectedIds(new Set(paginatedData.map((item) => item.id)));
-    }
-  };
-
-  const toggleSelect = (id: string) => {
-    const newSelected = new Set(selectedIds);
-    if (newSelected.has(id)) {
-      newSelected.delete(id);
-    } else {
-      newSelected.add(id);
-    }
-    setSelectedIds(newSelected);
   };
 
   const getInitials = (name: string) => {
@@ -208,30 +187,6 @@ export default function ReviewCenter() {
           </div>
         </div>
 
-        {/* Bulk Actions Bar */}
-        {selectedIds.size > 0 && (
-          <div className="flex items-center gap-4 rounded-lg border bg-accent/50 px-4 py-3">
-            <span className="text-sm font-medium">
-              {selectedIds.size} selected
-            </span>
-            <div className="flex gap-2">
-              <Select>
-                <SelectTrigger className="w-[200px] h-9">
-                  <SelectValue placeholder="Bulk Reassign" />
-                </SelectTrigger>
-                <SelectContent>
-                  {reviewers.map((reviewer) => (
-                    <SelectItem key={reviewer} value={reviewer}>{reviewer}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button size="sm" variant="outline" onClick={() => setSelectedIds(new Set())}>
-                Clear
-              </Button>
-            </div>
-          </div>
-        )}
-
         {/* Table */}
         {filteredAndSortedData.length === 0 ? (
           <EmptyState
@@ -245,13 +200,6 @@ export default function ReviewCenter() {
             <Table className="min-w-full">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={selectedIds.size === paginatedData.length && paginatedData.length > 0}
-                      onCheckedChange={toggleSelectAll}
-                      aria-label="Select all"
-                    />
-                  </TableHead>
                   <TableHead className="cursor-pointer min-w-[200px]" onClick={() => handleSort("studentName")}>
                     Student {sortConfig?.key === "studentName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
                   </TableHead>
@@ -278,13 +226,6 @@ export default function ReviewCenter() {
                   const TypeIcon = submissionTypeIcons[item.submissionType];
                   return (
                     <TableRow key={item.id}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedIds.has(item.id)}
-                          onCheckedChange={() => toggleSelect(item.id)}
-                          aria-label={`Select ${item.studentName}`}
-                        />
-                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-9 w-9">
@@ -322,7 +263,7 @@ export default function ReviewCenter() {
                             ({item.reviewerWorkload})
                           </span>
                           {item.reviewerWorkload >= 15 && (
-                            <AlertCircle className="h-4 w-4 text-error flex-shrink-0" />
+                            <AlertCircle className="h-4 w-4 text-error shrink-0" />
                           )}
                         </div>
                       </TableCell>

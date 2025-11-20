@@ -31,7 +31,7 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    label: "Submissions",
+    label: "Student Submissions",
     href: "/student-submissions",
     icon: FileText,
   },
@@ -61,8 +61,8 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-border bg-card">
-      <SidebarHeader className="border-b border-border p-6 group-data-[collapsible=icon]:p-4">
+    <Sidebar collapsible="icon" className="border-r border-border bg-card z-20">
+      <SidebarHeader className="border-b border-border p-3 group-data-[collapsible=icon]:p-4">
         <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg shadow-sm shrink-0 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:text-base">
             H

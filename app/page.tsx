@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { MetricCard } from "@/components/metric-card";
 import { QuickActions } from "@/components/quick-actions";
 import { PageHeader } from "@/components/page-header";
+import { ThemeSelector } from "@/components/theme-selector";
+import { StyleSelector } from "@/components/style-selector";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -129,6 +131,12 @@ export default function Dashboard() {
       <PageHeader
         title="Dashboard"
         description="Welcome back! Here's what's happening with your team."
+        actions={
+          <div className="flex items-center gap-2">
+            <StyleSelector />
+            <ThemeSelector />
+          </div>
+        }
       />
       <main className="flex-1 p-6 space-y-6 w-full">
         {/* Metrics Row */}
