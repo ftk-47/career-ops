@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
 import {
   Select,
   SelectContent,
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/select";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHead,
   TableHeader,
@@ -63,7 +63,7 @@ const mockData: TeamMember[] = [
 ];
 
 const roleVariants: Record<TeamRole, "default" | "secondary" | "destructive"> = {
-  Reviewer: "info",
+  Reviewer: "secondary",
   Admin: "default",
   "Super Admin": "destructive",
 };
@@ -77,7 +77,7 @@ export default function ManageTeam() {
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<TeamRole | "all">("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const pageSize = 10;
   const [sortConfig, setSortConfig] = useState<{ key: keyof TeamMember; direction: "asc" | "desc" } | null>(null);
   const [inviteSheetOpen, setInviteSheetOpen] = useState(false);
   
@@ -89,7 +89,7 @@ export default function ManageTeam() {
   const roles: TeamRole[] = ["Reviewer", "Admin", "Super Admin"];
 
   const filteredAndSortedData = useMemo(() => {
-    let filtered = mockData.filter((item) => {
+    const filtered = mockData.filter((item) => {
       const matchesSearch = 
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -221,9 +221,9 @@ export default function ManageTeam() {
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <StaggerContainer as="tbody">
                 {paginatedData.map((member) => (
-                  <TableRow key={member.id}>
+                  <StaggerItem key={member.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
@@ -271,9 +271,9 @@ export default function ManageTeam() {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
-                  </TableRow>
+                  </StaggerItem>
                 ))}
-              </TableBody>
+              </StaggerContainer>
             </Table>
           </div>
         )}

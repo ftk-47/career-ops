@@ -28,7 +28,7 @@ export function QuickActions({ actions }: QuickActionsProps) {
             <Button
               key={index}
               variant="outline"
-              className="h-auto flex-col items-start gap-2 p-4 text-left hover:bg-accent"
+              className="h-auto flex-col items-start gap-2 p-4 text-left hover:bg-accent transition-all hover:scale-[1.02] active:scale-[0.98]"
               onClick={action.onClick}
             >
               <div className="flex items-center gap-2">

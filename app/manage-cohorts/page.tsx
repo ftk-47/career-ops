@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/empty-state";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
 import {
   Select,
   SelectContent,
@@ -15,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHead,
   TableHeader,
@@ -59,13 +59,13 @@ export default function ManageCohorts() {
   const [sizeFilter, setSizeFilter] = useState<string>("all");
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const pageSize = 10;
   const [sortConfig, setSortConfig] = useState<{ key: keyof Cohort; direction: "asc" | "desc" } | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [newCohortName, setNewCohortName] = useState("");
 
   const filteredAndSortedData = useMemo(() => {
-    let filtered = mockData.filter((item) => {
+    const filtered = mockData.filter((item) => {
       const matchesSearch = item.cohortName.toLowerCase().includes(searchTerm.toLowerCase());
       
       let matchesSize = true;
@@ -220,11 +220,11 @@ export default function ManageCohorts() {
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <StaggerContainer as="tbody">
                 {paginatedData.map((cohort) => {
                   const ratio = cohort.students / cohort.reviewers;
                   return (
-                    <TableRow key={cohort.id}>
+                    <StaggerItem key={cohort.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                       <TableCell className="font-medium">{cohort.cohortName}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -255,10 +255,10 @@ export default function ManageCohorts() {
                           Edit
                         </Button>
                       </TableCell>
-                    </TableRow>
+                    </StaggerItem>
                   );
                 })}
-              </TableBody>
+              </StaggerContainer>
             </Table>
           </div>
         )}

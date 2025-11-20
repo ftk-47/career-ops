@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
 import {
   Select,
   SelectContent,
@@ -16,7 +17,6 @@ import {
 } from "@/components/ui/select";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHead,
   TableHeader,
@@ -221,11 +221,11 @@ export default function ReviewCenter() {
                   <TableHead className="text-right min-w-[120px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <StaggerContainer as="tbody">
                 {paginatedData.map((item) => {
                   const TypeIcon = submissionTypeIcons[item.submissionType];
                   return (
-                    <TableRow key={item.id}>
+                    <StaggerItem key={item.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-9 w-9">
@@ -281,10 +281,10 @@ export default function ReviewCenter() {
                           Reassign
                         </Button>
                       </TableCell>
-                    </TableRow>
+                    </StaggerItem>
                   );
                 })}
-              </TableBody>
+              </StaggerContainer>
             </Table>
           </div>
         )}

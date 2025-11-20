@@ -10,6 +10,7 @@ import {
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { PageWrapper } from "@/components/motion/page-wrapper";
 
 import "./globals.css";
 
@@ -98,7 +99,9 @@ export default function RootLayout({
         <SidebarProvider>
           <div className="flex min-h-screen w-full bg-background">
             <AppSidebar />
-            <SidebarInset className="bg-muted/20">{children}</SidebarInset>
+            <SidebarInset className="bg-muted/20">
+              <PageWrapper>{children}</PageWrapper>
+            </SidebarInset>
           </div>
         </SidebarProvider>
       </body>

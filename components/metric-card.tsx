@@ -29,8 +29,8 @@ export function MetricCard({
   return (
     <Card
       className={cn(
-        "rounded-xl border border-border bg-card shadow-sm transition-shadow duration-200 hover:shadow-md",
-        onClick && "cursor-pointer",
+        "rounded-xl border border-border bg-card shadow-sm transition-all duration-200 hover:shadow-md",
+        onClick && "cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
         className
       )}
       onClick={onClick}

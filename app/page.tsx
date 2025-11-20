@@ -9,9 +9,11 @@ import { ThemeSelector } from "@/components/theme-selector";
 import { StyleSelector } from "@/components/style-selector";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AnimatedCard } from "@/components/motion/animated-card";
+import { FadeIn } from "@/components/motion/fade-in";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHead,
   TableHeader,
@@ -141,12 +143,15 @@ export default function Dashboard() {
       <main className="flex-1 p-6 space-y-6 w-full">
         {/* Metrics Row */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {stats.map((stat) => (
-            <MetricCard key={stat.title} {...stat} />
+          {stats.map((stat, index) => (
+            <AnimatedCard key={stat.title} delay={index * 0.05}>
+              <MetricCard {...stat} />
+            </AnimatedCard>
           ))}
         </div>
 
         {/* Alert Section - Overdue Reviews */}
+        <FadeIn delay={0.3} direction="up">
         <Card className="border-l-4 border-l-warning bg-warning/5 rounded-xl shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
@@ -166,11 +171,15 @@ export default function Dashboard() {
             </p>
           </CardContent>
         </Card>
+        </FadeIn>
 
         {/* Quick Actions */}
-        <QuickActions actions={quickActions} />
+        <FadeIn delay={0.35} direction="up">
+          <QuickActions actions={quickActions} />
+        </FadeIn>
 
         {/* Recent Activity */}
+        <FadeIn delay={0.4} direction="up">
         <Card className="rounded-xl shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-medium">Recent Activity</CardTitle>
@@ -186,9 +195,9 @@ export default function Dashboard() {
                     <TableHead className="text-right">Time</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <StaggerContainer as="tbody" delay={0.5} staggerDelay={0.03}>
                   {recentActivity.map((activity) => (
-                    <TableRow key={activity.id}>
+                    <StaggerItem key={activity.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                       <TableCell className="font-medium">{activity.student}</TableCell>
                       <TableCell className="flex items-center gap-2">
                         <FileText className="h-4 w-4 text-muted-foreground" />
@@ -202,13 +211,14 @@ export default function Dashboard() {
                       <TableCell className="text-right text-sm text-muted-foreground">
                         {activity.time}
                       </TableCell>
-                    </TableRow>
+                    </StaggerItem>
                   ))}
-                </TableBody>
+                </StaggerContainer>
               </Table>
         </div>
           </CardContent>
         </Card>
+        </FadeIn>
       </main>
 
       {/* Modals/Sheets */}

@@ -6,9 +6,9 @@ import { EmptyState } from "@/components/empty-state";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHead,
   TableHeader,
@@ -225,9 +225,9 @@ export default function ManageInterviews() {
                   <TableHead className="text-right w-[130px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <StaggerContainer as="tbody">
                 {paginatedData.map((interview) => (
-                  <TableRow key={interview.id}>
+                  <StaggerItem key={interview.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                     <TableCell className="font-medium truncate" title={interview.interviewName}>{interview.interviewName}</TableCell>
                     <TableCell className="text-sm truncate" title={interview.assignedTo}>{interview.assignedTo}</TableCell>
                     <TableCell>
@@ -259,9 +259,9 @@ export default function ManageInterviews() {
                         </Button>
                       </div>
                     </TableCell>
-                  </TableRow>
+                  </StaggerItem>
                 ))}
-              </TableBody>
+              </StaggerContainer>
             </Table>
           </div>
         )}

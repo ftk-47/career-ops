@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
+import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
+import { motion } from "framer-motion";
 import {
   Table,
-  TableBody,
   TableCell,
   TableHead,
   TableHeader,
@@ -205,7 +206,12 @@ export default function StudentSubmissions() {
 
         {/* Bulk Actions Bar */}
         {selectedIds.size > 0 && (
-          <div className="flex items-center gap-4 rounded-lg border bg-accent/50 px-4 py-3">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.15 }}
+            className="flex items-center gap-4 rounded-lg border bg-accent/50 px-4 py-3">
             <span className="text-sm font-medium">
               {selectedIds.size} selected
             </span>
@@ -216,7 +222,7 @@ export default function StudentSubmissions() {
                 Clear
               </Button>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* Table */}
@@ -257,11 +263,11 @@ export default function StudentSubmissions() {
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
+              <StaggerContainer as="tbody">
                 {paginatedData.map((submission) => {
                   const TypeIcon = submissionTypeIcons[submission.submissionType];
                   return (
-                    <TableRow key={submission.id}>
+                    <StaggerItem key={submission.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                       <TableCell>
                         <Checkbox
                           checked={selectedIds.has(submission.id)}
@@ -316,10 +322,10 @@ export default function StudentSubmissions() {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
-                    </TableRow>
+                    </StaggerItem>
                   );
                 })}
-              </TableBody>
+              </StaggerContainer>
             </Table>
           </div>
         )}

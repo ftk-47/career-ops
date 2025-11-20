@@ -10,6 +10,7 @@ import {
   ListChecks,
   Users,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 import {
   Sidebar,
@@ -63,17 +64,25 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-border bg-card z-20">
       <SidebarHeader className="border-b border-border p-3 group-data-[collapsible=icon]:p-4">
-        <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg shadow-sm shrink-0 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:text-base">
+        <motion.div 
+          className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.15 }}
+        >
+          <motion.div 
+            className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg shadow-sm shrink-0 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:text-base"
+            whileHover={{ scale: 1.05, rotate: 5 }}
+            transition={{ duration: 0.2 }}
+          >
             H
-          </div>
+          </motion.div>
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="text-base font-semibold leading-tight">Hiration</span>
             <span className="text-xs text-muted-foreground leading-tight">
               Counsellor Admin
             </span>
           </div>
-        </div>
+        </motion.div>
       </SidebarHeader>
       <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-2">
         <SidebarGroup className="group-data-[collapsible=icon]:items-center">
@@ -87,18 +96,34 @@ export function AppSidebar() {
                     : pathname.startsWith(item.href);
 
                 return (
-                  <SidebarMenuItem key={item.href} className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
-                    <SidebarMenuButton 
-                      asChild 
-                      isActive={isActive}
-                      tooltip={item.label}
-                      className="h-10 px-3 rounded-lg transition-all duration-200 hover:bg-accent data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-medium group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
+                  <SidebarMenuItem key={item.href} className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center relative">
+                    {isActive && (
+                      <motion.div
+                        className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"
+                        layoutId="activeIndicator"
+                        initial={{ scaleY: 0 }}
+                        animate={{ scaleY: 1 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                      />
+                    )}
+                    <motion.div
+                      className="w-full"
+                      whileHover={{ x: 2, scale: 1.01 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
                     >
-                      <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
-                        <Icon className="h-5 w-5 shrink-0" />
-                        <span className="text-sm group-data-[collapsible=icon]:hidden">{item.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                      <SidebarMenuButton 
+                        asChild 
+                        isActive={isActive}
+                        tooltip={item.label}
+                        className="h-10 px-3 rounded-lg transition-all duration-200 hover:bg-accent data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-medium group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
+                      >
+                        <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
+                          <Icon className="h-5 w-5 shrink-0" />
+                          <span className="text-sm group-data-[collapsible=icon]:hidden">{item.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </motion.div>
                   </SidebarMenuItem>
                 );
               })}
