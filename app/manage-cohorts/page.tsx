@@ -31,7 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Search, ChevronLeft, ChevronRight, Plus, GraduationCap, Users, TrendingUp, Edit, Filter, X } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Plus, GraduationCap, Users, UserCheck, Edit, Filter, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 
 interface Cohort {
@@ -112,13 +112,6 @@ export default function ManageCohorts() {
       }
       return null;
     });
-  };
-
-  const getHealthColor = (students: number, reviewers: number) => {
-    const ratio = students / reviewers;
-    if (ratio > 20) return "text-error";
-    if (ratio > 15) return "text-warning";
-    return "text-success";
   };
 
   const handleCreate = () => {
@@ -263,7 +256,6 @@ export default function ManageCohorts() {
                   <TableHead className="cursor-pointer" onClick={() => handleSort("reviewers")}>
                     Reviewers {sortConfig?.key === "reviewers" && (sortConfig.direction === "asc" ? "↑" : "↓")}
                   </TableHead>
-                  <TableHead>Health</TableHead>
                   <TableHead className="cursor-pointer" onClick={() => handleSort("createdAt")}>
                     Created {sortConfig?.key === "createdAt" && (sortConfig.direction === "asc" ? "↑" : "↓")}
                   </TableHead>
@@ -273,7 +265,6 @@ export default function ManageCohorts() {
               </TableHeader>
               <StaggerContainer key={`${currentPage}-${sizeFilter}-${activeFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((cohort) => {
-                  const ratio = cohort.students / cohort.reviewers;
                   return (
                     <StaggerItem key={cohort.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                       <TableCell className="font-medium">{cohort.cohortName}</TableCell>
@@ -283,13 +274,10 @@ export default function ManageCohorts() {
                           <span>{cohort.students}</span>
                         </div>
                       </TableCell>
-                      <TableCell>{cohort.reviewers}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <TrendingUp className={`h-4 w-4 ${getHealthColor(cohort.students, cohort.reviewers)}`} />
-                          <span className={`text-sm ${getHealthColor(cohort.students, cohort.reviewers)}`}>
-                            {ratio.toFixed(1)}:1
-                          </span>
+                          <UserCheck className="h-4 w-4 text-muted-foreground" />
+                          <span>{cohort.reviewers}</span>
                         </div>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">

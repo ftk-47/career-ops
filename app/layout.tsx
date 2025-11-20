@@ -5,7 +5,8 @@ import {
   IBM_Plex_Mono,
   Inter,
   Source_Serif_4,
-  JetBrains_Mono
+  JetBrains_Mono,
+  Figtree
 } from "next/font/google";
 
 import { AppSidebar } from "@/components/app-sidebar";
@@ -55,6 +56,14 @@ const jetBrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+// New Themes Fonts (Ocean, Forest, Crimson, Sunset, Midnight, Rose, Cyberpunk, Noir)
+const figtree = Figtree({
+  variable: "--font-figtree",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Hiration Counsellor Admin",
   description: "Admin dashboard for university career counsellors",
@@ -93,6 +102,7 @@ export default function RootLayout({
           ${inter.variable}
           ${sourceSerif4.variable}
           ${jetBrainsMono.variable}
+          ${figtree.variable}
           antialiased
         `}
       >

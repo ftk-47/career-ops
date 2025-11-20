@@ -26,7 +26,7 @@ import {
   UserCheck,
   Calendar,
   UserPlus,
-  AlertCircle,
+  TrendingUp,
 } from "lucide-react";
 import {
   Dialog,
@@ -42,6 +42,26 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Label,
+  Pie,
+  PieChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const recentActivity = [
   { id: "1", student: "Alice Johnson", type: "Resume", status: "Pending", time: "2 hours ago" },
@@ -59,6 +79,91 @@ const statusVariants: Record<string, "success" | "warning" | "error" | "info"> =
   "In Review": "info",
   Completed: "success",
   Rejected: "error",
+};
+
+// Mock data for charts
+const submissionsOverTime = [
+  { date: "Nov 1", submissions: 8 },
+  { date: "Nov 2", submissions: 12 },
+  { date: "Nov 3", submissions: 6 },
+  { date: "Nov 4", submissions: 15 },
+  { date: "Nov 5", submissions: 10 },
+  { date: "Nov 6", submissions: 14 },
+  { date: "Nov 7", submissions: 9 },
+  { date: "Nov 8", submissions: 18 },
+  { date: "Nov 9", submissions: 11 },
+  { date: "Nov 10", submissions: 13 },
+  { date: "Nov 11", submissions: 7 },
+  { date: "Nov 12", submissions: 16 },
+  { date: "Nov 13", submissions: 12 },
+  { date: "Nov 14", submissions: 19 },
+  { date: "Nov 15", submissions: 14 },
+  { date: "Nov 16", submissions: 10 },
+  { date: "Nov 17", submissions: 15 },
+  { date: "Nov 18", submissions: 17 },
+  { date: "Nov 19", submissions: 13 },
+  { date: "Nov 20", submissions: 20 },
+];
+
+const statusDistribution = [
+  { status: "Pending", count: 42, fill: "var(--chart-1)" },
+  { status: "In Review", count: 28, fill: "var(--chart-2)" },
+  { status: "Completed", count: 186, fill: "var(--chart-3)" },
+  { status: "Rejected", count: 28, fill: "var(--chart-4)" },
+];
+
+const statusColors = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+];
+
+const submissionTypes = [
+  { type: "Resume", count: 158 },
+  { type: "Cover Letter", count: 84 },
+  { type: "Interview", count: 42 },
+];
+
+const submissionTypeColors = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+];
+
+const chartConfig = {
+  submissions: {
+    label: "Submissions",
+    color: "var(--chart-1)",
+  },
+  Pending: {
+    label: "Pending",
+    color: "var(--chart-1)",
+  },
+  "In Review": {
+    label: "In Review",
+    color: "var(--chart-2)",
+  },
+  Completed: {
+    label: "Completed",
+    color: "var(--chart-3)",
+  },
+  Rejected: {
+    label: "Rejected",
+    color: "var(--chart-4)",
+  },
+  Resume: {
+    label: "Resume",
+    color: "var(--chart-1)",
+  },
+  "Cover Letter": {
+    label: "Cover Letter",
+    color: "var(--chart-2)",
+  },
+  Interview: {
+    label: "Interview",
+    color: "var(--chart-3)",
+  },
 };
 
 export default function Dashboard() {
@@ -153,36 +258,177 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Alert Section - Overdue Reviews */}
-        {/* <FadeIn delay={0.3} direction="up"> */}
-        {/* <Card className="border-l-4 border-l-warning bg-warning/5 rounded-xl shadow-sm">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-warning" />
-              <CardTitle className="text-base font-medium">Attention Needed</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              You have <span className="font-semibold text-foreground">5 overdue reviews</span> that require immediate attention.{" "}
-              <button
-                onClick={() => router.push("/review-center")}
-                className="text-primary hover:underline font-medium"
-              >
-                View all →
-              </button>
-            </p>
-          </CardContent>
-        </Card> */}
-        {/* </FadeIn> */}
-
         {/* Quick Actions */}
-        <FadeIn delay={0.35} direction="up">
+        <FadeIn delay={0.25} direction="up">
           <QuickActions actions={quickActions} />
         </FadeIn>
 
+        {/* Charts Section */}
+        <div className="space-y-3">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Analytics</h2>
+          <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+            {/* Submissions Over Time Chart */}
+            <FadeIn delay={0.3} direction="up">
+              <Card className="rounded-xl shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-base font-medium flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                    Submissions Over Time
+                  </CardTitle>
+                  <p className="text-xs text-muted-foreground">Daily submission trends for the last 20 days</p>
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={chartConfig} className="h-[250px] w-full">
+                    <AreaChart data={submissionsOverTime}>
+                      <defs>
+                        <linearGradient id="fillSubmissions" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.8} />
+                          <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis
+                        dataKey="date"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        tickFormatter={(value) => value.slice(4)}
+                      />
+                      <YAxis
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent indicator="line" />}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="submissions"
+                        stroke="var(--chart-1)"
+                        strokeWidth={2}
+                        fill="url(#fillSubmissions)"
+                      />
+                    </AreaChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            </FadeIn>
+
+            {/* Status Distribution Chart */}
+            <FadeIn delay={0.35} direction="up">
+              <Card className="rounded-xl shadow-sm">
+                <CardHeader>
+                  <CardTitle className="text-base font-medium">Status Distribution</CardTitle>
+                  <p className="text-xs text-muted-foreground">Breakdown of submission statuses</p>
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={chartConfig} className="h-[280px] w-full">
+                    <PieChart>
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel />}
+                      />
+                      <Pie
+                        data={statusDistribution}
+                        dataKey="count"
+                        nameKey="status"
+                        innerRadius={60}
+                        outerRadius={90}
+                        strokeWidth={5}
+                        stroke="var(--background)"
+                        labelLine={false}
+                      >
+                        {statusDistribution.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={statusColors[index]} />
+                        ))}
+                        <Label
+                          content={({ viewBox }) => {
+                            if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                              const total = statusDistribution.reduce((acc, curr) => acc + curr.count, 0);
+                              return (
+                                <text
+                                  x={viewBox.cx}
+                                  y={viewBox.cy}
+                                  textAnchor="middle"
+                                  dominantBaseline="middle"
+                                >
+                                  <tspan
+                                    x={viewBox.cx}
+                                    y={viewBox.cy}
+                                    className="fill-foreground text-3xl font-bold"
+                                  >
+                                    {total}
+                                  </tspan>
+                                  <tspan
+                                    x={viewBox.cx}
+                                    y={(viewBox.cy || 0) + 24}
+                                    className="fill-muted-foreground text-xs"
+                                  >
+                                    Total
+                                  </tspan>
+                                </text>
+                              );
+                            }
+                          }}
+                        />
+                      </Pie>
+                      <ChartLegend
+                        content={<ChartLegendContent nameKey="status" />}
+                        verticalAlign="bottom"
+                        className="mt-4"
+                      />
+                    </PieChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            </FadeIn>
+
+            {/* Submission Types Chart */}
+            <FadeIn delay={0.4} direction="up">
+              <Card className="rounded-xl shadow-sm lg:col-span-2">
+                <CardHeader>
+                  <CardTitle className="text-base font-medium">Submission Types</CardTitle>
+                  <p className="text-xs text-muted-foreground">Distribution by submission type</p>
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={chartConfig} className="h-[250px] w-full">
+                    <BarChart data={submissionTypes}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis
+                        dataKey="type"
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                      />
+                      <YAxis
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                      />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel />}
+                      />
+                      <Bar
+                        dataKey="count"
+                        radius={[8, 8, 0, 0]}
+                      >
+                        {submissionTypes.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={submissionTypeColors[index]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ChartContainer>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          </div>
+        </div>
+
         {/* Recent Activity */}
-        <FadeIn delay={0.4} direction="up">
+        <FadeIn delay={0.5} direction="up">
         <Card className="rounded-xl shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-medium">Recent Activity</CardTitle>

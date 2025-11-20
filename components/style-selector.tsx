@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Leaf, Sparkles, Trees, Zap } from "lucide-react";
+import { Leaf, Sparkles, Trees, Zap, Waves, TreePine, Flame, Sun, Moon, Flower2, Cpu, Film } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Style = "autumn" | "lavender" | "meadow" | "stripy";
+type Style = "autumn" | "lavender" | "meadow" | "stripy" | "ocean" | "forest" | "crimson" | "sunset" | "midnight" | "rose" | "cyberpunk" | "noir";
 
 const styles = [
   {
@@ -39,6 +39,54 @@ const styles = [
     icon: Zap,
     description: "Bold & modern",
   },
+  {
+    value: "ocean" as Style,
+    label: "Ocean",
+    icon: Waves,
+    description: "Deep sea blues",
+  },
+  {
+    value: "forest" as Style,
+    label: "Forest",
+    icon: TreePine,
+    description: "Natural greens",
+  },
+  {
+    value: "crimson" as Style,
+    label: "Crimson",
+    icon: Flame,
+    description: "Bold reds",
+  },
+  {
+    value: "sunset" as Style,
+    label: "Sunset",
+    icon: Sun,
+    description: "Warm oranges",
+  },
+  {
+    value: "midnight" as Style,
+    label: "Midnight",
+    icon: Moon,
+    description: "Deep navy",
+  },
+  {
+    value: "rose" as Style,
+    label: "Rose",
+    icon: Flower2,
+    description: "Elegant pinks",
+  },
+  {
+    value: "cyberpunk" as Style,
+    label: "Cyberpunk",
+    icon: Cpu,
+    description: "Neon future",
+  },
+  {
+    value: "noir" as Style,
+    label: "Noir",
+    icon: Film,
+    description: "Black & white",
+  },
 ];
 
 export function StyleSelector() {
@@ -49,7 +97,8 @@ export function StyleSelector() {
     if (typeof window === "undefined") return "meadow";
     
     const savedStyle = localStorage.getItem("style") as Style | null;
-    if (savedStyle && (savedStyle === "autumn" || savedStyle === "lavender" || savedStyle === "meadow" || savedStyle === "stripy")) {
+    const validStyles: Style[] = ["autumn", "lavender", "meadow", "stripy", "ocean", "forest", "crimson", "sunset", "midnight", "rose", "cyberpunk", "noir"];
+    if (savedStyle && validStyles.includes(savedStyle)) {
       return savedStyle;
     }
     
@@ -60,7 +109,11 @@ export function StyleSelector() {
     const root = document.documentElement;
     
     // Remove all style classes
-    root.classList.remove("style-autumn", "style-lavender", "style-meadow", "style-stripy");
+    root.classList.remove(
+      "style-autumn", "style-lavender", "style-meadow", "style-stripy",
+      "style-ocean", "style-forest", "style-crimson", "style-sunset",
+      "style-midnight", "style-rose", "style-cyberpunk", "style-noir"
+    );
     
     // Add the new style class
     root.classList.add(`style-${newStyle}`);
