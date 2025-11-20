@@ -17,6 +17,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
   Table,
   TableCell,
   TableHead,
@@ -37,7 +42,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Search, MoreVertical, ChevronLeft, ChevronRight, UserPlus, Users, Mail, Shield, Trash2 } from "lucide-react";
+import { Search, MoreVertical, ChevronLeft, ChevronRight, UserPlus, Users, Mail, Shield, Trash2, X } from "lucide-react";
 
 type TeamRole = "Reviewer" | "Admin" | "Super Admin";
 type TeamStatus = "Active" | "Invited";
@@ -169,26 +174,53 @@ export default function ManageTeam() {
               className="pl-10"
             />
           </div>
-          <div className="flex gap-2">
-            <Button
-              variant={roleFilter === "all" ? "default" : "outline"}
-              size="sm"
-              onClick={() => { setRoleFilter("all"); setCurrentPage(1); }}
-            >
-              All Roles
-            </Button>
-            {roles.map((role) => (
-              <Button
-                key={role}
-                variant={roleFilter === role ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setRoleFilter(role); setCurrentPage(1); }}
-              >
-                {role}
-              </Button>
-            ))}
-          </div>
+          <Tabs 
+            value={roleFilter} 
+            onValueChange={(value) => {
+              setRoleFilter(value as TeamRole | "all");
+              setCurrentPage(1);
+            }}
+          >
+            <TabsList>
+              <TabsTrigger value="all">All Roles</TabsTrigger>
+              {roles.map((role) => (
+                <TabsTrigger key={role} value={role}>
+                  {role}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
+
+        {/* Active Filters Pills */}
+        {roleFilter !== "all" && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-muted-foreground">Active filters:</span>
+            <Badge variant="secondary" className="gap-1">
+              Role: {roleFilter}
+              <button
+                onClick={() => {
+                  setRoleFilter("all");
+                  setCurrentPage(1);
+                }}
+                className="ml-1 hover:bg-muted rounded-full p-0.5"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setRoleFilter("all");
+                setCurrentPage(1);
+              }}
+              className="h-7 text-xs"
+            >
+              Clear all
+            </Button>
+          </div>
+        )}
 
         {/* Table */}
         {filteredAndSortedData.length === 0 ? (

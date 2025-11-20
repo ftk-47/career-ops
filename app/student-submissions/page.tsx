@@ -22,8 +22,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Search, MoreVertical, ChevronLeft, ChevronRight, Eye, FileEdit, FileText, Mail, Video } from "lucide-react";
+import { Search, MoreVertical, ChevronLeft, ChevronRight, Eye, FileEdit, FileText, Mail, Video, Filter, X } from "lucide-react";
 
 type SubmissionStatus = "Pending" | "In Review" | "Completed" | "Rejected";
 type SubmissionType = "Resume" | "Cover Letter" | "Interview";
@@ -161,48 +165,97 @@ export default function StudentSubmissions() {
               className="pl-10"
             />
           </div>
-          <div className="flex flex-wrap gap-2">
-            {/* Filter Chips */}
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant={typeFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setTypeFilter("all"); setCurrentPage(1); }}
-              >
-                All Types
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Filter className="mr-2 h-4 w-4" />
+                Filter
               </Button>
-              {submissionTypes.map((type) => (
-                <Button
-                  key={type}
-                  variant={typeFilter === type ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => { setTypeFilter(type); setCurrentPage(1); }}
-                >
-                  {type}
-                </Button>
-              ))}
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant={statusFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setStatusFilter("all"); setCurrentPage(1); }}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Submission Type</DropdownMenuLabel>
+              <DropdownMenuRadioGroup 
+                value={typeFilter} 
+                onValueChange={(value) => {
+                  setTypeFilter(value as SubmissionType | "all");
+                  setCurrentPage(1);
+                }}
               >
-                All Status
-              </Button>
-              {statuses.map((status) => (
-                <Button
-                  key={status}
-                  variant={statusFilter === status ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => { setStatusFilter(status); setCurrentPage(1); }}
-                >
-                  {status}
-                </Button>
-              ))}
-            </div>
-          </div>
+                <DropdownMenuRadioItem value="all">All Types</DropdownMenuRadioItem>
+                {submissionTypes.map((type) => (
+                  <DropdownMenuRadioItem key={type} value={type}>
+                    {type}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+              
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuLabel>Status</DropdownMenuLabel>
+              <DropdownMenuRadioGroup 
+                value={statusFilter} 
+                onValueChange={(value) => {
+                  setStatusFilter(value as SubmissionStatus | "all");
+                  setCurrentPage(1);
+                }}
+              >
+                <DropdownMenuRadioItem value="all">All Status</DropdownMenuRadioItem>
+                {statuses.map((status) => (
+                  <DropdownMenuRadioItem key={status} value={status}>
+                    {status}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
+        {/* Active Filters Pills */}
+        {(typeFilter !== "all" || statusFilter !== "all") && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-muted-foreground">Active filters:</span>
+            {typeFilter !== "all" && (
+              <Badge variant="secondary" className="gap-1">
+                Type: {typeFilter}
+                <button
+                  onClick={() => {
+                    setTypeFilter("all");
+                    setCurrentPage(1);
+                  }}
+                  className="ml-1 hover:bg-muted rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            )}
+            {statusFilter !== "all" && (
+              <Badge variant="secondary" className="gap-1">
+                Status: {statusFilter}
+                <button
+                  onClick={() => {
+                    setStatusFilter("all");
+                    setCurrentPage(1);
+                  }}
+                  className="ml-1 hover:bg-muted rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setTypeFilter("all");
+                setStatusFilter("all");
+                setCurrentPage(1);
+              }}
+              className="h-7 text-xs"
+            >
+              Clear all
+            </Button>
+          </div>
+        )}
 
         {/* Bulk Actions Bar */}
         {selectedIds.size > 0 && (

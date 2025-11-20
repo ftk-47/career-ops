@@ -22,7 +22,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Search, ChevronLeft, ChevronRight, Plus, Calendar, Edit, Pause, Play } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
+import { Search, ChevronLeft, ChevronRight, Plus, Calendar, Edit, Pause, Play, Filter, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -152,47 +161,97 @@ export default function ManageInterviews() {
               className="pl-10"
             />
           </div>
-          <div className="flex flex-wrap gap-2">
-            <div className="flex gap-2">
-              <Button
-                variant={assignmentTypeFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setAssignmentTypeFilter("all"); setCurrentPage(1); }}
-              >
-                All Types
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Filter className="mr-2 h-4 w-4" />
+                Filter
               </Button>
-              {assignmentTypes.map((type) => (
-                <Button
-                  key={type}
-                  variant={assignmentTypeFilter === type ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => { setAssignmentTypeFilter(type); setCurrentPage(1); }}
-                >
-                  {type}
-                </Button>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant={statusFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setStatusFilter("all"); setCurrentPage(1); }}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Assignment Type</DropdownMenuLabel>
+              <DropdownMenuRadioGroup 
+                value={assignmentTypeFilter} 
+                onValueChange={(value) => {
+                  setAssignmentTypeFilter(value as AssignmentType | "all");
+                  setCurrentPage(1);
+                }}
               >
-                All Status
-              </Button>
-              {statuses.map((status) => (
-                <Button
-                  key={status}
-                  variant={statusFilter === status ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => { setStatusFilter(status); setCurrentPage(1); }}
-                >
-                  {status}
-                </Button>
-              ))}
-            </div>
-          </div>
+                <DropdownMenuRadioItem value="all">All Types</DropdownMenuRadioItem>
+                {assignmentTypes.map((type) => (
+                  <DropdownMenuRadioItem key={type} value={type}>
+                    {type}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+              
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuLabel>Status</DropdownMenuLabel>
+              <DropdownMenuRadioGroup 
+                value={statusFilter} 
+                onValueChange={(value) => {
+                  setStatusFilter(value as InterviewStatus | "all");
+                  setCurrentPage(1);
+                }}
+              >
+                <DropdownMenuRadioItem value="all">All Status</DropdownMenuRadioItem>
+                {statuses.map((status) => (
+                  <DropdownMenuRadioItem key={status} value={status}>
+                    {status}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
+        {/* Active Filters Pills */}
+        {(assignmentTypeFilter !== "all" || statusFilter !== "all") && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-muted-foreground">Active filters:</span>
+            {assignmentTypeFilter !== "all" && (
+              <Badge variant="secondary" className="gap-1">
+                Type: {assignmentTypeFilter}
+                <button
+                  onClick={() => {
+                    setAssignmentTypeFilter("all");
+                    setCurrentPage(1);
+                  }}
+                  className="ml-1 hover:bg-muted rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            )}
+            {statusFilter !== "all" && (
+              <Badge variant="secondary" className="gap-1">
+                Status: {statusFilter}
+                <button
+                  onClick={() => {
+                    setStatusFilter("all");
+                    setCurrentPage(1);
+                  }}
+                  className="ml-1 hover:bg-muted rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setAssignmentTypeFilter("all");
+                setStatusFilter("all");
+                setCurrentPage(1);
+              }}
+              className="h-7 text-xs"
+            >
+              Clear all
+            </Button>
+          </div>
+        )}
 
         {/* Table */}
         {filteredAndSortedData.length === 0 ? (

@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableCell,
@@ -29,7 +31,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Search, ChevronLeft, ChevronRight, Plus, GraduationCap, Users, TrendingUp, Edit } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Plus, GraduationCap, Users, TrendingUp, Edit, Filter, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 
 interface Cohort {
@@ -152,43 +154,92 @@ export default function ManageCohorts() {
               className="pl-10"
             />
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Select value={sizeFilter} onValueChange={(value) => { setSizeFilter(value); setCurrentPage(1); }}>
-              <SelectTrigger className="w-[150px]">
-                <SelectValue placeholder="Size" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Sizes</SelectItem>
-                <SelectItem value="small">Small (&lt; 30)</SelectItem>
-                <SelectItem value="medium">Medium (30-44)</SelectItem>
-                <SelectItem value="large">Large (45+)</SelectItem>
-              </SelectContent>
-            </Select>
-            <div className="flex gap-2">
-              <Button
-                variant={activeFilter === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setActiveFilter("all"); setCurrentPage(1); }}
-              >
-                All
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Filter className="mr-2 h-4 w-4" />
+                Filter
               </Button>
-              <Button
-                variant={activeFilter === "active" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setActiveFilter("active"); setCurrentPage(1); }}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Cohort Size</DropdownMenuLabel>
+              <DropdownMenuRadioGroup 
+                value={sizeFilter} 
+                onValueChange={(value) => {
+                  setSizeFilter(value);
+                  setCurrentPage(1);
+                }}
               >
-                Active
-              </Button>
-              <Button
-                variant={activeFilter === "inactive" ? "default" : "outline"}
-                size="sm"
-                onClick={() => { setActiveFilter("inactive"); setCurrentPage(1); }}
+                <DropdownMenuRadioItem value="all">All Sizes</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="small">Small (&lt; 30)</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="medium">Medium (30-44)</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="large">Large (45+)</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+              
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuLabel>Status</DropdownMenuLabel>
+              <DropdownMenuRadioGroup 
+                value={activeFilter} 
+                onValueChange={(value) => {
+                  setActiveFilter(value);
+                  setCurrentPage(1);
+                }}
               >
-                Inactive
-              </Button>
-            </div>
-          </div>
+                <DropdownMenuRadioItem value="all">All</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="active">Active</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="inactive">Inactive</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
+        {/* Active Filters Pills */}
+        {(sizeFilter !== "all" || activeFilter !== "all") && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-muted-foreground">Active filters:</span>
+            {sizeFilter !== "all" && (
+              <Badge variant="secondary" className="gap-1">
+                Size: {sizeFilter === "small" ? "Small (< 30)" : sizeFilter === "medium" ? "Medium (30-44)" : "Large (45+)"}
+                <button
+                  onClick={() => {
+                    setSizeFilter("all");
+                    setCurrentPage(1);
+                  }}
+                  className="ml-1 hover:bg-muted rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            )}
+            {activeFilter !== "all" && (
+              <Badge variant="secondary" className="gap-1">
+                Status: {activeFilter.charAt(0).toUpperCase() + activeFilter.slice(1)}
+                <button
+                  onClick={() => {
+                    setActiveFilter("all");
+                    setCurrentPage(1);
+                  }}
+                  className="ml-1 hover:bg-muted rounded-full p-0.5"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setSizeFilter("all");
+                setActiveFilter("all");
+                setCurrentPage(1);
+              }}
+              className="h-7 text-xs"
+            >
+              Clear all
+            </Button>
+          </div>
+        )}
 
         {/* Table */}
         {filteredAndSortedData.length === 0 ? (
