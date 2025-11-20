@@ -79,7 +79,7 @@ export function AppSidebar() {
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="text-base font-semibold leading-tight">Hiration</span>
             <span className="text-xs text-muted-foreground leading-tight">
-              Counsellor Admin
+              Admin Dashboard
             </span>
           </div>
         </motion.div>

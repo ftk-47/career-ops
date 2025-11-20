@@ -27,6 +27,7 @@ import {
   Calendar,
   UserPlus,
   TrendingUp,
+  ClipboardCheck,
 } from "lucide-react";
 import {
   Dialog,
@@ -231,6 +232,12 @@ export default function Dashboard() {
       icon: Calendar,
       onClick: () => setCreateInterviewOpen(true),
     },
+    {
+      label: "Review Submission",
+      description: "Start reviewing pending items",
+      icon: ClipboardCheck,
+      onClick: () => router.push("/review-center"),
+    },
   ];
 
   return (
@@ -259,9 +266,12 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <FadeIn delay={0.25} direction="up">
-          <QuickActions actions={quickActions} />
-        </FadeIn>
+        <div className="space-y-3">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Quick Actions</h2>
+          <FadeIn delay={0.25} direction="up">
+            <QuickActions actions={quickActions} />
+          </FadeIn>
+        </div>
 
         {/* Charts Section */}
         <div className="space-y-3">

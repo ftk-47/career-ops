@@ -1725,6 +1725,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-sans);
     letter-spacing: var(--tracking-normal);
   }
   
@@ -1734,6 +1735,15 @@
   }
   h2 {
     @apply text-lg font-medium;
+  }
+  
+  /* Font families for different elements */
+  code, kbd, samp, pre {
+    font-family: var(--font-mono);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
   }
   
   /* Smooth transitions */
