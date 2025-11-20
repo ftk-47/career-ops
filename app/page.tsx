@@ -99,7 +99,7 @@ export default function Dashboard() {
       onClick: () => router.push("/manage-team"),
     },
     {
-      title: "Interviews Assigned Today",
+      title: "Interviews Assigned",
       value: "8",
       description: "Due today",
       icon: Calendar,
@@ -141,13 +141,16 @@ export default function Dashboard() {
         }
       />
       <main className="flex-1 p-6 space-y-6 w-full">
-        {/* Metrics Row */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {stats.map((stat, index) => (
-            <AnimatedCard key={stat.title} delay={index * 0.05}>
-              <MetricCard {...stat} />
-            </AnimatedCard>
-          ))}
+        {/* Quick Stats Section */}
+        <div className="space-y-3">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Quick Stats</h2>
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+            {stats.map((stat, index) => (
+              <AnimatedCard key={stat.title} delay={index * 0.05}>
+                <MetricCard {...stat} />
+              </AnimatedCard>
+            ))}
+          </div>
         </div>
 
         {/* Alert Section - Overdue Reviews */}
