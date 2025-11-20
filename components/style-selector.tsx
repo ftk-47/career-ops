@@ -46,14 +46,14 @@ export function StyleSelector() {
   
   // Lazy initialization - only runs once on mount
   const [style, setStyle] = useState<Style>(() => {
-    if (typeof window === "undefined") return "autumn";
+    if (typeof window === "undefined") return "meadow";
     
     const savedStyle = localStorage.getItem("style") as Style | null;
     if (savedStyle && (savedStyle === "autumn" || savedStyle === "lavender" || savedStyle === "meadow" || savedStyle === "stripy")) {
       return savedStyle;
     }
     
-    return "autumn";
+    return "meadow";
   });
 
   const applyStyle = (newStyle: Style) => {
@@ -84,7 +84,7 @@ export function StyleSelector() {
   if (!mounted) {
     return (
       <Button variant="ghost" size="icon" className="h-9 w-9">
-        <Leaf className="h-4 w-4" />
+        <Trees className="h-4 w-4" />
       </Button>
     );
   }
