@@ -89,7 +89,7 @@ export function ThemeSelector() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-48 ">
         <DropdownMenuLabel className="flex items-center gap-2">
           <Moon className="h-4 w-4" />
           Theme
@@ -103,7 +103,7 @@ export function ThemeSelector() {
             <DropdownMenuItem
               key={themeOption.value}
               onClick={() => changeTheme(themeOption.value)}
-              className={`cursor-pointer ${
+              className={`cursor-pointer mt-0.5  ${
                 isActive ? "bg-accent" : ""
               }`}
             >

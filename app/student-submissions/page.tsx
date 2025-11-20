@@ -146,7 +146,7 @@ export default function StudentSubmissions() {
   return (
     <div className="flex flex-col min-h-screen">
       <PageHeader title="Student Submissions" description="Review and manage student submissions assigned to you" />
-      <main className="flex-1 p-6 space-y-6 w-full">
+      <main className="p-6 space-y-6 w-full">
         {/* Filters Bar */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1 max-w-md">
@@ -263,7 +263,7 @@ export default function StudentSubmissions() {
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <StaggerContainer as="tbody">
+              <StaggerContainer key={`${currentPage}-${typeFilter}-${statusFilter}-${cohortFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((submission) => {
                   const TypeIcon = submissionTypeIcons[submission.submissionType];
                   return (

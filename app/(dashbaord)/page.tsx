@@ -154,8 +154,8 @@ export default function Dashboard() {
         </div>
 
         {/* Alert Section - Overdue Reviews */}
-        <FadeIn delay={0.3} direction="up">
-        <Card className="border-l-4 border-l-warning bg-warning/5 rounded-xl shadow-sm">
+        {/* <FadeIn delay={0.3} direction="up"> */}
+        {/* <Card className="border-l-4 border-l-warning bg-warning/5 rounded-xl shadow-sm">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-warning" />
@@ -173,8 +173,8 @@ export default function Dashboard() {
               </button>
             </p>
           </CardContent>
-        </Card>
-        </FadeIn>
+        </Card> */}
+        {/* </FadeIn> */}
 
         {/* Quick Actions */}
         <FadeIn delay={0.35} direction="up">

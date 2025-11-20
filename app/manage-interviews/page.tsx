@@ -137,7 +137,7 @@ export default function ManageInterviews() {
           </Button>
         }
       />
-      <main className="flex-1 p-6 space-y-6 w-full">
+      <main className="p-6 space-y-6 w-full">
         {/* Filters Bar */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1 max-w-md">
@@ -225,7 +225,7 @@ export default function ManageInterviews() {
                   <TableHead className="text-right w-[130px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <StaggerContainer as="tbody">
+              <StaggerContainer key={`${currentPage}-${assignmentTypeFilter}-${statusFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((interview) => (
                   <StaggerItem key={interview.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                     <TableCell className="font-medium truncate" title={interview.interviewName}>{interview.interviewName}</TableCell>

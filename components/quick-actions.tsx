@@ -17,11 +17,11 @@ interface QuickActionsProps {
 
 export function QuickActions({ actions }: QuickActionsProps) {
   return (
-    <Card className="rounded-xl border border-border bg-card shadow-sm">
+    <Card className="rounded-xl border border-border bg-card shadow-sm max-w-sm">
       <CardHeader>
         <CardTitle className="text-lg font-medium">Quick Actions</CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
         {actions.map((action, index) => {
           const Icon = action.icon;
           return (

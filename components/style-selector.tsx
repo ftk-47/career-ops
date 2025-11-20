@@ -101,7 +101,7 @@ export function StyleSelector() {
           <span className="sr-only">Toggle style</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48">
+      <DropdownMenuContent align="end" className="w-48 ">
         <DropdownMenuLabel className="flex items-center gap-2">
           <Sparkles className="h-4 w-4" />
           Style
@@ -115,7 +115,7 @@ export function StyleSelector() {
             <DropdownMenuItem
               key={styleOption.value}
               onClick={() => changeStyle(styleOption.value)}
-              className={`cursor-pointer ${
+              className={`cursor-pointer mt-0.5 ${
                 isActive ? "bg-accent" : ""
               }`}
             >

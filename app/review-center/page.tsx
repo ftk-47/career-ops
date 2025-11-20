@@ -22,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, ChevronLeft, ChevronRight, ListChecks, FileText, Mail, Video, AlertCircle } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, ListChecks, FileText, Mail, Video } from "lucide-react";
 
 type SubmissionStatus = "Pending" | "In Review" | "Completed" | "Rejected";
 type SubmissionType = "Resume" | "Cover Letter" | "Interview";
@@ -129,16 +129,10 @@ export default function ReviewCenter() {
     return name.split(" ").map((n) => n[0]).join("").toUpperCase();
   };
 
-  const getWorkloadColor = (workload: number) => {
-    if (workload >= 15) return "text-error";
-    if (workload >= 12) return "text-warning";
-    return "text-muted-foreground";
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       <PageHeader title="Review Center" description="Manage and distribute submissions across all reviewers" />
-      <main className="flex-1 p-6 space-y-6 w-full overflow-x-auto">
+      <main className="p-6 space-y-6 w-full">
         {/* Filters Bar */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1 max-w-md">
@@ -221,7 +215,7 @@ export default function ReviewCenter() {
                   <TableHead className="text-right min-w-[120px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <StaggerContainer as="tbody">
+              <StaggerContainer key={`${currentPage}-${reviewerFilter}-${statusFilter}-${cohortFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((item) => {
                   const TypeIcon = submissionTypeIcons[item.submissionType];
                   return (
@@ -246,26 +240,7 @@ export default function ReviewCenter() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Select defaultValue={item.assignedReviewer}>
-                            <SelectTrigger className="h-8 w-[160px] border-dashed text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {reviewers.map((reviewer) => (
-                                <SelectItem key={reviewer} value={reviewer}>
-                                  {reviewer}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <span className={`text-xs whitespace-nowrap ${getWorkloadColor(item.reviewerWorkload)}`}>
-                            ({item.reviewerWorkload})
-                          </span>
-                          {item.reviewerWorkload >= 15 && (
-                            <AlertCircle className="h-4 w-4 text-error shrink-0" />
-                          )}
-                        </div>
+                        <span className="text-sm">{item.assignedReviewer}</span>
                       </TableCell>
                       <TableCell className="text-xs">{item.cohort}</TableCell>
                       <TableCell>

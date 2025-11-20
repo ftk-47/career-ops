@@ -97,25 +97,6 @@ export function AppSidebar() {
 
                 return (
                   <SidebarMenuItem key={item.href} className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center relative">
-                    {isActive && (
-                      <>
-                        <motion.div
-                          className="absolute left-0 top-0 bottom-0 w-1 rounded-r-full overflow-hidden"
-                          layoutId="activeIndicator"
-                          initial={{ scaleY: 0 }}
-                          animate={{ scaleY: 1 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
-                        >
-                          <div className="w-full h-full bg-linear-to-b from-primary via-primary to-primary/70" />
-                        </motion.div>
-                        <motion.div
-                          className="absolute inset-0 rounded-lg sidebar-active-gradient pointer-events-none"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ duration: 0.3 }}
-                        />
-                      </>
-                    )}
                     <motion.div
                       className="w-full relative z-10"
                       whileHover={{ x: 2, scale: 1.01 }}
@@ -126,7 +107,7 @@ export function AppSidebar() {
                         asChild 
                         isActive={isActive}
                         tooltip={item.label}
-                        className="h-10 px-3 rounded-lg transition-all duration-200 hover:bg-gradient-subtle-horizontal data-[active=true]:bg-transparent data-[active=true]:text-primary data-[active=true]:font-medium group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
+                        className="h-10 px-3 rounded-lg transition-all duration-200 hover:bg-accent data-[active=true]:bg-primary data-[active=true]:text-primary-foreground data-[active=true]:font-medium group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
                       >
                         <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
                           <Icon className="h-5 w-5 shrink-0" />

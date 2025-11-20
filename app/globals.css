@@ -603,6 +603,30 @@
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
   
+  /* Cursor Pointer for Interactive Elements */
+  button,
+  a,
+  [role="button"],
+  [role="link"],
+  [role="tab"],
+  [role="switch"],
+  [role="checkbox"],
+  [role="radio"],
+  [role="menuitem"],
+  [role="option"],
+  label,
+  select,
+  input[type="radio"],
+  input[type="checkbox"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="reset"],
+  summary,
+  [onclick],
+  [tabindex]:not([tabindex="-1"]) {
+    @apply cursor-pointer;
+  }
+  
   /* Table Row Hover States */
   [role="row"]:hover,
   tr:hover {

@@ -154,7 +154,7 @@ export default function ManageTeam() {
           </Button>
         }
       />
-      <main className="flex-1 p-6 space-y-6 w-full">
+      <main className="p-6 space-y-6 w-full">
         {/* Filters Bar */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative flex-1 max-w-md">
@@ -221,7 +221,7 @@ export default function ManageTeam() {
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
-              <StaggerContainer as="tbody">
+              <StaggerContainer key={`${currentPage}-${roleFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((member) => (
                   <StaggerItem key={member.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                     <TableCell>
