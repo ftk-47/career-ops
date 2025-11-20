@@ -17,7 +17,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -32,7 +31,7 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    label: "Student Submissions",
+    label: "Submissions",
     href: "/student-submissions",
     icon: FileText,
   },
@@ -62,13 +61,13 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="border-r border-border bg-card">
-      <SidebarHeader className="border-b border-border p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg shadow-sm">
-            HC
+    <Sidebar collapsible="icon" className="border-r border-border bg-card">
+      <SidebarHeader className="border-b border-border p-6 group-data-[collapsible=icon]:p-4">
+        <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg shadow-sm shrink-0 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:text-base">
+            H
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="text-base font-semibold leading-tight">Hiration</span>
             <span className="text-xs text-muted-foreground leading-tight">
               Counsellor Admin
@@ -76,13 +75,10 @@ export function AppSidebar() {
           </div>
         </div>
       </SidebarHeader>
-      <SidebarContent className="px-3 py-4">
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-3 text-xs font-medium text-muted-foreground">
-            Navigation
-          </SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-1">
+      <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-2">
+        <SidebarGroup className="group-data-[collapsible=icon]:items-center">
+          <SidebarGroupContent className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center">
+            <SidebarMenu className="gap-1 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:items-center">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive =
@@ -91,15 +87,16 @@ export function AppSidebar() {
                     : pathname.startsWith(item.href);
 
                 return (
-                  <SidebarMenuItem key={item.href}>
+                  <SidebarMenuItem key={item.href} className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
                     <SidebarMenuButton 
                       asChild 
                       isActive={isActive}
-                      className="h-10 px-3 rounded-lg transition-all duration-200 hover:bg-accent data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-medium"
+                      tooltip={item.label}
+                      className="h-10 px-3 rounded-lg transition-all duration-200 hover:bg-accent data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-medium group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
                     >
-                      <Link href={item.href}>
-                        <Icon className="h-5 w-5" />
-                        <span className="text-sm">{item.label}</span>
+                      <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
+                        <Icon className="h-5 w-5 shrink-0" />
+                        <span className="text-sm group-data-[collapsible=icon]:hidden">{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -109,7 +106,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-border p-4">
+      <SidebarFooter className="border-t border-border p-4 group-data-[collapsible=icon]:hidden">
         <p className="text-xs text-muted-foreground text-center">
           © {new Date().getFullYear()} Hiration
         </p>
