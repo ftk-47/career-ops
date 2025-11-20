@@ -643,4 +643,195 @@
   .focus-ring {
     @apply focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:outline-none;
   }
+
+  /* ============================================
+     GRADIENT DESIGN SYSTEM
+     Theme-aware gradients that adapt to all styles
+     ============================================ */
+  
+  /* Primary CTA Gradient - Bold and noticeable */
+  .bg-gradient-primary {
+    background: linear-gradient(
+      135deg,
+      oklch(from var(--primary) l c h) 0%,
+      oklch(from var(--primary) calc(l * 1.1) calc(c * 0.9) calc(h + 10)) 100%
+    );
+  }
+  
+  .bg-gradient-primary:hover {
+    background: linear-gradient(
+      135deg,
+      oklch(from var(--primary) calc(l * 0.95) c h) 0%,
+      oklch(from var(--primary) calc(l * 1.05) calc(c * 0.9) calc(h + 10)) 100%
+    );
+  }
+  
+  /* Secondary Gradient - Softer alternative */
+  .bg-gradient-secondary {
+    background: linear-gradient(
+      135deg,
+      oklch(from var(--secondary) l c h) 0%,
+      oklch(from var(--accent) l c h) 100%
+    );
+  }
+  
+  /* Accent Gradient - For highlights and special elements */
+  .bg-gradient-accent {
+    background: linear-gradient(
+      135deg,
+      oklch(from var(--accent) l c h / 0.4) 0%,
+      oklch(from var(--primary) l c h / 0.2) 100%
+    );
+  }
+  
+  /* Subtle Background Gradient - Barely noticeable */
+  .bg-gradient-subtle {
+    background: linear-gradient(
+      to bottom,
+      oklch(from var(--muted) l c h / 0.3) 0%,
+      transparent 100%
+    );
+  }
+  
+  /* Subtle Horizontal Gradient */
+  .bg-gradient-subtle-horizontal {
+    background: linear-gradient(
+      to right,
+      oklch(from var(--primary) l c h / 0.15) 0%,
+      transparent 100%
+    );
+  }
+  
+  /* Radial Gradient - For section backgrounds */
+  .bg-gradient-radial {
+    background: radial-gradient(
+      circle at top left,
+      oklch(from var(--primary) l c h / 0.08) 0%,
+      transparent 50%
+    );
+  }
+  
+  .bg-gradient-radial-center {
+    background: radial-gradient(
+      circle at center,
+      oklch(from var(--primary) l c h / 0.1) 0%,
+      transparent 70%
+    );
+  }
+  
+  /* Glow Gradient - For icon containers */
+  .bg-gradient-glow {
+    background: radial-gradient(
+      circle at center,
+      oklch(from var(--primary) l c h / 0.2) 0%,
+      oklch(from var(--primary) l c h / 0.05) 50%,
+      transparent 100%
+    );
+  }
+  
+  /* Table Header Gradient - Very subtle */
+  .bg-gradient-table-header {
+    background: linear-gradient(
+      to right,
+      oklch(from var(--muted) l c h / 0.5) 0%,
+      oklch(from var(--muted) l c h / 0.3) 100%
+    );
+  }
+  
+  .dark .bg-gradient-table-header {
+    background: linear-gradient(
+      to right,
+      oklch(from var(--muted) l c h / 0.4) 0%,
+      oklch(from var(--muted) l c h / 0.2) 100%
+    );
+  }
+  
+  /* Gradient Borders */
+  .border-gradient {
+    position: relative;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+  }
+  
+  .border-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    margin: -1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      oklch(from var(--primary) l c h / 0.5) 0%,
+      oklch(from var(--accent) l c h / 0.3) 100%
+    );
+  }
+  
+  /* Hover Gradient Intensification */
+  .hover-gradient-intensify {
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-gradient-intensify:hover {
+    background: linear-gradient(
+      135deg,
+      oklch(from var(--primary) l c h / 0.15) 0%,
+      oklch(from var(--accent) l c h / 0.1) 100%
+    );
+  }
+  
+  /* Sidebar Active Gradient */
+  .sidebar-active-gradient {
+    background: linear-gradient(
+      to right,
+      oklch(from var(--primary) l c h / 0.15) 0%,
+      oklch(from var(--primary) l c h / 0.05) 50%,
+      transparent 100%
+    );
+  }
+  
+  /* Empty State Gradient */
+  .bg-gradient-empty-state {
+    background: radial-gradient(
+      ellipse at center,
+      oklch(from var(--accent) l c h / 0.1) 0%,
+      transparent 60%
+    );
+  }
+  
+  /* Card Gradient Background */
+  .bg-gradient-card {
+    background: linear-gradient(
+      135deg,
+      oklch(from var(--card) l c h) 0%,
+      oklch(from var(--muted) l c h / 0.3) 100%
+    );
+  }
+  
+  /* Hero Gradient - For page titles and hero sections */
+  .bg-gradient-hero {
+    background: radial-gradient(
+      ellipse 150% 100% at top center,
+      oklch(from var(--primary) l c h / 0.12) 0%,
+      oklch(from var(--accent) l c h / 0.06) 40%,
+      transparent 70%
+    );
+  }
+  
+  /* Gradient Text */
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      oklch(from var(--primary) l c h) 0%,
+      oklch(from var(--accent) l c h) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* Disabled Gradient - Flattened for disabled state */
+  .bg-gradient-disabled {
+    background: oklch(from var(--muted) l c h / 0.5);
+  }
 }
