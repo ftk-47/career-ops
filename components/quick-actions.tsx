@@ -1,0 +1,50 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LucideIcon } from "lucide-react";
+
+interface QuickAction {
+  label: string;
+  description: string;
+  icon: LucideIcon;
+  onClick: () => void;
+}
+
+interface QuickActionsProps {
+  actions: QuickAction[];
+}
+
+export function QuickActions({ actions }: QuickActionsProps) {
+  return (
+    <Card className="rounded-xl border border-border bg-card shadow-sm">
+      <CardHeader>
+        <CardTitle className="text-lg font-medium">Quick Actions</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {actions.map((action, index) => {
+          const Icon = action.icon;
+          return (
+            <Button
+              key={index}
+              variant="outline"
+              className="h-auto flex-col items-start gap-2 p-4 text-left hover:bg-accent"
+              onClick={action.onClick}
+            >
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                  <Icon className="h-4 w-4 text-primary" />
+                </div>
+                <span className="font-medium">{action.label}</span>
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {action.description}
+              </span>
+            </Button>
+          );
+        })}
+      </CardContent>
+    </Card>
+  );
+}
+

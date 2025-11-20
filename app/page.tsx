@@ -1,65 +1,241 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { MetricCard } from "@/components/metric-card";
+import { QuickActions } from "@/components/quick-actions";
+import { PageHeader } from "@/components/page-header";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  FileText,
+  Users,
+  GraduationCap,
+  UserCheck,
+  Calendar,
+  UserPlus,
+  AlertCircle,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+
+const recentActivity = [
+  { id: "1", student: "Alice Johnson", type: "Resume", status: "Pending", time: "2 hours ago" },
+  { id: "2", student: "Bob Smith", type: "Cover Letter", status: "In Review", time: "3 hours ago" },
+  { id: "3", student: "Carol Williams", type: "Interview", status: "Completed", time: "5 hours ago" },
+  { id: "4", student: "David Brown", type: "Resume", status: "Pending", time: "6 hours ago" },
+  { id: "5", student: "Emma Davis", type: "Resume", status: "Rejected", time: "8 hours ago" },
+  { id: "6", student: "Frank Miller", type: "Cover Letter", status: "In Review", time: "1 day ago" },
+  { id: "7", student: "Grace Wilson", type: "Interview", status: "Completed", time: "1 day ago" },
+  { id: "8", student: "Henry Moore", type: "Resume", status: "Pending", time: "2 days ago" },
+];
+
+const statusVariants: Record<string, "success" | "warning" | "error" | "info"> = {
+  Pending: "warning",
+  "In Review": "info",
+  Completed: "success",
+  Rejected: "error",
+};
+
+export default function Dashboard() {
+  const router = useRouter();
+  const [inviteSheetOpen, setInviteSheetOpen] = useState(false);
+  const [createCohortOpen, setCreateCohortOpen] = useState(false);
+  const [createInterviewOpen, setCreateInterviewOpen] = useState(false);
+
+  const stats = [
+    {
+      title: "Total Submissions",
+      value: "284",
+      description: "All time submissions",
+      icon: FileText,
+      trend: { value: 12.5, label: "from last month" },
+      onClick: () => router.push("/student-submissions"),
+    },
+    {
+      title: "Pending Reviews",
+      value: "42",
+      description: "Awaiting review",
+      icon: UserCheck,
+      trend: { value: -8.2, label: "from last week" },
+      onClick: () => router.push("/review-center"),
+    },
+    {
+      title: "Active Cohorts",
+      value: "12",
+      description: "Currently active",
+      icon: GraduationCap,
+      onClick: () => router.push("/manage-cohorts"),
+    },
+    {
+      title: "Team Members",
+      value: "18",
+      description: "Active reviewers",
+      icon: Users,
+      onClick: () => router.push("/manage-team"),
+    },
+    {
+      title: "Interviews Assigned Today",
+      value: "8",
+      description: "Due today",
+      icon: Calendar,
+      onClick: () => router.push("/manage-interviews"),
+    },
+  ];
+
+  const quickActions = [
+    {
+      label: "Invite Member",
+      description: "Add a new team member",
+      icon: UserPlus,
+      onClick: () => setInviteSheetOpen(true),
+    },
+    {
+      label: "Create Cohort",
+      description: "Start a new student cohort",
+      icon: GraduationCap,
+      onClick: () => setCreateCohortOpen(true),
+    },
+    {
+      label: "Create Interview",
+      description: "Set up interview template",
+      icon: Calendar,
+      onClick: () => setCreateInterviewOpen(true),
+    },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="flex flex-col min-h-screen">
+      <PageHeader
+        title="Dashboard"
+        description="Welcome back! Here's what's happening with your team."
+      />
+      <main className="flex-1 p-6 space-y-6 w-full">
+        {/* Metrics Row */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {stats.map((stat) => (
+            <MetricCard key={stat.title} {...stat} />
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Alert Section - Overdue Reviews */}
+        <Card className="border-l-4 border-l-warning bg-warning/5 rounded-xl shadow-sm">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-warning" />
+              <CardTitle className="text-base font-medium">Attention Needed</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              You have <span className="font-semibold text-foreground">5 overdue reviews</span> that require immediate attention.{" "}
+              <button
+                onClick={() => router.push("/review-center")}
+                className="text-primary hover:underline font-medium"
+              >
+                View all →
+              </button>
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions */}
+        <QuickActions actions={quickActions} />
+
+        {/* Recent Activity */}
+        <Card className="rounded-xl shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-lg font-medium">Recent Activity</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-lg border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Student</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Time</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentActivity.map((activity) => (
+                    <TableRow key={activity.id}>
+                      <TableCell className="font-medium">{activity.student}</TableCell>
+                      <TableCell className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        {activity.type}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={statusVariants[activity.status]}>
+                          {activity.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right text-sm text-muted-foreground">
+                        {activity.time}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
         </div>
+          </CardContent>
+        </Card>
       </main>
+
+      {/* Modals/Sheets */}
+      <Sheet open={inviteSheetOpen} onOpenChange={setInviteSheetOpen}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Invite Team Member</SheetTitle>
+            <SheetDescription>
+              This feature is coming soon. You&apos;ll be able to invite new team members to join your organization.
+            </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+
+      <Dialog open={createCohortOpen} onOpenChange={setCreateCohortOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Cohort</DialogTitle>
+            <DialogDescription>
+              This feature is coming soon. You&apos;ll be able to create new cohorts and assign students and reviewers.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={createInterviewOpen} onOpenChange={setCreateInterviewOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Interview</DialogTitle>
+            <DialogDescription>
+              This feature is coming soon. You&apos;ll be able to create and assign interview templates to students.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
