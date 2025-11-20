@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Leaf, Sparkles, Trees } from "lucide-react";
+import { Leaf, Sparkles, Trees, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Style = "autumn" | "lavender" | "meadow";
+type Style = "autumn" | "lavender" | "meadow" | "stripy";
 
 const styles = [
   {
@@ -33,6 +33,12 @@ const styles = [
     icon: Trees,
     description: "Fresh & vibrant",
   },
+  {
+    value: "stripy" as Style,
+    label: "Stripy",
+    icon: Zap,
+    description: "Bold & modern",
+  },
 ];
 
 export function StyleSelector() {
@@ -43,7 +49,7 @@ export function StyleSelector() {
     if (typeof window === "undefined") return "autumn";
     
     const savedStyle = localStorage.getItem("style") as Style | null;
-    if (savedStyle && (savedStyle === "autumn" || savedStyle === "lavender" || savedStyle === "meadow")) {
+    if (savedStyle && (savedStyle === "autumn" || savedStyle === "lavender" || savedStyle === "meadow" || savedStyle === "stripy")) {
       return savedStyle;
     }
     
@@ -54,7 +60,7 @@ export function StyleSelector() {
     const root = document.documentElement;
     
     // Remove all style classes
-    root.classList.remove("style-autumn", "style-lavender", "style-meadow");
+    root.classList.remove("style-autumn", "style-lavender", "style-meadow", "style-stripy");
     
     // Add the new style class
     root.classList.add(`style-${newStyle}`);

@@ -3,6 +3,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface PageHeaderProps {
   title: string;
@@ -24,10 +25,17 @@ export function PageHeader({
         className
       )}
     >
-      <SidebarTrigger />
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <SidebarTrigger />
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Toggle sidebar</p>
+        </TooltipContent>
+      </Tooltip>
       <div className="flex flex-1 items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+          <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
           {description && (
             <p className="text-sm text-muted-foreground">{description}</p>
           )}
