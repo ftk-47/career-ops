@@ -35,7 +35,7 @@ Added 20+ gradient CSS utility classes:
 - `bg-gradient-disabled` - Flattened disabled state
 
 All gradients are **theme-aware** and automatically adapt to:
-- 4 style themes (autumn, meadow, lavender, stripy)
+- 4 style themes (autumn, meadow, pastel, stripy)
 - Light and dark modes
 - Custom color schemes
 
@@ -332,7 +332,7 @@ Use the `.dark` selector for dark mode variations:
 ## 🧪 Testing Checklist
 
 ### Visual Testing
-- ✅ Check all 4 style themes (autumn, meadow, lavender, stripy)
+- ✅ Check all 4 style themes (autumn, meadow, pastel, stripy)
 - ✅ Test light and dark modes
 - ✅ Verify gradient visibility on different backgrounds
 - ✅ Check hover states and transitions

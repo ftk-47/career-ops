@@ -2,7 +2,7 @@
 
 ## Overview
 
-This gradient design system adds meaningful, tasteful gradient usage throughout the Hiration Counsellor Admin dashboard. All gradients are theme-aware and work seamlessly across all 4 style themes (autumn, meadow, lavender, stripy) in both light and dark modes.
+This gradient design system adds meaningful, tasteful gradient usage throughout the Hiration Counsellor Admin dashboard. All gradients are theme-aware and work seamlessly across all 4 style themes (autumn, meadow, pastel, stripy) in both light and dark modes.
 
 ## Design Philosophy
 

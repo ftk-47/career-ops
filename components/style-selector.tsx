@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Style = "autumn" | "lavender" | "meadow" | "stripy" | "ocean" | "forest" | "crimson" | "sunset" | "midnight" | "rose" | "cyberpunk" | "noir";
+type Style = "autumn" | "pastel" | "meadow" | "stripy" | "ocean" | "forest" | "crimson" | "sunset" | "midnight" | "rose" | "cyberpunk" | "noir";
 
 const styles = [
   {
@@ -22,8 +22,8 @@ const styles = [
     description: "Warm & earthy",
   },
   {
-    value: "lavender" as Style,
-    label: "Lavender",
+    value: "pastel" as Style,
+    label: "Pastel",
     icon: Sparkles,
     description: "Cool & elegant",
   },
@@ -97,7 +97,7 @@ export function StyleSelector() {
     if (typeof window === "undefined") return "meadow";
     
     const savedStyle = localStorage.getItem("style") as Style | null;
-    const validStyles: Style[] = ["autumn", "lavender", "meadow", "stripy", "ocean", "forest", "crimson", "sunset", "midnight", "rose", "cyberpunk", "noir"];
+    const validStyles: Style[] = ["autumn", "pastel", "meadow", "stripy", "ocean", "forest", "crimson", "sunset", "midnight", "rose", "cyberpunk", "noir"];
     if (savedStyle && validStyles.includes(savedStyle)) {
       return savedStyle;
     }
@@ -110,7 +110,7 @@ export function StyleSelector() {
     
     // Remove all style classes
     root.classList.remove(
-      "style-autumn", "style-lavender", "style-meadow", "style-stripy",
+      "style-autumn", "style-pastel", "style-meadow", "style-stripy",
       "style-ocean", "style-forest", "style-crimson", "style-sunset",
       "style-midnight", "style-rose", "style-cyberpunk", "style-noir"
     );

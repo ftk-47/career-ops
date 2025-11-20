@@ -544,7 +544,7 @@ All gradients use CSS custom properties from the active theme:
 - Gradients are more vibrant
 - Higher energy, nature-inspired
 
-**Lavender Theme (Cool & Elegant):**
+**Pastel Theme (Cool & Elegant):**
 - Primary: Purple-pink tones
 - Gradients are sophisticated
 - Elegant, professional feel

@@ -50,7 +50,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-// Lavender Style Fonts
+// Pastel Style Fonts
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
