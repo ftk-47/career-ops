@@ -45,7 +45,7 @@ export function PageHeader({
             {/* Glow behind title */}
             <div className="absolute -inset-2 bg-gradient-glow opacity-30 blur-xl pointer-events-none" />
             <div className="relative">
-              <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
+              <h1 className="text-lg font-semibold tracking-tight">{title}</h1>
               {description && (
                 <p className="text-sm text-muted-foreground">{description}</p>
               )}
