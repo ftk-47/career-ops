@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { 
-  Poppins, 
-  Libre_Baskerville, 
+import {
+  Poppins,
+  Libre_Baskerville,
   IBM_Plex_Mono,
   Inter,
   Source_Serif_4,
@@ -234,7 +234,9 @@ export default function RootLayout({
           <div className="flex min-h-screen w-full bg-background">
             <AppSidebar />
             <SidebarInset className="bg-muted/20">
-              <PageWrapper>{children}</PageWrapper>
+              {/* <PageWrapper> */}
+              {children}
+              {/* </PageWrapper> */}
             </SidebarInset>
           </div>
         </SidebarProvider>
