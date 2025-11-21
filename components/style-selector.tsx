@@ -97,30 +97,30 @@ const styles = [
 
 export function StyleSelector() {
   const [mounted, setMounted] = useState(false);
-  
+
   // Lazy initialization - only runs once on mount
   const [style, setStyle] = useState<Style>(() => {
-    if (typeof window === "undefined") return "meadow";
-    
+    if (typeof window === "undefined") return "autumn";
+
     const savedStyle = localStorage.getItem("style") as Style | null;
     const validStyles: Style[] = ["autumn", "pastel", "meadow", "stripy", "ocean", "forest", "crimson", "sunset", "midnight", "rose", "cyberpunk", "noir", "hiration"];
     if (savedStyle && validStyles.includes(savedStyle)) {
       return savedStyle;
     }
-    
-    return "meadow";
+
+    return "autumn";
   });
 
   const applyStyle = (newStyle: Style) => {
     const root = document.documentElement;
-    
+
     // Remove all style classes
     root.classList.remove(
       "style-autumn", "style-pastel", "style-meadow", "style-stripy",
       "style-ocean", "style-forest", "style-crimson", "style-sunset",
       "style-midnight", "style-rose", "style-cyberpunk", "style-noir", "style-hiration"
     );
-    
+
     // Add the new style class
     root.classList.add(`style-${newStyle}`);
   };
@@ -169,14 +169,13 @@ export function StyleSelector() {
         {styles.map((styleOption) => {
           const Icon = styleOption.icon;
           const isActive = style === styleOption.value;
-          
+
           return (
             <DropdownMenuItem
               key={styleOption.value}
               onClick={() => changeStyle(styleOption.value)}
-              className={`cursor-pointer mt-0.5 ${
-                isActive ? "bg-accent" : ""
-              }`}
+              className={`cursor-pointer mt-0.5 ${isActive ? "bg-accent" : ""
+                }`}
             >
               <div className="flex items-center gap-3 w-full">
                 <Icon className={`h-4 w-4 ${isActive ? "text-primary" : ""}`} />
