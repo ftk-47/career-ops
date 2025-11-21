@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Style = "autumn" | "pastel" | "meadow" | "stripy" | "ocean" | "forest" | "crimson" | "sunset" | "midnight" | "rose" | "cyberpunk" | "noir";
+type Style = "autumn" | "pastel" | "meadow" | "stripy" | "ocean" | "forest" | "crimson" | "sunset" | "midnight" | "rose" | "cyberpunk" | "noir" | "hiration";
 
 const styles = [
   {
@@ -87,6 +87,12 @@ const styles = [
     icon: Film,
     description: "Black & white",
   },
+  {
+    value: "hiration" as Style,
+    label: "Hiration",
+    icon: Sparkles,
+    description: "Brand colors",
+  },
 ];
 
 export function StyleSelector() {
@@ -97,7 +103,7 @@ export function StyleSelector() {
     if (typeof window === "undefined") return "meadow";
     
     const savedStyle = localStorage.getItem("style") as Style | null;
-    const validStyles: Style[] = ["autumn", "pastel", "meadow", "stripy", "ocean", "forest", "crimson", "sunset", "midnight", "rose", "cyberpunk", "noir"];
+    const validStyles: Style[] = ["autumn", "pastel", "meadow", "stripy", "ocean", "forest", "crimson", "sunset", "midnight", "rose", "cyberpunk", "noir", "hiration"];
     if (savedStyle && validStyles.includes(savedStyle)) {
       return savedStyle;
     }
@@ -112,7 +118,7 @@ export function StyleSelector() {
     root.classList.remove(
       "style-autumn", "style-pastel", "style-meadow", "style-stripy",
       "style-ocean", "style-forest", "style-crimson", "style-sunset",
-      "style-midnight", "style-rose", "style-cyberpunk", "style-noir"
+      "style-midnight", "style-rose", "style-cyberpunk", "style-noir", "style-hiration"
     );
     
     // Add the new style class
