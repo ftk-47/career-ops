@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sparkles, Trees } from "lucide-react";
+import { Sparkles, Trees, Twitter, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Style = "mercel";
+type Style = "mercel" | "chirp" | "linear";
 
 const styles = [
   {
@@ -21,6 +21,20 @@ const styles = [
     icon: Sparkles,
     description: "Minimalist design",
     primaryColor: "oklch(0 0 0)", // Black in light mode
+  },
+  {
+    value: "chirp" as Style,
+    label: "Chirp",
+    icon: Twitter,
+    description: "Friendly & social",
+    primaryColor: "oklch(0.60 0.20 240)", // Twitter blue
+  },
+  {
+    value: "linear" as Style,
+    label: "Linear",
+    icon: Zap,
+    description: "Sharp & precise",
+    primaryColor: "oklch(0.57 0.18 270)", // Linear purple
   },
 ];
 
@@ -32,7 +46,7 @@ export function StyleSelector() {
     if (typeof window === "undefined") return "mercel";
 
     const savedStyle = localStorage.getItem("style") as Style | null;
-    if (savedStyle === "mercel") {
+    if (savedStyle === "mercel" || savedStyle === "chirp" || savedStyle === "linear") {
       return savedStyle;
     }
 
@@ -43,7 +57,7 @@ export function StyleSelector() {
     const root = document.documentElement;
 
     // Remove all style classes
-    root.classList.remove("style-mercel");
+    root.classList.remove("style-mercel", "style-chirp", "style-linear");
 
     // Add the new style class
     root.classList.add(`style-${newStyle}`);

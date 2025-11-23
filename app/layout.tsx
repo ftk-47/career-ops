@@ -30,7 +30,7 @@ export default function RootLayout({
             __html: `
               try {
                 const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                const style = localStorage.getItem('style') || 'autumn';
+                const style = localStorage.getItem('style') || 'mercel';
                 
                 // Apply style class
                 document.documentElement.classList.add('style-' + style);
