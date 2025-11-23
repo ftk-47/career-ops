@@ -124,6 +124,11 @@ export function StyleSelector() {
         >
           {currentStyle && (
             <>
+              <div 
+                className="h-4 w-4 rounded-md border border-border shrink-0"
+                style={{ backgroundColor: currentStyle.primaryColor }}
+                title={`Primary color: ${currentStyle.primaryColor}`}
+              />
               <currentStyle.icon className="h-4 w-4" />
               <span className="text-sm font-medium">{currentStyle.label}</span>
             </>
