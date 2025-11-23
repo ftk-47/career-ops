@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Calendar,
+  Database,
   FileText,
   GraduationCap,
   LayoutDashboard,
@@ -37,6 +38,11 @@ const navItems = [
     icon: FileText,
   },
   {
+    label: "Student Portfolio",
+    href: "/student-portfolio",
+    icon: Database,
+  },
+  {
     label: "Review Center",
     href: "/review-center",
     icon: ListChecks,
@@ -64,12 +70,12 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-border bg-card z-20">
       <SidebarHeader className="border-b border-border p-3 group-data-[collapsible=icon]:p-4">
-        <motion.div 
+        <motion.div
           className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0"
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.15 }}
         >
-          <motion.div 
+          <motion.div
             className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-lg shadow-md shrink-0 group-data-[collapsible=icon]:h-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:text-base"
             whileHover={{ scale: 1.05, rotate: 5 }}
             transition={{ duration: 0.2 }}
@@ -103,8 +109,8 @@ export function AppSidebar() {
                       whileTap={{ scale: 0.98 }}
                       transition={{ type: "spring", stiffness: 400, damping: 17 }}
                     >
-                      <SidebarMenuButton 
-                        asChild 
+                      <SidebarMenuButton
+                        asChild
                         isActive={isActive}
                         tooltip={item.label}
                         className="h-10 px-3 rounded-xl transition-all duration-200 hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
