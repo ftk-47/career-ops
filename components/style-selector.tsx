@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Flame, Gem, Globe, Sparkles, Snowflake, Trees, Twitter, Zap } from "lucide-react";
+import { FileText, Flame, Gem, Globe, Sparkles, Snowflake, Trees, Twitter, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Style = "mercel" | "chirp" | "linear" | "winter" | "ggm" | "nexus" | "horizon";
+type Style = "mercel" | "chirp" | "linear" | "winter" | "ggm" | "nexus" | "horizon" | "notion";
 
 const styles = [
   {
@@ -64,6 +64,13 @@ const styles = [
     description: "Modern & sleek",
     primaryColor: "#0099ff", // Bright blue
   },
+  {
+    value: "notion" as Style,
+    label: "Noted",
+    icon: FileText,
+    description: "Clean & minimal",
+    primaryColor: "oklch(0.23 0.01 60)", // Notion's neutral gray
+  },
 ];
 
 export function StyleSelector() {
@@ -74,7 +81,7 @@ export function StyleSelector() {
     if (typeof window === "undefined") return "horizon";
 
     const savedStyle = localStorage.getItem("style") as Style | null;
-    if (savedStyle === "mercel" || savedStyle === "chirp" || savedStyle === "linear" || savedStyle === "winter" || savedStyle === "ggm" || savedStyle === "nexus" || savedStyle === "horizon") {
+    if (savedStyle === "mercel" || savedStyle === "chirp" || savedStyle === "linear" || savedStyle === "winter" || savedStyle === "ggm" || savedStyle === "nexus" || savedStyle === "horizon" || savedStyle === "notion") {
       return savedStyle;
     }
 
@@ -85,7 +92,7 @@ export function StyleSelector() {
     const root = document.documentElement;
 
     // Remove all style classes
-    root.classList.remove("style-mercel", "style-chirp", "style-linear", "style-winter", "style-ggm", "style-nexus", "style-horizon");
+    root.classList.remove("style-mercel", "style-chirp", "style-linear", "style-winter", "style-ggm", "style-nexus", "style-horizon", "style-notion");
 
     // Add the new style class
     root.classList.add(`style-${newStyle}`);
