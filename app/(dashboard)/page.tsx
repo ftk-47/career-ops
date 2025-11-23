@@ -292,8 +292,8 @@ export default function Dashboard() {
       trend: "+12%",
       trendLabel: "from last month",
       icon: Users,
-      iconBg: "bg-blue-100",
-      iconColor: "text-blue-600",
+      iconBg: "bg-primary/10",
+      iconColor: "text-primary",
       href: "/manage-students",
     },
     {
@@ -301,8 +301,8 @@ export default function Dashboard() {
       value: "3,850",
       subtitle: "ATS checks passed",
       icon: Zap,
-      iconBg: "bg-emerald-100",
-      iconColor: "text-emerald-600",
+      iconBg: "bg-emerald-500/10",
+      iconColor: "text-emerald-600 dark:text-emerald-500",
       href: "/student-portfolio",
     },
     {
@@ -310,8 +310,8 @@ export default function Dashboard() {
       value: "14",
       subtitle: "Requires feedback",
       icon: Inbox,
-      iconBg: "bg-purple-100",
-      iconColor: "text-purple-600",
+      iconBg: "bg-purple-500/10",
+      iconColor: "text-purple-600 dark:text-purple-500",
       href: "/student-submissions",
     },
     {
@@ -319,8 +319,8 @@ export default function Dashboard() {
       value: "8.4/10",
       subtitle: "Student self-reported",
       icon: TrendingUp,
-      iconBg: "bg-orange-100",
-      iconColor: "text-orange-600",
+      iconBg: "bg-orange-500/10",
+      iconColor: "text-orange-600 dark:text-orange-500",
       href: "/student-portfolio",
     },
   ];
@@ -387,11 +387,11 @@ export default function Dashboard() {
                             <p className="text-xs text-muted-foreground">{stat.trendLabel}</p>
                           )}
                         </div>
-                        <div className={`p-3 rounded-lg ${stat.iconBg} transition-transform group-hover:scale-110`}>
-                          <stat.icon className={`h-5 w-5 ${stat.iconColor}`} />
+                        <div className={`p-2.5 rounded-lg ${stat.iconBg} transition-transform group-hover:scale-110`}>
+                          <stat.icon className={`h-4.5 w-4.5 ${stat.iconColor}`} />
                         </div>
                       </div>
-                      <div className="absolute bottom-4 right-6 text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                      <div className="absolute bottom-6 right-6 text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
                         View Details
                         <ArrowUpRight className="h-3 w-3" />
                       </div>
@@ -481,7 +481,7 @@ export default function Dashboard() {
                           className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                         >
                           <Avatar className="h-10 w-10">
-                            <AvatarFallback className="bg-muted text-sm font-medium">
+                            <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
                               {student.initials}
                             </AvatarFallback>
                           </Avatar>
@@ -493,8 +493,8 @@ export default function Dashboard() {
                               {student.major}
                             </p>
                             <Badge
-                              variant="outline"
-                              className="bg-amber-50 text-amber-700 border-amber-200 text-xs"
+                              variant="warning"
+                              className="text-xs"
                             >
                               {student.issue}
                             </Badge>
@@ -594,8 +594,8 @@ export default function Dashboard() {
                               </TableCell>
                               <TableCell>
                                 <Badge
-                                  variant="outline"
-                                  className="bg-emerald-50 text-emerald-700 border-emerald-200 gap-1"
+                                  variant="success"
+                                  className="gap-1"
                                 >
                                   <CheckCircle2 className="h-3 w-3" />
                                   {review.aiScore}%
