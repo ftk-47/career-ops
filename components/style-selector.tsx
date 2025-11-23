@@ -71,14 +71,14 @@ export function StyleSelector() {
 
   // Lazy initialization - only runs once on mount
   const [style, setStyle] = useState<Style>(() => {
-    if (typeof window === "undefined") return "mercel";
+    if (typeof window === "undefined") return "horizon";
 
     const savedStyle = localStorage.getItem("style") as Style | null;
     if (savedStyle === "mercel" || savedStyle === "chirp" || savedStyle === "linear" || savedStyle === "winter" || savedStyle === "ggm" || savedStyle === "nexus" || savedStyle === "horizon") {
       return savedStyle;
     }
 
-    return "mercel";
+    return "horizon";
   });
 
   const applyStyle = (newStyle: Style) => {

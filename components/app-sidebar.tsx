@@ -148,7 +148,7 @@ export function AppSidebar() {
           <div className="flex flex-col group-data-[collapsible=icon]:hidden">
             <span className="text-base font-bold leading-tight tracking-tight">Hiration</span>
             <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
-              Admin Dashboard
+              Control Center
             </span>
           </div>
         </motion.div>
