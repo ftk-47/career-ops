@@ -238,13 +238,13 @@ export default function StudentPortfolio() {
                                 setSearchTerm(e.target.value);
                                 setCurrentPage(1);
                             }}
-                            className="pl-10"
+                            className="pl-10 text-base"
                         />
                     </div>
                     <div className="flex gap-2">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="text-sm">
                                     <Filter className="mr-2 h-4 w-4" />
                                     Filters
                                     {activeFiltersCount > 0 && (

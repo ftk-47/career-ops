@@ -171,7 +171,7 @@ export default function ManageTeam() {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="pl-10"
+              className="pl-10 text-base"
             />
           </div>
           <Tabs 
