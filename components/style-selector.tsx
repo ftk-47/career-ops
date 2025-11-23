@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sparkles, Trees, Twitter, Zap } from "lucide-react";
+import { Gem, Sparkles, Snowflake, Trees, Twitter, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Style = "mercel" | "chirp" | "linear";
+type Style = "mercel" | "chirp" | "linear" | "winter" | "ggm";
 
 const styles = [
   {
@@ -36,6 +36,20 @@ const styles = [
     description: "Sharp & precise",
     primaryColor: "oklch(0.57 0.18 270)", // Linear purple
   },
+  {
+    value: "winter" as Style,
+    label: "Winter",
+    icon: Snowflake,
+    description: "Cool & crisp",
+    primaryColor: "hsl(211, 100%, 50%)", // Winter blue
+  },
+  {
+    value: "ggm" as Style,
+    label: "GGM",
+    icon: Gem,
+    description: "Modern & elegant",
+    primaryColor: "oklch(0.488 0.243 264.376)", // Purple
+  },
 ];
 
 export function StyleSelector() {
@@ -46,7 +60,7 @@ export function StyleSelector() {
     if (typeof window === "undefined") return "mercel";
 
     const savedStyle = localStorage.getItem("style") as Style | null;
-    if (savedStyle === "mercel" || savedStyle === "chirp" || savedStyle === "linear") {
+    if (savedStyle === "mercel" || savedStyle === "chirp" || savedStyle === "linear" || savedStyle === "winter" || savedStyle === "ggm") {
       return savedStyle;
     }
 
@@ -57,7 +71,7 @@ export function StyleSelector() {
     const root = document.documentElement;
 
     // Remove all style classes
-    root.classList.remove("style-mercel", "style-chirp", "style-linear");
+    root.classList.remove("style-mercel", "style-chirp", "style-linear", "style-winter", "style-ggm");
 
     // Add the new style class
     root.classList.add(`style-${newStyle}`);

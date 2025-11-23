@@ -326,7 +326,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex flex-col w-full min-h-screen bg-slate-50/50">
+    <div className="flex flex-col w-full min-h-screen ">
       <PageHeader
         title="Dashboard"
         // description="Here is the program health for Fall 2025 Cohort."

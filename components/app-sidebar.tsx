@@ -113,20 +113,20 @@ export function AppSidebar() {
                         asChild
                         isActive={isActive}
                         tooltip={item.label}
-                        className="h-10 px-3 rounded-xl transition-all duration-200 hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
+                        className="h-10 px-3 transition-all duration-200 hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
                       >
                         <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
                           <Icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-accent-foreground"}`} />
                           <span className="text-sm ml-3 group-data-[collapsible=icon]:hidden">{item.label}</span>
-                          {isActive && (
+                          {/* {isActive && (
                             <motion.div
                               layoutId="activeIndicator"
-                              className="absolute left-0 w-1 h-6 bg-primary rounded-r-full group-data-[collapsible=icon]:hidden"
+                              className="absolute left-0 w-1 h-7 bg-primary  group-data-[collapsible=icon]:hidden"
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
                             />
-                          )}
+                          )} */}
                         </Link>
                       </SidebarMenuButton>
                     </motion.div>
