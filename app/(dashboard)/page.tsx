@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { AnimatedCard } from "@/components/motion/animated-card";
 import { FadeIn } from "@/components/motion/fade-in";
@@ -277,12 +277,17 @@ export default function Dashboard() {
   const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
   
   // Banner dismissal state with localStorage
-  const [isBannerDismissed, setIsBannerDismissed] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("demo-banner-dismissed") === "true";
+  const [isBannerDismissed, setIsBannerDismissed] = useState(false);
+  
+  // Check localStorage after mount to avoid hydration mismatch
+  useEffect(() => {
+    const dismissed = localStorage.getItem("demo-banner-dismissed") === "true";
+    if (dismissed) {
+      // Necessary for hydration: update state after mount to match localStorage
+      // eslint-disable-next-line
+      setIsBannerDismissed(true);
     }
-    return false;
-  });
+  }, []);
   
   // Time slots from 9 AM to 5 PM in 1-hour intervals
   const timeSlots = [
@@ -416,34 +421,38 @@ export default function Dashboard() {
 
       {/* Demo Banner */}
       {!isBannerDismissed && (
-        <div className="w-full border-b border-border bg-primary/5">
-          <div className="max-w-full px-4 md:px-6 xl:px-8 py-3">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <Info className="h-4 w-4 text-primary shrink-0" />
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                  <span className="text-sm font-medium">You&apos;re Viewing a Demo</span>
-                  <span className="text-sm text-muted-foreground">
-                    To get a personalized consultation and unlock full features, book a session with our experts.
-                  </span>
+        <div className="w-full px-4 md:px-6 xl:px-8 py-4 bg-linear-to-r from-primary/10 via-primary/5 to-transparent">
+          <div className="max-w-full rounded-lg border border-primary/30 bg-card shadow-sm">
+            <div className="px-4 md:px-6 py-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                    <Info className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                    <span className="text-sm font-semibold">You&apos;re Viewing a Demo</span>
+                    <span className="text-sm text-muted-foreground">
+                      To get a personalized consultation and unlock full features, book a session with our experts.
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <Button 
-                  size="lg" 
-                  onClick={() => setIsBookingOpen(true)}
-                  className="whitespace-nowrap"
-                >
-                  Book Consultation
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="ghost"
-                  onClick={handleDismissBanner}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button 
+                    size="lg" 
+                    onClick={() => setIsBookingOpen(true)}
+                    className="whitespace-nowrap"
+                  >
+                    Book Consultation
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost"
+                    onClick={handleDismissBanner}
+                    className="h-10 w-10 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
