@@ -50,7 +50,7 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    label: "Student Submissions",
+    label: "Submissions",
     href: "/student-submissions",
     icon: FileText,
   },
@@ -65,17 +65,17 @@ const navItems = [
     icon: ListChecks,
   },
   {
-    label: "Manage Team",
+    label: "Team",
     href: "/manage-team",
     icon: Users,
   },
   {
-    label: "Manage Cohorts",
+    label: "Cohorts",
     href: "/manage-cohorts",
     icon: GraduationCap,
   },
   {
-    label: "Manage Interviews",
+    label: "Interviews",
     href: "/manage-interviews",
     icon: Calendar,
   },
