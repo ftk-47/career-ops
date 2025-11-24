@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { AnimatedCard } from "@/components/motion/animated-card";
 import { FadeIn } from "@/components/motion/fade-in";
 import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
@@ -444,10 +445,18 @@ export default function Dashboard() {
         description="Manage your career operations effortlessly."
         actions={
           <div className="flex items-center gap-2">
-            <Button variant="outline" className="gap-2">
-              <ExternalLink className="h-4 w-4" />
-              View as Student
-            </Button>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
+              <Button 
+                className="gap-2 bg-linear-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-md hover:shadow-lg transition-all duration-200"
+              >
+                <ExternalLink className="h-4 w-4" />
+                View as Student
+              </Button>
+            </motion.div>
             <StyleSelector />
             <ThemeSelector />
           </div>
