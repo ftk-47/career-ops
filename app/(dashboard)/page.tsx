@@ -48,6 +48,12 @@ import {
   YAxis,
 } from "recharts";
 import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import {
   Users,
   Zap,
   Inbox,
@@ -61,6 +67,12 @@ import {
   Eye,
   FileEdit,
   Video,
+  X,
+  Info,
+  Calendar,
+  UserRound,
+  ChevronLeft,
+  Check,
 } from "lucide-react";
 
 // Mock Data
@@ -256,6 +268,65 @@ export default function Dashboard() {
   const [selectedCohort, setSelectedCohort] = useState("cs-2025");
   const [activeTab, setActiveTab] = useState("all");
   const [selectedReviewIds, setSelectedReviewIds] = useState<Set<string>>(new Set());
+  
+  // Booking modal state
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [bookingStep, setBookingStep] = useState(1);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
+  
+  // Banner dismissal state with localStorage
+  const [isBannerDismissed, setIsBannerDismissed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("demo-banner-dismissed") === "true";
+    }
+    return false;
+  });
+  
+  // Time slots from 9 AM to 5 PM in 1-hour intervals
+  const timeSlots = [
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+  ];
+  
+  // Reset modal state when closed
+  const handleCloseModal = () => {
+    setIsBookingOpen(false);
+    setTimeout(() => {
+      setBookingStep(1);
+      setSelectedDate(undefined);
+      setSelectedTime(undefined);
+    }, 200);
+  };
+
+  // Get dialog title based on current step
+  const getDialogTitle = () => {
+    switch (bookingStep) {
+      case 1:
+        return "Select a Date";
+      case 2:
+        return "Select a Time";
+      case 3:
+        return "Confirm Your Booking";
+      case 4:
+        return "Thank you for booking!";
+      default:
+        return "Book Consultation";
+    }
+  };
+  
+  // Handle banner dismissal
+  const handleDismissBanner = () => {
+    setIsBannerDismissed(true);
+    localStorage.setItem("demo-banner-dismissed", "true");
+  };
 
   // Filter reviews by tab
   const filteredReviews = recentReviews.filter((review) => {
@@ -329,7 +400,7 @@ export default function Dashboard() {
     <div className="flex flex-col w-full min-h-screen ">
       <PageHeader
         title="Dashboard"
-        // description="Here is the program health for Fall 2025 Cohort."
+        description="Manage your career operations effortlessly."
         actions={
           <div className="flex items-center gap-2">
             <StyleSelector />
@@ -337,6 +408,42 @@ export default function Dashboard() {
           </div>
         }
       />
+
+      {/* Demo Banner */}
+      {!isBannerDismissed && (
+        <div className="w-full border-b border-border bg-primary/5">
+          <div className="max-w-full px-4 md:px-6 xl:px-8 py-3">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <Info className="h-4 w-4 text-primary shrink-0" />
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                  <span className="text-sm font-medium">You&apos;re Viewing a Demo</span>
+                  <span className="text-sm text-muted-foreground">
+                    To get a personalized consultation and unlock full features, book a session with our experts.
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Button 
+                  size="sm" 
+                  onClick={() => setIsBookingOpen(true)}
+                  className="whitespace-nowrap"
+                >
+                  Book Consultation
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="ghost"
+                  onClick={handleDismissBanner}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="flex-1 w-full max-w-full overflow-x-hidden p-4 md:p-6 xl:p-8 space-y-6">
@@ -355,6 +462,7 @@ export default function Dashboard() {
             </Button>
           </div>
         </div>
+
         {/* Impact Stats Row */}
         <div className="space-y-3 max-w-full">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
@@ -642,6 +750,151 @@ export default function Dashboard() {
           </Card>
         </FadeIn>
       </main>
+
+      {/* Booking Modal */}
+      <Dialog open={isBookingOpen} onOpenChange={handleCloseModal}>
+        <DialogContent className="max-w-md">
+          <DialogTitle className={bookingStep === 4 ? "text-center text-xl" : ""}>
+            {getDialogTitle()}
+          </DialogTitle>
+          {bookingStep === 1 && (
+            <p className="text-sm text-muted-foreground mt-2 mb-2">
+              Select a date to book your consultation
+            </p>
+          )}
+          {bookingStep === 2 && selectedDate && (
+            <p className="text-sm text-muted-foreground mt-2">
+              {selectedDate.toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          )}
+
+          {/* Step 1: Calendar Selection */}
+          {bookingStep === 1 && (
+            <div className="flex flex-col items-center gap-4">
+              <CalendarComponent
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => {
+                  setSelectedDate(date);
+                  if (date) {
+                    setBookingStep(2);
+                  }
+                }}
+                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                className="rounded-md border"
+              />
+            </div>
+          )}
+
+          {/* Step 2: Time Slot Selection */}
+          {bookingStep === 2 && selectedDate && (
+            <>
+              <div className="grid grid-cols-3 gap-2 py-4">
+                {timeSlots.map((time) => (
+                  <Button
+                    key={time}
+                    variant={selectedTime === time ? "default" : "outline"}
+                    onClick={() => {
+                      setSelectedTime(time);
+                      setBookingStep(3);
+                    }}
+                    className="w-full"
+                  >
+                    {time}
+                  </Button>
+                ))}
+              </div>
+              <Button
+                variant="ghost"
+                onClick={() => setBookingStep(1)}
+                className="w-full"
+              >
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Back to Calendar
+              </Button>
+            </>
+          )}
+
+          {/* Step 3: Booking Confirmation */}
+          {bookingStep === 3 && selectedDate && selectedTime && (
+            <div className="flex flex-col gap-4 py-4">
+              <div className="rounded-lg border p-4 space-y-3 bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">
+                    {selectedDate.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">{selectedTime}</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setBookingStep(2)}
+                  className="flex-1"
+                >
+                  <ChevronLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+                <Button
+                  onClick={() => setBookingStep(4)}
+                  className="flex-1"
+                >
+                  Confirm Booking
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Thank You Message */}
+          {bookingStep === 4 && selectedDate && selectedTime && (
+            <div className="flex flex-col items-center gap-4 py-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <Check className="h-8 w-8 text-primary" />
+              </div>
+              <p className="text-sm text-muted-foreground text-center">
+                Your consultation has been successfully scheduled.
+              </p>
+              <div className="rounded-lg border p-4 space-y-3 bg-muted/30 w-full">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">
+                    {selectedDate.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">{selectedTime}</span>
+                </div>
+              </div>
+              <Button
+                onClick={handleCloseModal}
+                className="w-full"
+              >
+                Close
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
