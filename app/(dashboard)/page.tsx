@@ -74,6 +74,9 @@ import {
   ChevronLeft,
   Check,
   ExternalLink,
+  UserPlus,
+  ClipboardList,
+  GraduationCap,
 } from "lucide-react";
 
 // Mock Data
@@ -361,6 +364,38 @@ export default function Dashboard() {
     }
   };
 
+  // Quick Actions Data
+  const quickActions = [
+    {
+      title: "Invite Member",
+      description: "Add a new team member",
+      icon: UserPlus,
+      iconBg: "bg-cyan-500/10",
+      iconColor: "text-cyan-600 dark:text-cyan-500",
+    },
+    {
+      title: "Create Cohort",
+      description: "Start a new student cohort",
+      icon: GraduationCap,
+      iconBg: "bg-cyan-500/10",
+      iconColor: "text-cyan-600 dark:text-cyan-500",
+    },
+    {
+      title: "Create Interview",
+      description: "Set up interview template",
+      icon: Calendar,
+      iconBg: "bg-cyan-500/10",
+      iconColor: "text-cyan-600 dark:text-cyan-500",
+    },
+    {
+      title: "Review Submission",
+      description: "Start reviewing pending items",
+      icon: ClipboardList,
+      iconBg: "bg-cyan-500/10",
+      iconColor: "text-cyan-600 dark:text-cyan-500",
+    },
+  ];
+
   // Impact Stats Data
   const impactStats = [
     {
@@ -474,6 +509,30 @@ export default function Dashboard() {
               <Plus className="h-4 w-4" />
               Invite Students
             </Button> */}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-3 max-w-full">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            Quick Actions
+          </h2>
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
+            {quickActions.map((action, index) => (
+              <AnimatedCard key={action.title} delay={index * 0.05}>
+                <Card className="rounded-xl shadow-sm py-0 transition-all duration-200 hover:shadow-lg hover:scale-[1.03] cursor-pointer group relative overflow-hidden bg-linear-to-br from-cyan-500/5 to-transparent border-cyan-500/20">
+                  <CardContent className="p-5 flex flex-col items-center text-center space-y-3">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${action.iconBg} transition-transform group-hover:scale-110`}>
+                      <action.icon className={`h-5 w-5 ${action.iconColor}`} />
+                    </div>
+                    <div className="space-y-0.5">
+                      <h3 className="font-semibold text-sm">{action.title}</h3>
+                      <p className="text-xs text-muted-foreground">{action.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </AnimatedCard>
+            ))}
           </div>
         </div>
 
