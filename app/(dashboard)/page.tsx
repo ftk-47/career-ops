@@ -294,7 +294,7 @@ export default function Dashboard() {
       icon: Users,
       iconBg: "bg-primary/10",
       iconColor: "text-primary",
-      href: "/manage-students",
+      href: "/student-portfolio",
     },
     {
       title: "AI-Optimized Resumes",
