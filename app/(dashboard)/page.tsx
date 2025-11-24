@@ -73,6 +73,7 @@ import {
   UserRound,
   ChevronLeft,
   Check,
+  ExternalLink,
 } from "lucide-react";
 
 // Mock Data
@@ -403,6 +404,10 @@ export default function Dashboard() {
         description="Manage your career operations effortlessly."
         actions={
           <div className="flex items-center gap-2">
+            <Button variant="outline" className="gap-2">
+              <ExternalLink className="h-4 w-4" />
+              View as Student
+            </Button>
             <StyleSelector />
             <ThemeSelector />
           </div>
