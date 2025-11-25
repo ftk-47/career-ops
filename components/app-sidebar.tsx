@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const navItems = [
   {
@@ -84,6 +85,7 @@ const navItems = [
     label: "Coaching Library",
     href: "/coaching-library",
     icon: BookOpen,
+    beta: true,
   },
 ];
 
@@ -187,6 +189,11 @@ export function AppSidebar() {
                         <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
                           <Icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-accent-foreground"}`} />
                           <span className="text-sm ml-3 group-data-[collapsible=icon]:hidden">{item.label}</span>
+                          {item.beta && (
+                            <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 h-4 group-data-[collapsible=icon]:hidden">
+                              Beta
+                            </Badge>
+                          )}
                           {/* {isActive && (
                             <motion.div
                               layoutId="activeIndicator"
