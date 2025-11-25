@@ -443,20 +443,24 @@ export function CounselorTools() {
           {selectedTool && (
             <div className="flex flex-col h-full">
               {/* Enhanced Header with Colored Background */}
-              <div className={`px-5 py-4 border-b ${selectedTool.colorClasses.headerBg}`}>
-                <DialogTitle className={`flex items-center gap-2.5 text-lg font-bold ${selectedTool.colorClasses.iconColor}`}>
+              <div className={`px-6 py-5 border-b ${selectedTool.colorClasses.headerBg}`}>
+                <div className="flex gap-4">
                   <div
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${selectedTool.colorClasses.iconBg} shadow-sm`}
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${selectedTool.colorClasses.iconBg} shadow-sm shrink-0`}
                   >
                     <selectedTool.icon
-                      className={`h-4 w-4 ${selectedTool.colorClasses.iconColor}`}
+                      className={`h-6 w-6 ${selectedTool.colorClasses.iconColor}`}
                     />
                   </div>
-                  {selectedTool.title}
-                </DialogTitle>
-                <p className="text-sm text-muted-foreground  ml-[46px]">
-                  {selectedTool.modalContent.shortDescription}
-                </p>
+                  <div className="flex flex-col justify-center gap-1 min-w-0">
+                    <DialogTitle className="text-xl font-semibold text-foreground leading-tight">
+                      {selectedTool.title}
+                    </DialogTitle>
+                    <p className="text-sm text-muted-foreground leading-snug">
+                      {selectedTool.modalContent.shortDescription}
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Action Panel */}
