@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import {
   FileSearch,
@@ -581,6 +583,18 @@ export function CounselorTools() {
                         <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-2 text-muted-foreground">
                           <div className="h-0.5 w-4 rounded-full bg-primary/30" />
                       Sample Insights
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button type="button" className="inline-flex">
+                                <Badge variant="info" className="text-[10px] px-1.5 py-0.5 cursor-help" asChild>
+                                  <span>Personalizable</span>
+                                </Badge>
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" sideOffset={5} className="max-w-xs">
+                              <p>We personalize the insights based on your university requirements</p>
+                            </TooltipContent>
+                          </Tooltip>
                     </h3>
                         <div className="rounded-md border bg-muted/20 p-3 space-y-2">
                       {selectedTool.modalContent.exampleInsights.map(

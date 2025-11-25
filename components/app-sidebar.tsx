@@ -14,6 +14,10 @@ import {
   ChevronLeft,
   Check,
   BookOpen,
+  User,
+  Settings,
+  LogOut,
+  ChevronDown,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -44,6 +48,14 @@ import {
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 const navItems = [
   {
@@ -72,12 +84,12 @@ const navItems = [
     icon: Users,
   },
   {
-    label: "Cohorts",
+  label: "Cohorts",
     href: "/manage-cohorts",
     icon: GraduationCap,
   },
   {
-    label: "Interviews",
+  label: "Interviews",
     href: "/manage-interviews",
     icon: Calendar,
   },
@@ -97,6 +109,9 @@ export function AppSidebar() {
   const [bookingStep, setBookingStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
+  
+  // My Account dropdown state
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
 
   // Time slots from 9 AM to 5 PM in 1-hour intervals
   const timeSlots = [
@@ -213,11 +228,12 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-border p-4 group-data-[collapsible=icon]:hidden">
+      <SidebarFooter className="border-t border-border p-4 group-data-[collapsible=icon]:p-2">
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.2 }}
+          className="group-data-[collapsible=icon]:hidden"
         >
           <Card
             className="hover:shadow-lg transition-all duration-200 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent py-0"
@@ -246,10 +262,48 @@ export function AppSidebar() {
             </CardHeader>
           </Card>
         </motion.div>
-        
-        <p className="text-xs text-muted-foreground text-center mt-4">
-          © {new Date().getFullYear()} Hiration
-        </p>
+
+        <Separator className="mt-4 mb-4 group-data-[collapsible=icon]:my-2" />
+
+        <DropdownMenu open={isAccountDropdownOpen} onOpenChange={setIsAccountDropdownOpen}>
+          <DropdownMenuTrigger asChild>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Button
+                variant="ghost"
+                className="w-full justify-start h-10 px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+              >
+                <User className="h-5 w-5 shrink-0 text-muted-foreground" />
+                <span className="text-sm ml-3 flex-1 text-left group-data-[collapsible=icon]:hidden">My Account</span>
+                <motion.div
+                  animate={{ rotate: isAccountDropdownOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="group-data-[collapsible=icon]:hidden"
+                >
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                </motion.div>
+              </Button>
+            </motion.div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem className="cursor-pointer">
+              <User className="h-4 w-4 mr-2" />
+              <span>Profile</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <Settings className="h-4 w-4 mr-2" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="cursor-pointer text-destructive focus:text-destructive">
+              <LogOut className="h-4 w-4 mr-2" />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
