@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FileText } from "lucide-react";
+import { FileText, LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { GradientButton } from "@/components/gradient/gradient-button";
 import {
   Tooltip,
   TooltipContent,
@@ -15,14 +14,14 @@ import { cn } from "@/lib/utils";
 interface HeroEmptyStateProps {
   headline: string;
   subtext: string;
+  icon?: LucideIcon; // Optional custom icon
   primaryAction: {
     label: string;
-    icon?: React.ReactNode; // For emoji or icon
-    tooltip?: string;
     onClick: () => void;
   };
   secondaryAction: {
     label: string;
+    tooltip?: string;
     onClick: () => void;
   };
   className?: string;
@@ -31,6 +30,7 @@ interface HeroEmptyStateProps {
 export function HeroEmptyState({
   headline,
   subtext,
+  icon: Icon = FileText,
   primaryAction,
   secondaryAction,
   className,
@@ -64,7 +64,7 @@ export function HeroEmptyState({
             {/* Icon container with gradient background */}
             <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 via-accent/10 to-primary/5 ring-2 ring-primary/20 shadow-lg backdrop-blur-sm">
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent" />
-              <FileText className="relative h-10 w-10 text-primary" />
+              <Icon className="relative h-10 w-10 text-primary" />
             </div>
           </div>
         </motion.div>
@@ -96,53 +96,45 @@ export function HeroEmptyState({
           transition={{ duration: 0.3, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
           className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"
         >
-          {/* Primary Button with optional tooltip */}
-          {primaryAction.tooltip ? (
+          {/* Primary Button */}
+          <Button
+            size="default"
+            variant="default"
+            onClick={primaryAction.onClick}
+            className="text-sm font-semibold w-full sm:w-auto"
+          >
+            {primaryAction.label}
+          </Button>
+
+          {/* Secondary Button with optional tooltip */}
+          {secondaryAction.tooltip ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div>
-                    <GradientButton
-                      size="default"
-                      shine={true}
-                      onClick={primaryAction.onClick}
-                      className="text-sm font-semibold w-full sm:w-auto"
-                    >
-                      {primaryAction.icon && (
-                        <span className="mr-2">{primaryAction.icon}</span>
-                      )}
-                      {primaryAction.label}
-                    </GradientButton>
-                  </div>
+                  <Button
+                    size="default"
+                    variant="outline"
+                    onClick={secondaryAction.onClick}
+                    className="text-sm font-medium w-full sm:w-auto"
+                  >
+                    {secondaryAction.label}
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="max-w-xs">{primaryAction.tooltip}</p>
+                  <p className="max-w-xs">{secondaryAction.tooltip}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <GradientButton
+            <Button
               size="default"
-              shine={true}
-              onClick={primaryAction.onClick}
-              className="text-sm font-semibold w-full sm:w-auto"
+              variant="outline"
+              onClick={secondaryAction.onClick}
+              className="text-sm font-medium w-full sm:w-auto"
             >
-              {primaryAction.icon && (
-                <span className="mr-2">{primaryAction.icon}</span>
-              )}
-              {primaryAction.label}
-            </GradientButton>
+              {secondaryAction.label}
+            </Button>
           )}
-
-          {/* Secondary Button */}
-          <Button
-            size="default"
-            variant="outline"
-            onClick={secondaryAction.onClick}
-            className="text-sm font-medium w-full sm:w-auto"
-          >
-            {secondaryAction.label}
-          </Button>
         </motion.div>
       </div>
     </motion.div>

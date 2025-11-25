@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
-import { EmptyState } from "@/components/empty-state";
+import { HeroEmptyState } from "@/components/hero-empty-state";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -83,11 +83,17 @@ export default function ManageInterviews() {
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [newInterviewName, setNewInterviewName] = useState("");
   const [newInterviewDescription, setNewInterviewDescription] = useState("");
+  const [sampleDataLoaded, setSampleDataLoaded] = useState(false);
 
   const assignmentTypes: AssignmentType[] = ["Cohort", "Individual"];
   const statuses: InterviewStatus[] = ["Active", "Paused"];
 
   const filteredAndSortedData = useMemo(() => {
+    // If sample data hasn't been loaded, return empty array
+    if (!sampleDataLoaded) {
+      return [];
+    }
+
     const filtered = mockData.filter((item) => {
       const matchesSearch = item.interviewName.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesType = assignmentTypeFilter === "all" || item.assignmentType === assignmentTypeFilter;
@@ -106,7 +112,7 @@ export default function ManageInterviews() {
     }
 
     return filtered;
-  }, [searchTerm, assignmentTypeFilter, statusFilter, sortConfig]);
+  }, [searchTerm, assignmentTypeFilter, statusFilter, sortConfig, sampleDataLoaded]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -254,36 +260,71 @@ export default function ManageInterviews() {
         )}
 
         {/* Table */}
-        {filteredAndSortedData.length === 0 ? (
-          <EmptyState
-            icon={Calendar}
-            title="No interviews found"
-            description="Create your first interview template to get started."
-            action={{ label: "Create Interview", onClick: () => setCreateDialogOpen(true) }}
-          />
-        ) : (
-          <div className="rounded-xl border bg-card shadow-sm">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="cursor-pointer w-[200px]" onClick={() => handleSort("interviewName")}>
-                    Interview Name {sortConfig?.key === "interviewName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer w-[200px]" onClick={() => handleSort("assignedTo")}>
-                    Assigned To {sortConfig?.key === "assignedTo" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer w-[100px]" onClick={() => handleSort("assignmentType")}>
-                    Type {sortConfig?.key === "assignmentType" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer w-[100px]" onClick={() => handleSort("status")}>
-                    Status {sortConfig?.key === "status" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer w-[150px]" onClick={() => handleSort("createdBy")}>
-                    Created {sortConfig?.key === "createdBy" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="text-right w-[130px]">Actions</TableHead>
+        <div className="rounded-xl border bg-card shadow-sm">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="cursor-pointer w-[200px]" onClick={() => handleSort("interviewName")}>
+                  Interview Name {sortConfig?.key === "interviewName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer w-[200px]" onClick={() => handleSort("assignedTo")}>
+                  Assigned To {sortConfig?.key === "assignedTo" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer w-[100px]" onClick={() => handleSort("assignmentType")}>
+                  Type {sortConfig?.key === "assignmentType" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer w-[100px]" onClick={() => handleSort("status")}>
+                  Status {sortConfig?.key === "status" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer w-[150px]" onClick={() => handleSort("createdBy")}>
+                  Created {sortConfig?.key === "createdBy" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="text-right w-[130px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            {!sampleDataLoaded || filteredAndSortedData.length === 0 ? (
+              <tbody>
+                <TableRow className="hover:bg-transparent! pointer-events-none">
+                  <TableCell colSpan={6} className="h-[400px] p-0 pointer-events-auto">
+                    <HeroEmptyState
+                      headline={!sampleDataLoaded ? "No interviews scheduled yet" : "No interviews found"}
+                      subtext={!sampleDataLoaded 
+                        ? "Design mock interviews and track student performance using AI-assisted scoring and feedback."
+                        : "Create your first interview template to get started."}
+                      icon={Video}
+                      primaryAction={{
+                        label: !sampleDataLoaded ? "Create Interview Template" : "Clear Filters",
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            setCreateDialogOpen(true);
+                          } else {
+                            setSearchTerm("");
+                            setAssignmentTypeFilter("all");
+                            setStatusFilter("all");
+                            setCurrentPage(1);
+                          }
+                        }
+                      }}
+                      secondaryAction={{
+                        label: !sampleDataLoaded ? "Load Sample Interview" : "Reset View",
+                        tooltip: !sampleDataLoaded ? "Load a pre-configured interview session to experience the mock interview flow." : undefined,
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            setSampleDataLoaded(true);
+                          } else {
+                            setSampleDataLoaded(false);
+                          }
+                          setSearchTerm("");
+                          setAssignmentTypeFilter("all");
+                          setStatusFilter("all");
+                          setCurrentPage(1);
+                        }
+                      }}
+                    />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
+              </tbody>
+            ) : (
               <StaggerContainer key={`${currentPage}-${assignmentTypeFilter}-${statusFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((interview) => (
                   <StaggerItem key={interview.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
@@ -321,9 +362,9 @@ export default function ManageInterviews() {
                   </StaggerItem>
                 ))}
               </StaggerContainer>
-            </Table>
-          </div>
-        )}
+            )}
+          </Table>
+        </div>
 
         {/* Pagination */}
         {filteredAndSortedData.length > 0 && (

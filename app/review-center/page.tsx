@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
-import { EmptyState } from "@/components/empty-state";
+import { HeroEmptyState } from "@/components/hero-empty-state";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, ChevronLeft, ChevronRight, ListChecks, FileText, Mail, Video, Filter, X } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, ListChecks, FileText, Mail, Video, Filter, X, ClipboardCheck } from "lucide-react";
 
 type SubmissionStatus = "Pending" | "In Review" | "Completed" | "Rejected";
 type SubmissionType = "Resume" | "Cover Letter" | "Interview";
@@ -82,10 +82,16 @@ export default function ReviewCenter() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [sortConfig, setSortConfig] = useState<{ key: keyof ReviewItem; direction: "asc" | "desc" } | null>(null);
+  const [sampleDataLoaded, setSampleDataLoaded] = useState(false);
 
   const statuses: SubmissionStatus[] = ["Pending", "In Review", "Completed", "Rejected"];
 
   const filteredAndSortedData = useMemo(() => {
+    // If sample data hasn't been loaded, return empty array
+    if (!sampleDataLoaded) {
+      return [];
+    }
+
     const filtered = mockData.filter((item) => {
       const matchesSearch = item.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.studentEmail.toLowerCase().includes(searchTerm.toLowerCase());
@@ -106,7 +112,7 @@ export default function ReviewCenter() {
     }
 
     return filtered;
-  }, [searchTerm, reviewerFilter, statusFilter, cohortFilter, sortConfig]);
+  }, [searchTerm, reviewerFilter, statusFilter, cohortFilter, sortConfig, sampleDataLoaded]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -242,39 +248,75 @@ export default function ReviewCenter() {
         )}
 
         {/* Table */}
-        {filteredAndSortedData.length === 0 ? (
-          <EmptyState
-            icon={ListChecks}
-            title="No reviews found"
-            description="Try adjusting your filters to find what you're looking for."
-            action={{ label: "Clear filters", onClick: () => { setSearchTerm(""); setReviewerFilter("all"); setStatusFilter("all"); setCohortFilter("all"); } }}
-          />
-        ) : (
-          <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
-            <Table className="min-w-full">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="cursor-pointer min-w-[200px]" onClick={() => handleSort("studentName")}>
-                    Student {sortConfig?.key === "studentName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer min-w-[140px]" onClick={() => handleSort("submissionType")}>
-                    Type {sortConfig?.key === "submissionType" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer min-w-[200px]" onClick={() => handleSort("assignedReviewer")}>
-                    Assigned Reviewer {sortConfig?.key === "assignedReviewer" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer min-w-[180px]" onClick={() => handleSort("cohort")}>
-                    Cohort {sortConfig?.key === "cohort" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer min-w-[120px]" onClick={() => handleSort("status")}>
-                    Status {sortConfig?.key === "status" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer min-w-[120px]" onClick={() => handleSort("submittedAt")}>
-                    Submitted {sortConfig?.key === "submittedAt" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="text-right min-w-[120px]">Actions</TableHead>
+        <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
+          <Table className="min-w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="cursor-pointer min-w-[200px]" onClick={() => handleSort("studentName")}>
+                  Student {sortConfig?.key === "studentName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer min-w-[140px]" onClick={() => handleSort("submissionType")}>
+                  Type {sortConfig?.key === "submissionType" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer min-w-[200px]" onClick={() => handleSort("assignedReviewer")}>
+                  Assigned Reviewer {sortConfig?.key === "assignedReviewer" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer min-w-[180px]" onClick={() => handleSort("cohort")}>
+                  Cohort {sortConfig?.key === "cohort" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer min-w-[120px]" onClick={() => handleSort("status")}>
+                  Status {sortConfig?.key === "status" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer min-w-[120px]" onClick={() => handleSort("submittedAt")}>
+                  Submitted {sortConfig?.key === "submittedAt" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="text-right min-w-[120px]">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            {!sampleDataLoaded || filteredAndSortedData.length === 0 ? (
+              <tbody>
+                <TableRow className="hover:bg-transparent! pointer-events-none">
+                  <TableCell colSpan={7} className="h-[400px] p-0 pointer-events-auto">
+                    <HeroEmptyState
+                      headline={!sampleDataLoaded ? "No active reviews" : "No reviews found"}
+                      subtext={!sampleDataLoaded 
+                        ? "When students submit resumes or interviews, you'll be able to review, rate, and provide feedback here."
+                        : "Try adjusting your filters to find what you're looking for."}
+                      icon={ClipboardCheck}
+                      primaryAction={{
+                        label: !sampleDataLoaded ? "Start a Review" : "Clear All Filters",
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            setSampleDataLoaded(true);
+                          }
+                          setSearchTerm("");
+                          setReviewerFilter("all");
+                          setStatusFilter("all");
+                          setCohortFilter("all");
+                          setCurrentPage(1);
+                        }
+                      }}
+                      secondaryAction={{
+                        label: !sampleDataLoaded ? "Load Sample Review" : "Reset View",
+                        tooltip: !sampleDataLoaded ? "Explore a pre-filled review to experience the scoring and feedback workflow." : undefined,
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            setSampleDataLoaded(true);
+                          } else {
+                            setSampleDataLoaded(false);
+                          }
+                          setSearchTerm("");
+                          setReviewerFilter("all");
+                          setStatusFilter("all");
+                          setCohortFilter("all");
+                          setCurrentPage(1);
+                        }
+                      }}
+                    />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
+              </tbody>
+            ) : (
               <StaggerContainer key={`${currentPage}-${reviewerFilter}-${statusFilter}-${cohortFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((item) => {
                   const TypeIcon = submissionTypeIcons[item.submissionType];
@@ -320,9 +362,9 @@ export default function ReviewCenter() {
                   );
                 })}
               </StaggerContainer>
-            </Table>
-          </div>
-        )}
+            )}
+          </Table>
+        </div>
 
         {/* Pagination */}
         {filteredAndSortedData.length > 0 && (

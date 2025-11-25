@@ -322,12 +322,11 @@ export default function StudentSubmissions() {
                     <HeroEmptyState
                       headline={!sampleDataLoaded ? "No submissions yet" : "No submissions found"}
                       subtext={!sampleDataLoaded 
-                        ? "Once students upload resumes or mock interviews, they'll appear here for review."
+                        ? "As students submit resumes, cover letters, and mock interviews, they'll appear here for review."
                         : "Try adjusting your filters or search criteria."}
+                      icon={FileText}
                       primaryAction={{
-                        label: !sampleDataLoaded ? "View Sample Submissions" : "Clear All Filters",
-                        icon: !sampleDataLoaded ? "📄" : undefined,
-                        tooltip: !sampleDataLoaded ? "Try the review workflow with a preloaded sample resume and feedback flow." : undefined,
+                        label: !sampleDataLoaded ? "Start Review" : "Clear All Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
                             setSampleDataLoaded(true);
@@ -340,7 +339,8 @@ export default function StudentSubmissions() {
                         }
                       }}
                       secondaryAction={{
-                        label: !sampleDataLoaded ? "Invite Students to Submit" : "Reset View",
+                        label: !sampleDataLoaded ? "Add Sample Submissions" : "Reset View",
+                        tooltip: !sampleDataLoaded ? "Load a few example submissions to explore how the review process works." : undefined,
                         onClick: () => {
                           if (!sampleDataLoaded) {
                             // TODO: Open invite students modal/flow
