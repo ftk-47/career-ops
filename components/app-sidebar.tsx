@@ -13,6 +13,7 @@ import {
   UserRound,
   ChevronLeft,
   Check,
+  BookOpen,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -78,6 +79,11 @@ const navItems = [
     label: "Interviews",
     href: "/manage-interviews",
     icon: Calendar,
+  },
+  {
+    label: "Coaching Library",
+    href: "/coaching-library",
+    icon: BookOpen,
   },
 ];
 
