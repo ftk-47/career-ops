@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
-import { EmptyState } from "@/components/empty-state";
+import { HeroEmptyState } from "@/components/hero-empty-state";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -79,11 +79,17 @@ export default function StudentSubmissions() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: "asc" | "desc" } | null>(null);
+  const [sampleDataLoaded, setSampleDataLoaded] = useState(false);
 
   const submissionTypes: SubmissionType[] = ["Resume", "Cover Letter", "Interview"];
   const statuses: SubmissionStatus[] = ["Pending", "In Review", "Completed", "Rejected"];
 
   const filteredAndSortedData = useMemo(() => {
+    // If sample data hasn't been loaded, return empty array
+    if (!sampleDataLoaded) {
+      return [];
+    }
+
     const filtered = mockData.filter((item) => {
       const matchesSearch = item.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.studentEmail.toLowerCase().includes(searchTerm.toLowerCase());
@@ -104,7 +110,7 @@ export default function StudentSubmissions() {
     }
 
     return filtered;
-  }, [searchTerm, typeFilter, statusFilter, cohortFilter, sortConfig]);
+  }, [searchTerm, typeFilter, statusFilter, cohortFilter, sortConfig, sampleDataLoaded]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -279,43 +285,81 @@ export default function StudentSubmissions() {
         )}
 
         {/* Table */}
-        {filteredAndSortedData.length === 0 ? (
-          <EmptyState
-            icon={FileText}
-            title="No submissions found"
-            description="Try adjusting your filters or search criteria to find what you're looking for."
-            action={{ label: "Clear filters", onClick: () => { setSearchTerm(""); setTypeFilter("all"); setStatusFilter("all"); setCohortFilter("all"); } }}
-          />
-        ) : (
-          <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
-            <Table className="min-w-full">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">
-                    <Checkbox
-                      checked={selectedIds.size === paginatedData.length && paginatedData.length > 0}
-                      onCheckedChange={toggleSelectAll}
-                      aria-label="Select all"
+        <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
+          <Table className="min-w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-12">
+                  <Checkbox
+                    checked={selectedIds.size === paginatedData.length && paginatedData.length > 0}
+                    onCheckedChange={toggleSelectAll}
+                    aria-label="Select all"
+                    disabled={!sampleDataLoaded}
+                  />
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("studentName")}>
+                  Student {sortConfig?.key === "studentName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("submissionType")}>
+                  Type {sortConfig?.key === "submissionType" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("cohort")}>
+                  Cohort {sortConfig?.key === "cohort" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("status")}>
+                  Status {sortConfig?.key === "status" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("submittedAt")}>
+                  Submitted {sortConfig?.key === "submittedAt" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            {!sampleDataLoaded || filteredAndSortedData.length === 0 ? (
+              <tbody>
+                <TableRow className="hover:bg-transparent! pointer-events-none">
+                  <TableCell colSpan={7} className="h-[400px] p-0 pointer-events-auto">
+                    <HeroEmptyState
+                      headline={!sampleDataLoaded ? "No submissions yet" : "No submissions found"}
+                      subtext={!sampleDataLoaded 
+                        ? "Once students upload resumes or mock interviews, they'll appear here for review."
+                        : "Try adjusting your filters or search criteria."}
+                      primaryAction={{
+                        label: !sampleDataLoaded ? "View Sample Submissions" : "Clear All Filters",
+                        icon: !sampleDataLoaded ? "📄" : undefined,
+                        tooltip: !sampleDataLoaded ? "Try the review workflow with a preloaded sample resume and feedback flow." : undefined,
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            setSampleDataLoaded(true);
+                          }
+                          setSearchTerm("");
+                          setTypeFilter("all");
+                          setStatusFilter("all");
+                          setCohortFilter("all");
+                          setCurrentPage(1);
+                        }
+                      }}
+                      secondaryAction={{
+                        label: !sampleDataLoaded ? "Invite Students to Submit" : "Reset View",
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            // TODO: Open invite students modal/flow
+                            console.log("Invite students");
+                          } else {
+                            setSampleDataLoaded(false);
+                            setSearchTerm("");
+                            setTypeFilter("all");
+                            setStatusFilter("all");
+                            setCohortFilter("all");
+                            setCurrentPage(1);
+                          }
+                        }
+                      }}
                     />
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("studentName")}>
-                    Student {sortConfig?.key === "studentName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("submissionType")}>
-                    Type {sortConfig?.key === "submissionType" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("cohort")}>
-                    Cohort {sortConfig?.key === "cohort" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("status")}>
-                    Status {sortConfig?.key === "status" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("submittedAt")}>
-                    Submitted {sortConfig?.key === "submittedAt" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
+              </tbody>
+            ) : (
               <StaggerContainer key={`${currentPage}-${typeFilter}-${statusFilter}-${cohortFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((submission) => {
                   const TypeIcon = submissionTypeIcons[submission.submissionType];
@@ -379,9 +423,9 @@ export default function StudentSubmissions() {
                   );
                 })}
               </StaggerContainer>
-            </Table>
-          </div>
-        )}
+            )}
+          </Table>
+        </div>
 
         {/* Pagination */}
         {filteredAndSortedData.length > 0 && (
