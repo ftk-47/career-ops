@@ -31,7 +31,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Search, ChevronLeft, ChevronRight, Plus, Calendar, Edit, Pause, Play, Filter, X } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Plus, VideoIcon, Edit, Pause, Play, Filter, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -291,7 +291,7 @@ export default function ManageInterviews() {
                       subtext={!sampleDataLoaded 
                         ? "Design mock interviews and track student performance using AI-assisted scoring and feedback."
                         : "Create your first interview template to get started."}
-                      icon={Video}
+                      icon={VideoIcon}
                       primaryAction={{
                         label: !sampleDataLoaded ? "Create Interview Template" : "Clear Filters",
                         onClick: () => {
