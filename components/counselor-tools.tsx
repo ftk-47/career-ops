@@ -285,7 +285,6 @@ export function CounselorTools() {
       // Reset inputs
       setJdText("");
       setResumeText("");
-      setResumeJdText("");
       setInterviewText("");
       setEmployerText("");
     }, 200);
