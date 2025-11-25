@@ -337,8 +337,10 @@ export function CounselorTools() {
                   Upload File
                 </Button>
                 <Button
+                  type="button"
                   size="sm"
                   className="gap-2"
+                  onClick={() => {}}
                 >
                   Use Sample
                 </Button>
@@ -380,8 +382,10 @@ export function CounselorTools() {
                   Upload Resume
                 </Button>
                 <Button
+                  type="button"
                   size="sm"
                   className="gap-2"
+                  onClick={() => {}}
                 >
                   Use Sample
                 </Button>
@@ -423,8 +427,10 @@ export function CounselorTools() {
                   Upload File
                 </Button>
                 <Button
+                  type="button"
                   size="sm"
                   className="gap-2"
+                  onClick={() => {}}
                 >
                   Use Sample
                 </Button>
@@ -466,8 +472,10 @@ export function CounselorTools() {
                   Upload File
                 </Button>
                 <Button
+                  type="button"
                   size="sm"
                   className="gap-2"
+                  onClick={() => {}}
                 >
                   Use Sample
                 </Button>
@@ -585,11 +593,9 @@ export function CounselorTools() {
                       Sample Insights
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <button type="button" className="inline-flex">
                                 <Badge variant="info" className="text-[10px] px-1.5 py-0.5 cursor-help" asChild>
                                   <span>Personalizable</span>
                                 </Badge>
-                              </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" sideOffset={5} className="max-w-xs">
                               <p>We personalize the insights based on your university requirements</p>
