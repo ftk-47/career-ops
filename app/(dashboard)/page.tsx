@@ -475,9 +475,9 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between max-w-full">
           <div>
-            <h2 className="text-xl font-bold tracking-tight">Welcome back, Sarah</h2>
+            <h2 className="text-xl font-bold tracking-tight">Welcome, Sarah</h2>
             <p className="text-muted-foreground text-sm mt-1">
-           Here is the quick overview of the progress of your students.
+              Get started by exploring your dashboard and connecting with students.
             </p>
           </div>
           <div className="flex items-center gap-3">
