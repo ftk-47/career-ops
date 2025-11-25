@@ -6,6 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import {
   FileSearch,
   ShieldAlert,
@@ -16,6 +19,7 @@ import {
   TrendingUp,
   AlertCircle,
   ArrowUpRight,
+  Upload,
 } from "lucide-react";
 
 interface Tool {
@@ -261,6 +265,13 @@ const counselorTools: Tool[] = [
 export function CounselorTools() {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Input states
+  const [jdText, setJdText] = useState("");
+  const [resumeText, setResumeText] = useState("");
+  const [interviewText, setInterviewText] = useState("");
+  const [employerText, setEmployerText] = useState("");
 
   const handleToolClick = (tool: Tool) => {
     setSelectedTool(tool);
@@ -269,7 +280,190 @@ export function CounselorTools() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setTimeout(() => setSelectedTool(null), 200);
+    setTimeout(() => {
+      setSelectedTool(null);
+      // Reset inputs
+      setJdText("");
+      setResumeText("");
+      setResumeJdText("");
+      setInterviewText("");
+      setEmployerText("");
+    }, 200);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      toast.info(`File "${file.name}" uploaded (mock)`);
+      // In a real implementation, you would process the file here
+    }
+  };
+
+  const handleSubmit = () => {
+    setIsSubmitting(true);
+    // Mock submission delay
+    setTimeout(() => {
+      setIsSubmitting(false);
+      toast.success("Analysis complete! (This is a mock demo)");
+      handleCloseModal();
+    }, 1500);
+  };
+
+  const renderActionInterface = () => {
+    if (!selectedTool) return null;
+
+    switch (selectedTool.id) {
+      case "jd-decoder":
+        return (
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor="jd-input">Paste or upload job description</Label>
+              <Textarea
+                id="jd-input"
+                placeholder="Paste the job description here..."
+                value={jdText}
+                onChange={(e) => setJdText(e.target.value)}
+                className="min-h-32 resize-none"
+              />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => document.getElementById("jd-file")?.click()}
+                >
+                  <Upload className="h-4 w-4" />
+                  Upload File
+                </Button>
+                <input
+                  id="jd-file"
+                  type="file"
+                  accept=".pdf,.docx,.doc,.txt"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+                <span className="text-xs text-muted-foreground">
+                  PDF, DOCX, or TXT
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "resume-red-flag":
+        return (
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor="resume-input">Resume</Label>
+              <Textarea
+                id="resume-input"
+                placeholder="Paste the resume text here..."
+                value={resumeText}
+                onChange={(e) => setResumeText(e.target.value)}
+                className="min-h-32 resize-none"
+              />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => document.getElementById("resume-file")?.click()}
+                >
+                  <Upload className="h-4 w-4" />
+                  Upload Resume
+                </Button>
+                <input
+                  id="resume-file"
+                  type="file"
+                  accept=".pdf,.docx,.doc,.txt"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+                <span className="text-xs text-muted-foreground">
+                  PDF, DOCX, or TXT
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "mock-interview":
+        return (
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor="interview-input">Paste interview transcript or upload recording</Label>
+              <Textarea
+                id="interview-input"
+                placeholder="Paste the interview transcript or responses here..."
+                value={interviewText}
+                onChange={(e) => setInterviewText(e.target.value)}
+                className="min-h-32 resize-none"
+              />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => document.getElementById("interview-file")?.click()}
+                >
+                  <Upload className="h-4 w-4" />
+                  Upload File
+                </Button>
+                <input
+                  id="interview-file"
+                  type="file"
+                  accept=".pdf,.docx,.doc,.txt,.mp3,.mp4,.wav"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+                <span className="text-xs text-muted-foreground">
+                  Transcript or audio/video file
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "employer-alignment":
+        return (
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor="employer-input">Paste employer materials or upload documents</Label>
+              <Textarea
+                id="employer-input"
+                placeholder="Paste employer materials (website copy, mission statement, values, etc.)..."
+                value={employerText}
+                onChange={(e) => setEmployerText(e.target.value)}
+                className="min-h-32 resize-none"
+              />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => document.getElementById("employer-file")?.click()}
+                >
+                  <Upload className="h-4 w-4" />
+                  Upload File
+                </Button>
+                <input
+                  id="employer-file"
+                  type="file"
+                  accept=".pdf,.docx,.doc,.txt"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                />
+                <span className="text-xs text-muted-foreground">
+                  PDF, DOCX, or TXT
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -301,79 +495,83 @@ export function CounselorTools() {
 
       {/* Tool Modal */}
       <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
-        <DialogContent className="max-w-[95vw] sm:max-w-4xl max-h-[90vh] w-full">
+        <DialogContent className="max-w-[90vw] lg:max-w-6xl max-h-[95vh] w-full p-0 gap-0">
           {selectedTool && (
-            <>
+            <div className="flex flex-col h-full">
               {/* Enhanced Header with Colored Background */}
-              <div className={`-mt-6 -mx-6 px-6 py-5 mb-3 rounded-t-lg border-b ${selectedTool.colorClasses.headerBg}`}>
-                <DialogTitle className={`flex items-center gap-3 text-xl font-bold ${selectedTool.colorClasses.iconColor}`}>
+              <div className={`px-5 py-4 border-b ${selectedTool.colorClasses.headerBg}`}>
+                <DialogTitle className={`flex items-center gap-2.5 text-lg font-bold ${selectedTool.colorClasses.iconColor}`}>
                   <div
-                    className={`flex h-11 w-11 items-center justify-center rounded-xl ${selectedTool.colorClasses.iconBg} shadow-sm`}
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg ${selectedTool.colorClasses.iconBg} shadow-sm`}
                   >
                     <selectedTool.icon
-                      className={`h-5 w-5 ${selectedTool.colorClasses.iconColor}`}
+                      className={`h-4 w-4 ${selectedTool.colorClasses.iconColor}`}
                     />
                   </div>
                   {selectedTool.title}
                 </DialogTitle>
               </div>
 
-              <ScrollArea className="max-h-[calc(90vh-12rem)] pr-4">
-                <div className="space-y-5">
+              {/* Two Column Layout */}
+              <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
+                {/* Left Column - Information */}
+                <div className="flex-1 lg:w-3/5 overflow-y-auto">
+                  <ScrollArea className="h-full">
+                    <div className="p-5 space-y-4">
                   {/* Description with improved typography */}
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {selectedTool.modalContent.description}
                   </p>
 
-                  {/* Benefits */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-bold uppercase tracking-wide flex items-center gap-2">
-                      <div className="h-1 w-6 rounded-full bg-primary/20" />
-                      Key Features
-                    </h3>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      {selectedTool.modalContent.benefits.map(
-                        (benefit, idx) => (
-                          <div
-                            key={idx}
-                            className="flex items-start gap-2.5 rounded-lg border bg-muted/30 p-3 transition-all duration-200 hover:border-primary/30 hover:bg-muted/50"
-                          >
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 shrink-0">
-                              <benefit.icon className="h-4 w-4 text-primary" />
-                            </div>
-                            <div className="space-y-1 flex-1 min-w-0">
-                              <p className="text-sm font-semibold leading-tight">
-                                {benefit.title}
-                              </p>
-                              <p className="text-xs text-muted-foreground leading-relaxed">
-                                {benefit.description}
-                              </p>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
+                      {/* Benefits */}
+                      <div className="space-y-2">
+                        <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-2 text-muted-foreground">
+                          <div className="h-0.5 w-4 rounded-full bg-primary/30" />
+                          Key Features
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2">
+                          {selectedTool.modalContent.benefits.map(
+                            (benefit, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-start gap-2 rounded-md border bg-muted/20 p-2 transition-all duration-200 hover:border-primary/30 hover:bg-muted/40 h-full"
+                              >
+                                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 shrink-0">
+                                  <benefit.icon className="h-3 w-3 text-primary" />
+                                </div>
+                                <div className="space-y-0.5 flex-1 min-w-0">
+                                  <p className="text-xs font-semibold leading-tight">
+                                    {benefit.title}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground leading-snug">
+                                    {benefit.description}
+                                  </p>
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
 
                   {/* Example Insights */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-bold uppercase tracking-wide flex items-center gap-2">
-                      <div className="h-1 w-6 rounded-full bg-primary/20" />
+                      <div className="space-y-2">
+                        <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-2 text-muted-foreground">
+                          <div className="h-0.5 w-4 rounded-full bg-primary/30" />
                       Sample Insights
                     </h3>
-                    <div className="rounded-lg border bg-muted/30 p-4 grid gap-2.5 sm:grid-cols-2">
+                        <div className="rounded-md border bg-muted/20 p-3 space-y-2">
                       {selectedTool.modalContent.exampleInsights.map(
                         (insight, idx) => (
                           <div
                             key={idx}
-                            className="flex items-start gap-2.5"
+                                className="flex items-start gap-2"
                           >
                             <div
-                              className="shrink-0 mt-0.5 h-5 w-5 flex items-center justify-center rounded-full font-semibold text-xs bg-primary/10 text-primary"
+                                  className="shrink-0 mt-0.5 h-4 w-4 flex items-center justify-center rounded-full text-[10px] font-semibold bg-primary/10 text-primary"
                             >
                               {idx + 1}
                             </div>
-                            <p className="text-xs leading-relaxed text-foreground">
+                                <p className="text-xs leading-snug text-foreground/90">
                               {insight}
                             </p>
                           </div>
@@ -383,26 +581,50 @@ export function CounselorTools() {
                   </div>
                 </div>
               </ScrollArea>
+                </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-end gap-3 pt-4 border-t mt-3">
-                <Button 
-                  onClick={handleCloseModal} 
-                  variant="outline"
-                  size="default"
-                >
-                  Close
-                </Button>
-                <Button 
-                  onClick={handleCloseModal} 
-                  className="gap-2 shadow-md"
-                  size="default"
-                >
-                  Try Now
-                  <ArrowUpRight className="h-4 w-4" />
-                </Button>
+                {/* Right Column - Action Panel */}
+                <div className="lg:w-2/5 border-t lg:border-t-0 lg:border-l bg-muted/30 flex flex-col">
+                  <div className="p-5 space-y-3 flex-1 overflow-y-auto">
+                    <div className="space-y-1">
+                      <h3 className="text-base font-bold flex items-center gap-2">
+                        <ArrowUpRight className="h-4 w-4" />
+                        Get Started
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        Input your data below to analyze
+                      </p>
+                    </div>
+
+                    <div className="space-y-3">
+                      {renderActionInterface()}
+                    </div>
+                  </div>
+
+                  {/* Action Button - Sticky at bottom */}
+                  <div className="p-5 pt-3 border-t bg-background/95 backdrop-blur">
+                    <Button
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                      className="w-full gap-2"
+                      size="default"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          Analyzing...
+                        </>
+                      ) : (
+                        <>
+                          Analyze
+                          <ArrowUpRight className="h-4 w-4" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
               </div>
-            </>
+            </div>
           )}
         </DialogContent>
       </Dialog>
