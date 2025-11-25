@@ -5,10 +5,8 @@ import { AnimatedCard } from "@/components/motion/animated-card";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import {
@@ -16,10 +14,6 @@ import {
   ShieldAlert,
   MessageSquare,
   Target,
-  CheckCircle2,
-  Lightbulb,
-  TrendingUp,
-  AlertCircle,
   ArrowUpRight,
   Upload,
 } from "lucide-react";
@@ -43,13 +37,10 @@ interface Tool {
     insightBg: string;
   };
   modalContent: {
-    description: string;
-    benefits: Array<{
-      icon: React.ElementType;
-      title: string;
-      description: string;
-    }>;
-    exampleInsights: string[];
+    shortDescription: string;
+    primaryCTA: string;
+    secondaryCTA: string;
+    secondaryTooltip: string;
   };
 }
 
@@ -73,37 +64,10 @@ const counselorTools: Tool[] = [
       insightBg: "bg-blue-500/5",
     },
     modalContent: {
-      description:
-        "Analyze job descriptions and extract coaching insights to help your students align their resumes and applications with employer expectations.",
-      benefits: [
-        {
-          icon: CheckCircle2,
-          title: "Skills Extraction",
-          description: "Automatically identify and extract key skills required",
-        },
-        {
-          icon: CheckCircle2,
-          title: "Keyword Identification",
-          description: "Highlight critical keywords for ATS optimization",
-        },
-        {
-          icon: CheckCircle2,
-          title: "Competency Mapping",
-          description: "Map required competencies to coaching strategies",
-        },
-        {
-          icon: CheckCircle2,
-          title: "Coaching Suggestions",
-          description: "Get actionable coaching recommendations",
-        },
-      ],
-      exampleInsights: [
-        "Ask your student to add metrics here to demonstrate impact",
-        "Highlight leadership experience due to this JD requirement",
-        "This JD prioritizes project ownership — coach them to add specific examples",
-        "Recommend quantifying achievements in bullets 2 and 4",
-        "This role emphasizes collaboration — suggest team-based examples",
-      ],
+      shortDescription: "Understand job descriptions instantly — extract skills, keywords, and insights to guide student coaching.",
+      primaryCTA: "Analyze JD",
+      secondaryCTA: "Use Sample",
+      secondaryTooltip: "Load a sample JD to preview extracted skills and insights.",
     },
   },
   {
@@ -125,37 +89,10 @@ const counselorTools: Tool[] = [
       insightBg: "bg-red-500/5",
     },
     modalContent: {
-      description:
-        "Identify resume issues and provide coaching recommendations to help students create more impactful and ATS-friendly resumes.",
-      benefits: [
-        {
-          icon: AlertCircle,
-          title: "Impact Analysis",
-          description: "Detect weak bullets lacking quantification",
-        },
-        {
-          icon: AlertCircle,
-          title: "Keyword Gap Detection",
-          description: "Identify missing keywords from job descriptions",
-        },
-        {
-          icon: AlertCircle,
-          title: "Formatting Issues",
-          description: "Spot formatting problems that hurt ATS scores",
-        },
-        {
-          icon: AlertCircle,
-          title: "Structure Recommendations",
-          description: "Suggest better section ordering and organization",
-        },
-      ],
-      exampleInsights: [
-        "This bullet lacks impact — suggest quantification with specific metrics",
-        "These keywords are missing — recommend adding them in experience section",
-        "Section order mismatch — advise restructuring to prioritize experience",
-        "Weak action verbs detected — suggest stronger alternatives",
-        "Inconsistent formatting in dates — recommend standardizing format",
-      ],
+      shortDescription: "Spot resume weaknesses and keyword gaps to help students create stronger, ATS-ready applications.",
+      primaryCTA: "Scan Resume",
+      secondaryCTA: "Use Sample",
+      secondaryTooltip: "Try a sample resume to see issue detection and feedback flow.",
     },
   },
   {
@@ -177,37 +114,10 @@ const counselorTools: Tool[] = [
       insightBg: "bg-purple-500/5",
     },
     modalContent: {
-      description:
-        "Evaluate interview responses and provide coaching priorities to help students improve their interview performance and communication skills.",
-      benefits: [
-        {
-          icon: TrendingUp,
-          title: "STAR Method Analysis",
-          description: "Evaluate answer structure using STAR framework",
-        },
-        {
-          icon: TrendingUp,
-          title: "Tone Evaluation",
-          description: "Assess communication tone and confidence level",
-        },
-        {
-          icon: TrendingUp,
-          title: "Follow-up Questions",
-          description: "Generate coaching questions for deeper insights",
-        },
-        {
-          icon: TrendingUp,
-          title: "Coaching Priorities",
-          description: "Identify key areas needing improvement",
-        },
-      ],
-      exampleInsights: [
-        "Good follow-up questions to ask: 'Can you provide a specific metric?'",
-        "Coaching priority: Help student structure answers using STAR method",
-        "Assignment: Practice describing a conflict resolution example",
-        "Strength: Student demonstrates clear communication skills",
-        "Improvement area: Add more concrete examples to showcase impact",
-      ],
+      shortDescription: "Evaluate interview responses with AI to identify communication strengths and coaching opportunities.",
+      primaryCTA: "Analyze Interview",
+      secondaryCTA: "Use Sample",
+      secondaryTooltip: "Load a sample interview transcript to preview analysis results.",
     },
   },
   {
@@ -229,37 +139,10 @@ const counselorTools: Tool[] = [
       insightBg: "bg-emerald-500/5",
     },
     modalContent: {
-      description:
-        "Extract employer priorities and recommend student examples to help align candidates with company culture and role requirements.",
-      benefits: [
-        {
-          icon: Lightbulb,
-          title: "Company Culture Analysis",
-          description: "Extract key values and culture priorities",
-        },
-        {
-          icon: Lightbulb,
-          title: "Competency Extraction",
-          description: "Identify top competencies from company materials",
-        },
-        {
-          icon: Lightbulb,
-          title: "Example Recommendations",
-          description: "Suggest specific student examples to highlight",
-        },
-        {
-          icon: Lightbulb,
-          title: "Alignment Scoring",
-          description: "Rate student-employer fit on key dimensions",
-        },
-      ],
-      exampleInsights: [
-        "This employer prioritizes analytical thinking — recommend examples X, Y, Z",
-        "Top competencies extracted: Innovation, collaboration, data-driven decisions",
-        "Company culture emphasizes ownership — coach student on autonomy examples",
-        "This role values cross-functional work — highlight team project experiences",
-        "Mission alignment opportunity: Student's volunteer work matches company values",
-      ],
+      shortDescription: "Uncover company culture and role expectations to align student profiles with employer priorities.",
+      primaryCTA: "Assess Alignment",
+      secondaryCTA: "Use Sample",
+      secondaryTooltip: "View sample employer data to see alignment insights in action.",
     },
   },
 ];
@@ -336,14 +219,21 @@ export function CounselorTools() {
                   <Upload className="h-4 w-4" />
                   Upload File
                 </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="gap-2"
-                  onClick={() => {}}
-                >
-                  Use Sample
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => {}}
+                    >
+                      {selectedTool?.modalContent.secondaryCTA}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs">
+                    <p>{selectedTool?.modalContent.secondaryTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
                 <input
                   id="jd-file"
                   type="file"
@@ -381,14 +271,21 @@ export function CounselorTools() {
                   <Upload className="h-4 w-4" />
                   Upload Resume
                 </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="gap-2"
-                  onClick={() => {}}
-                >
-                  Use Sample
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => {}}
+                    >
+                      {selectedTool?.modalContent.secondaryCTA}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs">
+                    <p>{selectedTool?.modalContent.secondaryTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
                 <input
                   id="resume-file"
                   type="file"
@@ -426,14 +323,21 @@ export function CounselorTools() {
                   <Upload className="h-4 w-4" />
                   Upload File
                 </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="gap-2"
-                  onClick={() => {}}
-                >
-                  Use Sample
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => {}}
+                    >
+                      {selectedTool?.modalContent.secondaryCTA}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs">
+                    <p>{selectedTool?.modalContent.secondaryTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
                 <input
                   id="interview-file"
                   type="file"
@@ -471,14 +375,21 @@ export function CounselorTools() {
                   <Upload className="h-4 w-4" />
                   Upload File
                 </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="gap-2"
-                  onClick={() => {}}
-                >
-                  Use Sample
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => {}}
+                    >
+                      {selectedTool?.modalContent.secondaryCTA}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="max-w-xs">
+                    <p>{selectedTool?.modalContent.secondaryTooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
                 <input
                   id="employer-file"
                   type="file"
@@ -528,7 +439,7 @@ export function CounselorTools() {
 
       {/* Tool Modal */}
       <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
-        <DialogContent className="max-w-[90vw] lg:max-w-6xl max-h-[95vh] w-full p-0 gap-0">
+        <DialogContent className="max-w-[90vw] sm:max-w-xl max-h-[95vh] w-full p-0 gap-0">
           {selectedTool && (
             <div className="flex flex-col h-full">
               {/* Enhanced Header with Colored Background */}
@@ -543,128 +454,39 @@ export function CounselorTools() {
                   </div>
                   {selectedTool.title}
                 </DialogTitle>
+                <p className="text-sm text-muted-foreground  ml-[46px]">
+                  {selectedTool.modalContent.shortDescription}
+                </p>
               </div>
 
-              {/* Two Column Layout */}
-              <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
-                {/* Left Column - Information */}
-                <div className="flex-1 lg:w-3/5 overflow-y-auto">
-                  <ScrollArea className="h-full">
-                    <div className="p-5 space-y-4">
-                  {/* Description with improved typography */}
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {selectedTool.modalContent.description}
-                  </p>
-
-                      {/* Benefits */}
-                      <div className="space-y-2">
-                        <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-2 text-muted-foreground">
-                          <div className="h-0.5 w-4 rounded-full bg-primary/30" />
-                          Key Features
-                        </h3>
-                        <div className="grid grid-cols-2 gap-2">
-                          {selectedTool.modalContent.benefits.map(
-                            (benefit, idx) => (
-                              <div
-                                key={idx}
-                                className="flex items-start gap-2 rounded-md border bg-muted/20 p-2 transition-all duration-200 hover:border-primary/30 hover:bg-muted/40 h-full"
-                              >
-                                <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 shrink-0">
-                                  <benefit.icon className="h-3 w-3 text-primary" />
-                                </div>
-                                <div className="space-y-0.5 flex-1 min-w-0">
-                                  <p className="text-xs font-semibold leading-tight">
-                                    {benefit.title}
-                                  </p>
-                                  <p className="text-xs text-muted-foreground leading-snug">
-                                    {benefit.description}
-                                  </p>
-                                </div>
-                              </div>
-                            )
-                          )}
-                        </div>
-                      </div>
-
-                  {/* Example Insights */}
-                      <div className="space-y-2">
-                        <h3 className="text-xs font-bold uppercase tracking-wide flex items-center gap-2 text-muted-foreground">
-                          <div className="h-0.5 w-4 rounded-full bg-primary/30" />
-                      Sample Insights
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Badge variant="info" className="text-[10px] px-1.5 py-0.5 cursor-help" asChild>
-                                  <span>Personalizable</span>
-                                </Badge>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" sideOffset={5} className="max-w-xs">
-                              <p>We personalize the insights based on your university requirements</p>
-                            </TooltipContent>
-                          </Tooltip>
-                    </h3>
-                        <div className="rounded-md border bg-muted/20 p-3 space-y-2">
-                      {selectedTool.modalContent.exampleInsights.map(
-                        (insight, idx) => (
-                          <div
-                            key={idx}
-                                className="flex items-start gap-2"
-                          >
-                            <div
-                                  className="shrink-0 mt-0.5 h-4 w-4 flex items-center justify-center rounded-full text-[10px] font-semibold bg-primary/10 text-primary"
-                            >
-                              {idx + 1}
-                            </div>
-                                <p className="text-xs leading-snug text-foreground/90">
-                              {insight}
-                            </p>
-                          </div>
-                        )
-                      )}
-                    </div>
+              {/* Action Panel */}
+              <div className="flex flex-col flex-1 overflow-hidden">
+                <div className="p-5 space-y-3 flex-1 overflow-y-auto">
+                  <div className="space-y-3">
+                    {renderActionInterface()}
                   </div>
                 </div>
-              </ScrollArea>
-                </div>
 
-                {/* Right Column - Action Panel */}
-                <div className="lg:w-2/5 border-t lg:border-t-0 lg:border-l bg-muted/30 flex flex-col">
-                  <div className="p-5 space-y-3 flex-1 overflow-y-auto">
-                    <div className="space-y-1">
-                      <h3 className="text-base font-bold flex items-center gap-2">
+                {/* Action Button - Sticky at bottom */}
+                <div className="p-5 pt-3 border-t bg-background/95 backdrop-blur">
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className="w-full gap-2"
+                    size="default"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Analyzing...
+                      </>
+                    ) : (
+                      <>
+                        {selectedTool?.modalContent.primaryCTA}
                         <ArrowUpRight className="h-4 w-4" />
-                        Get Started
-                      </h3>
-                      <p className="text-xs text-muted-foreground">
-                        Input your data below to analyze
-                      </p>
-                    </div>
-
-                    <div className="space-y-3">
-                      {renderActionInterface()}
-                    </div>
-                  </div>
-
-                  {/* Action Button - Sticky at bottom */}
-                  <div className="p-5 pt-3 border-t bg-background/95 backdrop-blur">
-                    <Button
-                      onClick={handleSubmit}
-                      disabled={isSubmitting}
-                      className="w-full gap-2"
-                      size="default"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Analyzing...
-                        </>
-                      ) : (
-                        <>
-                          Analyze
-                          <ArrowUpRight className="h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
             </div>
