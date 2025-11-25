@@ -9,6 +9,7 @@ import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list"
 import { PageHeader } from "@/components/page-header";
 import { ThemeSelector } from "@/components/theme-selector";
 import { StyleSelector } from "@/components/style-selector";
+import { CounselorTools } from "@/components/counselor-tools";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -75,9 +76,6 @@ import {
   ChevronLeft,
   Check,
   ExternalLink,
-  UserPlus,
-  ClipboardList,
-  GraduationCap,
 } from "lucide-react";
 
 // Mock Data
@@ -365,37 +363,6 @@ export default function Dashboard() {
     }
   };
 
-  // Quick Actions Data
-  const quickActions = [
-    {
-      title: "Invite Member",
-      description: "Add a new team member",
-      icon: UserPlus,
-      iconBg: "bg-primary/10",
-      iconColor: "text-primary",
-    },
-    {
-      title: "Create Cohort",
-      description: "Start a new student cohort",
-      icon: GraduationCap,
-      iconBg: "bg-primary/10",
-      iconColor: "text-primary",
-    },
-    {
-      title: "Create Interview",
-      description: "Set up interview template",
-      icon: Calendar,
-      iconBg: "bg-primary/10",
-      iconColor: "text-primary",
-    },
-    {
-      title: "Review Submission",
-      description: "Start reviewing pending items",
-      icon: ClipboardList,
-      iconBg: "bg-primary/10",
-      iconColor: "text-primary",
-    },
-  ];
 
   // Impact Stats Data
   const impactStats = [
@@ -521,28 +488,12 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Counselor Tools */}
         <div className="space-y-3 max-w-full">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Quick Actions
+            Counselor Tools
           </h2>
-          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
-            {quickActions.map((action, index) => (
-              <AnimatedCard key={action.title} delay={index * 0.05}>
-                <Card className="rounded-xl shadow-sm py-0 transition-all duration-200 hover:shadow-lg hover:scale-[1.03] cursor-pointer group relative overflow-hidden bg-linear-to-br from-primary/5 to-transparent border-primary/20">
-                  <CardContent className="p-5 flex items-center gap-3">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${action.iconBg} transition-transform group-hover:scale-110 shrink-0`}>
-                      <action.icon className={`h-5 w-5 ${action.iconColor}`} />
-                    </div>
-                    <div className="space-y-0.5 text-left flex-1 min-w-0">
-                      <h3 className="font-semibold text-sm">{action.title}</h3>
-                      <p className="text-xs text-muted-foreground">{action.description}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </AnimatedCard>
-            ))}
-          </div>
+          <CounselorTools />
         </div>
 
         {/* Impact Stats Row */}
