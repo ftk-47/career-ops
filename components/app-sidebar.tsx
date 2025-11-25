@@ -228,7 +228,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="border-t border-border p-4 group-data-[collapsible=icon]:p-2">
+      <SidebarFooter className=" border-border p-4 group-data-[collapsible=icon]:p-2">
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -263,7 +263,7 @@ export function AppSidebar() {
           </Card>
         </motion.div>
 
-        <Separator className="mt-4 mb-4 group-data-[collapsible=icon]:my-2" />
+        <Separator className="my-1 group-data-[collapsible=icon]:my-2" />
 
         <DropdownMenu open={isAccountDropdownOpen} onOpenChange={setIsAccountDropdownOpen}>
           <DropdownMenuTrigger asChild>
