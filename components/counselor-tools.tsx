@@ -334,6 +334,12 @@ export function CounselorTools() {
                   <Upload className="h-4 w-4" />
                   Upload File
                 </Button>
+                <Button
+                  size="sm"
+                  className="gap-2"
+                >
+                  Use Sample
+                </Button>
                 <input
                   id="jd-file"
                   type="file"
@@ -370,6 +376,12 @@ export function CounselorTools() {
                 >
                   <Upload className="h-4 w-4" />
                   Upload Resume
+                </Button>
+                <Button
+                  size="sm"
+                  className="gap-2"
+                >
+                  Use Sample
                 </Button>
                 <input
                   id="resume-file"
@@ -408,6 +420,12 @@ export function CounselorTools() {
                   <Upload className="h-4 w-4" />
                   Upload File
                 </Button>
+                <Button
+                  size="sm"
+                  className="gap-2"
+                >
+                  Use Sample
+                </Button>
                 <input
                   id="interview-file"
                   type="file"
@@ -444,6 +462,12 @@ export function CounselorTools() {
                 >
                   <Upload className="h-4 w-4" />
                   Upload File
+                </Button>
+                <Button
+                  size="sm"
+                  className="gap-2"
+                >
+                  Use Sample
                 </Button>
                 <input
                   id="employer-file"
