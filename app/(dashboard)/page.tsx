@@ -255,33 +255,6 @@ const chartConfig = {
   },
 };
 
-// Student Progress Stats
-const studentProgressStats = [
-  {
-    title: "Average Resume Score",
-    value: "72.4",
-    subtitle: "Out of 100",
-    icon: FileText,
-    iconBg: "bg-blue-500/10",
-    iconColor: "text-blue-600 dark:text-blue-500",
-  },
-  {
-    title: "Avg. Improvement / Student",
-    value: "+18.2",
-    subtitle: "Points gained",
-    icon: TrendingUp,
-    iconBg: "bg-emerald-500/10", 
-    iconColor: "text-emerald-600 dark:text-emerald-500",
-  },
-  {
-    title: "Students at Target Score",
-    value: "64%",
-    subtitle: "Score ≥ 80",
-    icon: CheckCircle2,
-    iconBg: "bg-violet-500/10",
-    iconColor: "text-violet-600 dark:text-violet-500",
-  },
-];
 
 // Top 10 Resume Issues by Cohort
 const resumeIssuesByCohort: Record<string, Array<{ issue: string; count: number }>> = {
@@ -432,7 +405,7 @@ export default function Dashboard() {
   };
 
 
-  // Impact Stats Data
+  // Impact & Progress Stats Data
   const impactStats = [
     {
       title: "Active Students",
@@ -453,15 +426,24 @@ export default function Dashboard() {
       iconColor: "text-emerald-600 dark:text-emerald-500",
       href: "/student-portfolio",
     },
-    // {
-    //   title: "Avg. Interview Confidence",
-    //   value: "8.4/10",
-    //   subtitle: "Student self-reported",
-    //   icon: TrendingUp,
-    //   iconBg: "bg-orange-500/10",
-    //   iconColor: "text-orange-600 dark:text-orange-500",
-    //   href: "/student-portfolio",
-    // },
+    {
+      title: "Avg. Improvement / Student",
+      value: "+18.2",
+      subtitle: "Points gained",
+      icon: TrendingUp,
+      iconBg: "bg-emerald-500/10", 
+      iconColor: "text-emerald-600 dark:text-emerald-500",
+      href: "/student-portfolio",
+    },
+    {
+      title: "Students at Target Score",
+      value: "64%",
+      subtitle: "Score ≥ 80",
+      icon: CheckCircle2,
+      iconBg: "bg-violet-500/10",
+      iconColor: "text-violet-600 dark:text-violet-500",
+      href: "/student-portfolio",
+    },
   ];
 
   return (
@@ -555,12 +537,12 @@ export default function Dashboard() {
           <CounselorTools />
         </div>
 
-        {/* Impact Stats Row */}
+        {/* Impact & Progress Stats */}
         <div className="space-y-3 max-w-full">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Impact Overview
+            Impact & Progress Overview
           </h2>
-          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 max-w-full">
+          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
             {impactStats.map((stat, index) => (
               <AnimatedCard key={stat.title} delay={index * 0.05}>
                 <Link href={stat.href}>
@@ -598,39 +580,6 @@ export default function Dashboard() {
                     </CardContent>
                   </Card>
                 </Link>
-              </AnimatedCard>
-            ))}
-          </div>
-        </div>
-
-        {/* Student Progress Stats */}
-        <div className="space-y-3 max-w-full">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Student Progress
-          </h2>
-          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-3 max-w-full">
-            {studentProgressStats.map((stat, index) => (
-              <AnimatedCard key={stat.title} delay={index * 0.05}>
-                <Card className="rounded-xl shadow-sm py-0 transition-all duration-200 hover:shadow-md">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2 flex-1">
-                        <p className="text-sm font-medium text-muted-foreground">
-                          {stat.title}
-                        </p>
-                        <div className="flex items-baseline gap-2">
-                          <p className="text-3xl font-bold tracking-tight">{stat.value}</p>
-                        </div>
-                        {stat.subtitle && (
-                          <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
-                        )}
-                      </div>
-                      <div className={`p-2.5 rounded-lg ${stat.iconBg}`}>
-                        <stat.icon className={`h-4.5 w-4.5 ${stat.iconColor}`} />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </AnimatedCard>
             ))}
           </div>
