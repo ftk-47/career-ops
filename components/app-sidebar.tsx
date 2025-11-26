@@ -18,6 +18,7 @@ import {
   Settings,
   LogOut,
   ChevronDown,
+  BarChart3,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -50,6 +51,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -64,9 +71,15 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
+    label: "Analytics",
+    href: "/analytics",
+    icon: BarChart3,
+  },
+  {
     label: "Submissions",
     href: "/student-submissions",
     icon: FileText,
+    count: 14,
   },
   {
     label: "Student Portfolio",
@@ -208,6 +221,20 @@ export function AppSidebar() {
                             <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 h-4 group-data-[collapsible=icon]:hidden">
                               Beta
                             </Badge>
+                          )}
+                          {item.count !== undefined && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Badge className="ml-auto text-[10px] px-1.5 py-0 h-4 bg-yellow-500/20 text-yellow-700 dark:text-yellow-600 hover:bg-yellow-500/30 group-data-[collapsible=icon]:hidden">
+                                    {item.count}
+                                  </Badge>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Pending Reviews</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           )}
                           {/* {isActive && (
                             <motion.div

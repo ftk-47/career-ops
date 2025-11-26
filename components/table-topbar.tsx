@@ -48,6 +48,9 @@ interface TableTopbarProps {
   filtersContent?: ReactNode;
   showFilters?: boolean;
   activeFiltersCount?: number;
+
+  // Show/hide counts
+  showCounts?: boolean;
 }
 
 
@@ -64,6 +67,7 @@ export function TableTopbar({
   filtersContent,
   showFilters = true,
   activeFiltersCount = 0,
+  showCounts = true,
 }: TableTopbarProps) {
   return (
     <div className="space-y-5">
@@ -96,16 +100,18 @@ export function TableTopbar({
                   />
                 )}
                 <span>{tab.label}</span>
-                <span
-                  className={cn(
-                    "rounded-md px-1.5 py-0.5 text-xs tabular-nums transition-colors",
-                    isActive
-                      ? "bg-primary/10 text-primary font-medium"
-                      : "bg-muted text-muted-foreground"
-                  )}
-                >
-                  {tab.count}
-                </span>
+                {showCounts && (
+                  <span
+                    className={cn(
+                      "rounded-md px-1.5 py-0.5 text-xs tabular-nums transition-colors",
+                      isActive
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "bg-muted text-muted-foreground"
+                    )}
+                  >
+                    {tab.count}
+                  </span>
+                )}
 
                 {/* Active underline indicator */}
                 <span
@@ -138,9 +144,11 @@ export function TableTopbar({
                 >
                   {Icon && <Icon className="h-3.5 w-3.5" />}
                   {status.label}
-                  <span className="ml-0.5 rounded bg-muted px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-muted-foreground">
-                    {status.count}
-                  </span>
+                  {showCounts && (
+                    <span className="ml-0.5 rounded bg-muted px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-muted-foreground">
+                      {status.count}
+                    </span>
+                  )}
                 </TabsTrigger>
               );
             })}

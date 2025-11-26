@@ -23,7 +23,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { ChevronLeft, ChevronRight, FileText, Mail, Video, ClipboardCheck, Clock, CheckCircle2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, FileText, Mail, Video, ClipboardCheck, Clock, CheckCircle2, X, Users } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type SubmissionStatus = "Pending" | "Completed";
 type SubmissionType = "Resume" | "Cover Letter" | "Interview";
@@ -186,82 +192,81 @@ export default function ReviewCenter() {
       
       <main className="p-6 w-full">
         {/* Topbar */}
-        {sampleDataLoaded && (
-          <TableTopbar
-            tabs={typeTabs}
-            activeTab={typeFilter}
-            onTabChange={handleTypeChange}
-            statusTabs={statusTabs}
-            activeStatus={statusFilter}
-            onStatusChange={handleStatusChange}
-            searchTerm={searchTerm}
-            onSearchChange={handleSearchChange}
-            searchPlaceholder="Search by student name or email..."
-            filtersContent={
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Assigned Reviewer</Label>
-                  <Select
-                    value={reviewerFilter}
-                    onValueChange={(value) => {
-                      setReviewerFilter(value);
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select reviewer" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Reviewers</SelectItem>
-                      {reviewers.map((reviewer) => (
-                        <SelectItem key={reviewer} value={reviewer}>
-                          {reviewer}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium">Cohort</Label>
-                  <Select
-                    value={cohortFilter}
-                    onValueChange={(value) => {
-                      setCohortFilter(value);
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select cohort" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Cohorts</SelectItem>
-                      <SelectItem value="Fall 2024 - CS">Fall 2024 - CS</SelectItem>
-                      <SelectItem value="Fall 2024 - Business">Fall 2024 - Business</SelectItem>
-                      <SelectItem value="Spring 2025 - Engineering">Spring 2025 - Engineering</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                {(cohortFilter !== "all" || reviewerFilter !== "all") && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => {
-                      setCohortFilter("all");
-                      setReviewerFilter("all");
-                      setCurrentPage(1);
-                    }}
-                  >
-                    Clear filters
-                  </Button>
-                )}
+        <TableTopbar
+          tabs={typeTabs}
+          activeTab={typeFilter}
+          onTabChange={handleTypeChange}
+          statusTabs={statusTabs}
+          activeStatus={statusFilter}
+          onStatusChange={handleStatusChange}
+          searchTerm={searchTerm}
+          onSearchChange={handleSearchChange}
+          searchPlaceholder="Search by student name or email..."
+          showCounts={sampleDataLoaded}
+          filtersContent={
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Assigned Reviewer</Label>
+                <Select
+                  value={reviewerFilter}
+                  onValueChange={(value) => {
+                    setReviewerFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select reviewer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Reviewers</SelectItem>
+                    {reviewers.map((reviewer) => (
+                      <SelectItem key={reviewer} value={reviewer}>
+                        {reviewer}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            }
-            activeFiltersCount={
-              (cohortFilter !== "all" ? 1 : 0) + (reviewerFilter !== "all" ? 1 : 0)
-            }
-          />
-        )}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Cohort</Label>
+                <Select
+                  value={cohortFilter}
+                  onValueChange={(value) => {
+                    setCohortFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select cohort" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Cohorts</SelectItem>
+                    <SelectItem value="Fall 2024 - CS">Fall 2024 - CS</SelectItem>
+                    <SelectItem value="Fall 2024 - Business">Fall 2024 - Business</SelectItem>
+                    <SelectItem value="Spring 2025 - Engineering">Spring 2025 - Engineering</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {(cohortFilter !== "all" || reviewerFilter !== "all") && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => {
+                    setCohortFilter("all");
+                    setReviewerFilter("all");
+                    setCurrentPage(1);
+                  }}
+                >
+                  Clear filters
+                </Button>
+              )}
+            </div>
+          }
+          activeFiltersCount={
+            (cohortFilter !== "all" ? 1 : 0) + (reviewerFilter !== "all" ? 1 : 0)
+          }
+        />
 
         {/* Active Filters Pills */}
         {(cohortFilter !== "all" || reviewerFilter !== "all") && (
@@ -393,7 +398,28 @@ export default function ReviewCenter() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm">{item.assignedReviewer}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm">{item.assignedReviewer}</span>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md cursor-default ${
+                                  item.reviewerWorkload >= 15 
+                                    ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" 
+                                    : item.reviewerWorkload >= 10 
+                                      ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" 
+                                      : "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                                }`}>
+                                  <Users className="h-3.5 w-3.5" />
+                                  <span className="text-xs font-medium">{item.reviewerWorkload}</span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{item.assignedReviewer} has {item.reviewerWorkload} active reviews assigned</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                       </TableCell>
                       <TableCell className="text-xs">{item.cohort}</TableCell>
                       <TableCell>
