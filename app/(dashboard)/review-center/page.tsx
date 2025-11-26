@@ -3,20 +3,11 @@
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
-import { Input } from "@/components/ui/input";
+import { TableTopbar, StatusTab, TopbarTab } from "@/components/table-topbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableCell,
@@ -24,9 +15,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, ChevronLeft, ChevronRight, ListChecks, FileText, Mail, Video, Filter, X, ClipboardCheck } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { ChevronLeft, ChevronRight, FileText, Mail, Video, ClipboardCheck, Clock, CheckCircle2, X } from "lucide-react";
 
-type SubmissionStatus = "Pending" | "In Review" | "Completed" | "Rejected";
+type SubmissionStatus = "Pending" | "Completed";
 type SubmissionType = "Resume" | "Cover Letter" | "Interview";
 
 interface ReviewItem {
@@ -43,27 +42,25 @@ interface ReviewItem {
 
 const mockData: ReviewItem[] = [
   { id: "1", studentName: "Alice Johnson", studentEmail: "alice.j@university.edu", submissionType: "Resume", assignedReviewer: "Dr. Sarah Chen", reviewerWorkload: 12, cohort: "Fall 2024 - CS", status: "Pending", submittedAt: "2024-11-19" },
-  { id: "2", studentName: "Bob Smith", studentEmail: "bob.s@university.edu", submissionType: "Cover Letter", assignedReviewer: "Prof. Michael Lee", reviewerWorkload: 8, cohort: "Fall 2024 - Business", status: "In Review", submittedAt: "2024-11-18" },
+  { id: "2", studentName: "Bob Smith", studentEmail: "bob.s@university.edu", submissionType: "Cover Letter", assignedReviewer: "Prof. Michael Lee", reviewerWorkload: 8, cohort: "Fall 2024 - Business", status: "Pending", submittedAt: "2024-11-18" },
   { id: "3", studentName: "Carol Williams", studentEmail: "carol.w@university.edu", submissionType: "Interview", assignedReviewer: "Dr. Sarah Chen", reviewerWorkload: 12, cohort: "Spring 2025 - Engineering", status: "Completed", submittedAt: "2024-11-17" },
   { id: "4", studentName: "David Brown", studentEmail: "david.b@university.edu", submissionType: "Resume", assignedReviewer: "Ms. Emily Davis", reviewerWorkload: 15, cohort: "Fall 2024 - CS", status: "Pending", submittedAt: "2024-11-16" },
-  { id: "5", studentName: "Emma Davis", studentEmail: "emma.d@university.edu", submissionType: "Resume", assignedReviewer: "Prof. Michael Lee", reviewerWorkload: 8, cohort: "Fall 2024 - Business", status: "Rejected", submittedAt: "2024-11-15" },
-  { id: "6", studentName: "Frank Miller", studentEmail: "frank.m@university.edu", submissionType: "Cover Letter", assignedReviewer: "Dr. James Wilson", reviewerWorkload: 10, cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-14" },
+  { id: "5", studentName: "Emma Davis", studentEmail: "emma.d@university.edu", submissionType: "Resume", assignedReviewer: "Prof. Michael Lee", reviewerWorkload: 8, cohort: "Fall 2024 - Business", status: "Completed", submittedAt: "2024-11-15" },
+  { id: "6", studentName: "Frank Miller", studentEmail: "frank.m@university.edu", submissionType: "Cover Letter", assignedReviewer: "Dr. James Wilson", reviewerWorkload: 10, cohort: "Spring 2025 - Engineering", status: "Pending", submittedAt: "2024-11-14" },
   { id: "7", studentName: "Grace Wilson", studentEmail: "grace.w@university.edu", submissionType: "Interview", assignedReviewer: "Dr. Sarah Chen", reviewerWorkload: 12, cohort: "Fall 2024 - CS", status: "Completed", submittedAt: "2024-11-13" },
   { id: "8", studentName: "Henry Moore", studentEmail: "henry.m@university.edu", submissionType: "Resume", assignedReviewer: "Ms. Emily Davis", reviewerWorkload: 15, cohort: "Fall 2024 - Business", status: "Pending", submittedAt: "2024-11-12" },
-  { id: "9", studentName: "Iris Taylor", studentEmail: "iris.t@university.edu", submissionType: "Cover Letter", assignedReviewer: "Prof. Michael Lee", reviewerWorkload: 8, cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-11" },
+  { id: "9", studentName: "Iris Taylor", studentEmail: "iris.t@university.edu", submissionType: "Cover Letter", assignedReviewer: "Prof. Michael Lee", reviewerWorkload: 8, cohort: "Spring 2025 - Engineering", status: "Completed", submittedAt: "2024-11-11" },
   { id: "10", studentName: "Jack Anderson", studentEmail: "jack.a@university.edu", submissionType: "Resume", assignedReviewer: "Dr. James Wilson", reviewerWorkload: 10, cohort: "Fall 2024 - CS", status: "Completed", submittedAt: "2024-11-10" },
   { id: "11", studentName: "Kate Thomas", studentEmail: "kate.t@university.edu", submissionType: "Interview", assignedReviewer: "Dr. Sarah Chen", reviewerWorkload: 12, cohort: "Fall 2024 - Business", status: "Pending", submittedAt: "2024-11-09" },
-  { id: "12", studentName: "Leo Jackson", studentEmail: "leo.j@university.edu", submissionType: "Resume", assignedReviewer: "Ms. Emily Davis", reviewerWorkload: 15, cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-08" },
+  { id: "12", studentName: "Leo Jackson", studentEmail: "leo.j@university.edu", submissionType: "Resume", assignedReviewer: "Ms. Emily Davis", reviewerWorkload: 15, cohort: "Spring 2025 - Engineering", status: "Pending", submittedAt: "2024-11-08" },
   { id: "13", studentName: "Mia Martinez", studentEmail: "mia.m@university.edu", submissionType: "Cover Letter", assignedReviewer: "Prof. Michael Lee", reviewerWorkload: 8, cohort: "Fall 2024 - CS", status: "Pending", submittedAt: "2024-11-07" },
   { id: "14", studentName: "Noah Garcia", studentEmail: "noah.g@university.edu", submissionType: "Interview", assignedReviewer: "Dr. James Wilson", reviewerWorkload: 10, cohort: "Fall 2024 - Business", status: "Completed", submittedAt: "2024-11-06" },
-  { id: "15", studentName: "Olivia Rodriguez", studentEmail: "olivia.r@university.edu", submissionType: "Resume", assignedReviewer: "Dr. Sarah Chen", reviewerWorkload: 12, cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-05" },
+  { id: "15", studentName: "Olivia Rodriguez", studentEmail: "olivia.r@university.edu", submissionType: "Resume", assignedReviewer: "Dr. Sarah Chen", reviewerWorkload: 12, cohort: "Spring 2025 - Engineering", status: "Pending", submittedAt: "2024-11-05" },
 ];
 
-const statusVariants: Record<SubmissionStatus, "success" | "warning" | "error" | "info"> = {
+const statusVariants: Record<SubmissionStatus, "success" | "warning"> = {
   Pending: "warning",
-  "In Review": "info",
   Completed: "success",
-  Rejected: "error",
 };
 
 const submissionTypeIcons: Record<SubmissionType, React.ElementType> = {
@@ -76,18 +73,47 @@ const reviewers = ["Dr. Sarah Chen", "Prof. Michael Lee", "Ms. Emily Davis", "Dr
 
 export default function ReviewCenter() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [reviewerFilter, setReviewerFilter] = useState<string>("all");
-  const [statusFilter, setStatusFilter] = useState<SubmissionStatus | "all">("all");
+  const [typeFilter, setTypeFilter] = useState<SubmissionType>("Resume");
+  const [statusFilter, setStatusFilter] = useState<SubmissionStatus>("Pending");
   const [cohortFilter, setCohortFilter] = useState<string>("all");
+  const [reviewerFilter, setReviewerFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [sortConfig, setSortConfig] = useState<{ key: keyof ReviewItem; direction: "asc" | "desc" } | null>(null);
   const [sampleDataLoaded, setSampleDataLoaded] = useState(false);
 
-  const statuses: SubmissionStatus[] = ["Pending", "In Review", "Completed", "Rejected"];
+  // Compute type counts for tabs
+  const typeCounts = useMemo(() => ({
+    resume: sampleDataLoaded ? mockData.filter(s => s.submissionType === "Resume").length : 0,
+    coverLetter: sampleDataLoaded ? mockData.filter(s => s.submissionType === "Cover Letter").length : 0,
+    interview: sampleDataLoaded ? mockData.filter(s => s.submissionType === "Interview").length : 0,
+  }), [sampleDataLoaded]);
+
+  // Compute status counts based on selected type
+  const statusCounts = useMemo(() => {
+    if (!sampleDataLoaded) return { pending: 0, completed: 0 };
+    
+    const typeFiltered = mockData.filter(s => s.submissionType === typeFilter);
+    
+    return {
+      pending: typeFiltered.filter(s => s.status === "Pending").length,
+      completed: typeFiltered.filter(s => s.status === "Completed").length,
+    };
+  }, [sampleDataLoaded, typeFilter]);
+
+  // Configure tabs for TableTopbar
+  const typeTabs: TopbarTab[] = [
+    { id: "Resume", label: "Resumes", icon: FileText, count: typeCounts.resume },
+    { id: "Cover Letter", label: "Cover Letters", icon: Mail, count: typeCounts.coverLetter },
+    { id: "Interview", label: "Interviews", icon: Video, count: typeCounts.interview },
+  ];
+
+  const statusTabs: StatusTab[] = [
+    { id: "Pending", label: "Pending", icon: Clock, count: statusCounts.pending },
+    { id: "Completed", label: "Completed", icon: CheckCircle2, count: statusCounts.completed },
+  ];
 
   const filteredAndSortedData = useMemo(() => {
-    // If sample data hasn't been loaded, return empty array
     if (!sampleDataLoaded) {
       return [];
     }
@@ -95,10 +121,11 @@ export default function ReviewCenter() {
     const filtered = mockData.filter((item) => {
       const matchesSearch = item.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.studentEmail.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesReviewer = reviewerFilter === "all" || item.assignedReviewer === reviewerFilter;
-      const matchesStatus = statusFilter === "all" || item.status === statusFilter;
+      const matchesType = item.submissionType === typeFilter;
+      const matchesStatus = item.status === statusFilter;
       const matchesCohort = cohortFilter === "all" || item.cohort === cohortFilter;
-      return matchesSearch && matchesReviewer && matchesStatus && matchesCohort;
+      const matchesReviewer = reviewerFilter === "all" || item.assignedReviewer === reviewerFilter;
+      return matchesSearch && matchesType && matchesStatus && matchesCohort && matchesReviewer;
     });
 
     if (sortConfig) {
@@ -112,7 +139,7 @@ export default function ReviewCenter() {
     }
 
     return filtered;
-  }, [searchTerm, reviewerFilter, statusFilter, cohortFilter, sortConfig, sampleDataLoaded]);
+  }, [searchTerm, typeFilter, statusFilter, cohortFilter, reviewerFilter, sortConfig, sampleDataLoaded]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -137,72 +164,108 @@ export default function ReviewCenter() {
     return name.split(" ").map((n) => n[0]).join("").toUpperCase();
   };
 
+  const handleTypeChange = (type: string) => {
+    setTypeFilter(type as SubmissionType);
+    setStatusFilter("Pending");
+    setCurrentPage(1);
+  };
+
+  const handleStatusChange = (status: string) => {
+    setStatusFilter(status as SubmissionStatus);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <PageHeader title="Review Center" description="Manage and distribute submissions across all reviewers" />
-      <main className="p-6 space-y-6 w-full">
-        {/* Filters Bar */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search by student name or email..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="pl-10 text-base"
-            />
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="text-sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Reviewer</DropdownMenuLabel>
-              <DropdownMenuRadioGroup 
-                value={reviewerFilter} 
-                onValueChange={(value) => {
-                  setReviewerFilter(value);
-                  setCurrentPage(1);
-                }}
-              >
-                <DropdownMenuRadioItem value="all">All Reviewers</DropdownMenuRadioItem>
-                {reviewers.map((reviewer) => (
-                  <DropdownMenuRadioItem key={reviewer} value={reviewer}>
-                    {reviewer}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-              
-              <DropdownMenuSeparator />
-              
-              <DropdownMenuLabel>Status</DropdownMenuLabel>
-              <DropdownMenuRadioGroup 
-                value={statusFilter} 
-                onValueChange={(value) => {
-                  setStatusFilter(value as SubmissionStatus | "all");
-                  setCurrentPage(1);
-                }}
-              >
-                <DropdownMenuRadioItem value="all">All Status</DropdownMenuRadioItem>
-                {statuses.map((status) => (
-                  <DropdownMenuRadioItem key={status} value={status}>
-                    {status}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      
+      <main className="p-6 w-full">
+        {/* Topbar */}
+        {sampleDataLoaded && (
+          <TableTopbar
+            tabs={typeTabs}
+            activeTab={typeFilter}
+            onTabChange={handleTypeChange}
+            statusTabs={statusTabs}
+            activeStatus={statusFilter}
+            onStatusChange={handleStatusChange}
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+            searchPlaceholder="Search by student name or email..."
+            filtersContent={
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Assigned Reviewer</Label>
+                  <Select
+                    value={reviewerFilter}
+                    onValueChange={(value) => {
+                      setReviewerFilter(value);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select reviewer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Reviewers</SelectItem>
+                      {reviewers.map((reviewer) => (
+                        <SelectItem key={reviewer} value={reviewer}>
+                          {reviewer}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Cohort</Label>
+                  <Select
+                    value={cohortFilter}
+                    onValueChange={(value) => {
+                      setCohortFilter(value);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select cohort" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Cohorts</SelectItem>
+                      <SelectItem value="Fall 2024 - CS">Fall 2024 - CS</SelectItem>
+                      <SelectItem value="Fall 2024 - Business">Fall 2024 - Business</SelectItem>
+                      <SelectItem value="Spring 2025 - Engineering">Spring 2025 - Engineering</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {(cohortFilter !== "all" || reviewerFilter !== "all") && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                      setCohortFilter("all");
+                      setReviewerFilter("all");
+                      setCurrentPage(1);
+                    }}
+                  >
+                    Clear filters
+                  </Button>
+                )}
+              </div>
+            }
+            activeFiltersCount={
+              (cohortFilter !== "all" ? 1 : 0) + (reviewerFilter !== "all" ? 1 : 0)
+            }
+          />
+        )}
 
         {/* Active Filters Pills */}
-        {(reviewerFilter !== "all" || statusFilter !== "all") && (
-          <div className="flex items-center gap-2 flex-wrap">
+        {(cohortFilter !== "all" || reviewerFilter !== "all") && (
+          <div className="flex items-center gap-2 flex-wrap mt-4">
             <span className="text-sm text-muted-foreground">Active filters:</span>
             {reviewerFilter !== "all" && (
               <Badge variant="secondary" className="gap-1">
@@ -218,12 +281,12 @@ export default function ReviewCenter() {
                 </button>
               </Badge>
             )}
-            {statusFilter !== "all" && (
+            {cohortFilter !== "all" && (
               <Badge variant="secondary" className="gap-1">
-                Status: {statusFilter}
+                Cohort: {cohortFilter}
                 <button
                   onClick={() => {
-                    setStatusFilter("all");
+                    setCohortFilter("all");
                     setCurrentPage(1);
                   }}
                   className="ml-1 hover:bg-muted rounded-full p-0.5"
@@ -232,23 +295,11 @@ export default function ReviewCenter() {
                 </button>
               </Badge>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setReviewerFilter("all");
-                setStatusFilter("all");
-                setCurrentPage(1);
-              }}
-              className="h-7 text-xs"
-            >
-              Clear all
-            </Button>
           </div>
         )}
 
         {/* Table */}
-        <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
+        <div className="rounded-xl border bg-card shadow-sm overflow-x-auto mt-6">
           <Table className="min-w-full">
             <TableHeader>
               <TableRow>
@@ -290,8 +341,8 @@ export default function ReviewCenter() {
                             setSampleDataLoaded(true);
                           }
                           setSearchTerm("");
-                          setReviewerFilter("all");
-                          setStatusFilter("all");
+                          setTypeFilter("Resume");
+                          setStatusFilter("Pending");
                           setCohortFilter("all");
                           setCurrentPage(1);
                         }
@@ -306,8 +357,8 @@ export default function ReviewCenter() {
                             setSampleDataLoaded(false);
                           }
                           setSearchTerm("");
-                          setReviewerFilter("all");
-                          setStatusFilter("all");
+                          setTypeFilter("Resume");
+                          setStatusFilter("Pending");
                           setCohortFilter("all");
                           setCurrentPage(1);
                         }
@@ -317,7 +368,7 @@ export default function ReviewCenter() {
                 </TableRow>
               </tbody>
             ) : (
-              <StaggerContainer key={`${currentPage}-${reviewerFilter}-${statusFilter}-${cohortFilter}-${searchTerm}`} as="tbody">
+              <StaggerContainer key={`${currentPage}-${typeFilter}-${statusFilter}-${cohortFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((item) => {
                   const TypeIcon = submissionTypeIcons[item.submissionType];
                   return (
@@ -368,7 +419,7 @@ export default function ReviewCenter() {
 
         {/* Pagination */}
         {filteredAndSortedData.length > 0 && (
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-2">
               <p className="text-sm text-muted-foreground">
                 Showing {paginatedData.length === 0 ? 0 : (currentPage - 1) * pageSize + 1} to{" "}

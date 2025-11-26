@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
-import { Input } from "@/components/ui/input";
+import { TableTopbar, StatusTab, TopbarTab } from "@/components/table-topbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -22,14 +22,18 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Search, MoreVertical, ChevronLeft, ChevronRight, Eye, FileEdit, FileText, Mail, Video, Filter, X } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { MoreVertical, ChevronLeft, ChevronRight, Eye, FileEdit, FileText, Mail, Video, X, Clock, CheckCircle2 } from "lucide-react";
 
-type SubmissionStatus = "Pending" | "In Review" | "Completed" | "Rejected";
+type SubmissionStatus = "Pending" | "Completed";
 type SubmissionType = "Resume" | "Cover Letter" | "Interview";
 
 interface Submission {
@@ -44,24 +48,22 @@ interface Submission {
 
 const mockData: Submission[] = [
   { id: "1", studentName: "Alice Johnson", studentEmail: "alice.j@university.edu", submissionType: "Resume", cohort: "Fall 2024 - CS", status: "Pending", submittedAt: "2024-11-19" },
-  { id: "2", studentName: "Bob Smith", studentEmail: "bob.s@university.edu", submissionType: "Cover Letter", cohort: "Fall 2024 - Business", status: "In Review", submittedAt: "2024-11-18" },
+  { id: "2", studentName: "Bob Smith", studentEmail: "bob.s@university.edu", submissionType: "Cover Letter", cohort: "Fall 2024 - Business", status: "Pending", submittedAt: "2024-11-18" },
   { id: "3", studentName: "Carol Williams", studentEmail: "carol.w@university.edu", submissionType: "Interview", cohort: "Spring 2025 - Engineering", status: "Completed", submittedAt: "2024-11-17" },
   { id: "4", studentName: "David Brown", studentEmail: "david.b@university.edu", submissionType: "Resume", cohort: "Fall 2024 - CS", status: "Pending", submittedAt: "2024-11-16" },
-  { id: "5", studentName: "Emma Davis", studentEmail: "emma.d@university.edu", submissionType: "Resume", cohort: "Fall 2024 - Business", status: "Rejected", submittedAt: "2024-11-15" },
-  { id: "6", studentName: "Frank Miller", studentEmail: "frank.m@university.edu", submissionType: "Cover Letter", cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-14" },
+  { id: "5", studentName: "Emma Davis", studentEmail: "emma.d@university.edu", submissionType: "Resume", cohort: "Fall 2024 - Business", status: "Completed", submittedAt: "2024-11-15" },
+  { id: "6", studentName: "Frank Miller", studentEmail: "frank.m@university.edu", submissionType: "Cover Letter", cohort: "Spring 2025 - Engineering", status: "Pending", submittedAt: "2024-11-14" },
   { id: "7", studentName: "Grace Wilson", studentEmail: "grace.w@university.edu", submissionType: "Interview", cohort: "Fall 2024 - CS", status: "Completed", submittedAt: "2024-11-13" },
   { id: "8", studentName: "Henry Moore", studentEmail: "henry.m@university.edu", submissionType: "Resume", cohort: "Fall 2024 - Business", status: "Pending", submittedAt: "2024-11-12" },
-  { id: "9", studentName: "Iris Taylor", studentEmail: "iris.t@university.edu", submissionType: "Cover Letter", cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-11" },
+  { id: "9", studentName: "Iris Taylor", studentEmail: "iris.t@university.edu", submissionType: "Cover Letter", cohort: "Spring 2025 - Engineering", status: "Completed", submittedAt: "2024-11-11" },
   { id: "10", studentName: "Jack Anderson", studentEmail: "jack.a@university.edu", submissionType: "Resume", cohort: "Fall 2024 - CS", status: "Completed", submittedAt: "2024-11-10" },
   { id: "11", studentName: "Kate Thomas", studentEmail: "kate.t@university.edu", submissionType: "Interview", cohort: "Fall 2024 - Business", status: "Pending", submittedAt: "2024-11-09" },
-  { id: "12", studentName: "Leo Jackson", studentEmail: "leo.j@university.edu", submissionType: "Resume", cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-08" },
+  { id: "12", studentName: "Leo Jackson", studentEmail: "leo.j@university.edu", submissionType: "Resume", cohort: "Spring 2025 - Engineering", status: "Pending", submittedAt: "2024-11-08" },
 ];
 
-const statusVariants: Record<SubmissionStatus, "success" | "warning" | "error" | "info"> = {
+const statusVariants: Record<SubmissionStatus, "success" | "warning"> = {
   Pending: "warning",
-  "In Review": "info",
   Completed: "success",
-  Rejected: "error",
 };
 
 const submissionTypeIcons: Record<SubmissionType, React.ElementType> = {
@@ -72,8 +74,8 @@ const submissionTypeIcons: Record<SubmissionType, React.ElementType> = {
 
 export default function StudentSubmissions() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState<SubmissionType | "all">("all");
-  const [statusFilter, setStatusFilter] = useState<SubmissionStatus | "all">("all");
+  const [typeFilter, setTypeFilter] = useState<SubmissionType>("Resume");
+  const [statusFilter, setStatusFilter] = useState<SubmissionStatus>("Pending");
   const [cohortFilter, setCohortFilter] = useState<string>("all");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
@@ -81,11 +83,38 @@ export default function StudentSubmissions() {
   const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: "asc" | "desc" } | null>(null);
   const [sampleDataLoaded, setSampleDataLoaded] = useState(false);
 
-  const submissionTypes: SubmissionType[] = ["Resume", "Cover Letter", "Interview"];
-  const statuses: SubmissionStatus[] = ["Pending", "In Review", "Completed", "Rejected"];
+  // Compute type counts for the type tabs
+  const typeCounts = useMemo(() => ({
+    resume: sampleDataLoaded ? mockData.filter(s => s.submissionType === "Resume").length : 0,
+    coverLetter: sampleDataLoaded ? mockData.filter(s => s.submissionType === "Cover Letter").length : 0,
+    interview: sampleDataLoaded ? mockData.filter(s => s.submissionType === "Interview").length : 0,
+  }), [sampleDataLoaded]);
+
+  // Compute status counts based on selected type (for the stats bar)
+  const statusCounts = useMemo(() => {
+    if (!sampleDataLoaded) return { pending: 0, completed: 0 };
+    
+    const typeFiltered = mockData.filter(s => s.submissionType === typeFilter);
+    
+    return {
+      pending: typeFiltered.filter(s => s.status === "Pending").length,
+      completed: typeFiltered.filter(s => s.status === "Completed").length,
+    };
+  }, [sampleDataLoaded, typeFilter]);
+
+  // Configure tabs for TableTopbar
+  const typeTabs: TopbarTab[] = [
+    { id: "Resume", label: "Resumes", icon: FileText, count: typeCounts.resume },
+    { id: "Cover Letter", label: "Cover Letters", icon: Mail, count: typeCounts.coverLetter },
+    { id: "Interview", label: "Interviews", icon: Video, count: typeCounts.interview },
+  ];
+
+  const statusTabs: StatusTab[] = [
+    { id: "Pending", label: "Pending", icon: Clock, count: statusCounts.pending },
+    { id: "Completed", label: "Completed", icon: CheckCircle2, count: statusCounts.completed },
+  ];
 
   const filteredAndSortedData = useMemo(() => {
-    // If sample data hasn't been loaded, return empty array
     if (!sampleDataLoaded) {
       return [];
     }
@@ -93,8 +122,8 @@ export default function StudentSubmissions() {
     const filtered = mockData.filter((item) => {
       const matchesSearch = item.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.studentEmail.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = typeFilter === "all" || item.submissionType === typeFilter;
-      const matchesStatus = statusFilter === "all" || item.status === statusFilter;
+      const matchesType = item.submissionType === typeFilter;
+      const matchesStatus = item.status === statusFilter;
       const matchesCohort = cohortFilter === "all" || item.cohort === cohortFilter;
       return matchesSearch && matchesType && matchesStatus && matchesCohort;
     });
@@ -153,113 +182,96 @@ export default function StudentSubmissions() {
     return name.split(" ").map((n) => n[0]).join("").toUpperCase();
   };
 
+  const handleTypeChange = (type: string) => {
+    setTypeFilter(type as SubmissionType);
+    setStatusFilter("Pending");
+    setCurrentPage(1);
+  };
+
+  const handleStatusChange = (status: string) => {
+    setStatusFilter(status as SubmissionStatus);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <PageHeader title="Student Submissions" description="Review and manage student submissions assigned to you" />
-      <main className="p-6 space-y-6 w-full">
-        {/* Filters Bar */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search by student name or email..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="pl-10 text-base"
-            />
-          </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="text-sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Submission Type</DropdownMenuLabel>
-              <DropdownMenuRadioGroup 
-                value={typeFilter} 
-                onValueChange={(value) => {
-                  setTypeFilter(value as SubmissionType | "all");
-                  setCurrentPage(1);
-                }}
-              >
-                <DropdownMenuRadioItem value="all">All Types</DropdownMenuRadioItem>
-                {submissionTypes.map((type) => (
-                  <DropdownMenuRadioItem key={type} value={type}>
-                    {type}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-              
-              <DropdownMenuSeparator />
-              
-              <DropdownMenuLabel>Status</DropdownMenuLabel>
-              <DropdownMenuRadioGroup 
-                value={statusFilter} 
-                onValueChange={(value) => {
-                  setStatusFilter(value as SubmissionStatus | "all");
-                  setCurrentPage(1);
-                }}
-              >
-                <DropdownMenuRadioItem value="all">All Status</DropdownMenuRadioItem>
-                {statuses.map((status) => (
-                  <DropdownMenuRadioItem key={status} value={status}>
-                    {status}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      
+      <main className="p-6 w-full">
+        {/* Topbar: Tabs + Controls */}
+        {sampleDataLoaded && (
+          <TableTopbar
+            tabs={typeTabs}
+            activeTab={typeFilter}
+            onTabChange={handleTypeChange}
+            statusTabs={statusTabs}
+            activeStatus={statusFilter}
+            onStatusChange={handleStatusChange}
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+            searchPlaceholder="Search by student name or email..."
+            filtersContent={
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">Cohort</Label>
+                  <Select
+                    value={cohortFilter}
+                    onValueChange={(value) => {
+                      setCohortFilter(value);
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select cohort" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Cohorts</SelectItem>
+                      <SelectItem value="Fall 2024 - CS">Fall 2024 - CS</SelectItem>
+                      <SelectItem value="Fall 2024 - Business">Fall 2024 - Business</SelectItem>
+                      <SelectItem value="Spring 2025 - Engineering">Spring 2025 - Engineering</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {cohortFilter !== "all" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                      setCohortFilter("all");
+                      setCurrentPage(1);
+                    }}
+                  >
+                    Clear filters
+                  </Button>
+                )}
+              </div>
+            }
+            activeFiltersCount={cohortFilter !== "all" ? 1 : 0}
+          />
+        )}
 
         {/* Active Filters Pills */}
-        {(typeFilter !== "all" || statusFilter !== "all") && (
-          <div className="flex items-center gap-2 flex-wrap">
+        {cohortFilter !== "all" && (
+          <div className="flex items-center gap-2 flex-wrap mt-4">
             <span className="text-sm text-muted-foreground">Active filters:</span>
-            {typeFilter !== "all" && (
-              <Badge variant="secondary" className="gap-1">
-                Type: {typeFilter}
-                <button
-                  onClick={() => {
-                    setTypeFilter("all");
-                    setCurrentPage(1);
-                  }}
-                  className="ml-1 hover:bg-muted rounded-full p-0.5"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-            {statusFilter !== "all" && (
-              <Badge variant="secondary" className="gap-1">
-                Status: {statusFilter}
-                <button
-                  onClick={() => {
-                    setStatusFilter("all");
-                    setCurrentPage(1);
-                  }}
-                  className="ml-1 hover:bg-muted rounded-full p-0.5"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setTypeFilter("all");
-                setStatusFilter("all");
-                setCurrentPage(1);
-              }}
-              className="h-7 text-xs"
-            >
-              Clear all
-            </Button>
+            <Badge variant="secondary" className="gap-1">
+              Cohort: {cohortFilter}
+              <button
+                onClick={() => {
+                  setCohortFilter("all");
+                  setCurrentPage(1);
+                }}
+                className="ml-1 hover:bg-muted rounded-full p-0.5"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </Badge>
           </div>
         )}
 
@@ -270,7 +282,8 @@ export default function StudentSubmissions() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.15 }}
-            className="flex items-center gap-4 rounded-lg border bg-accent/50 px-4 py-3">
+            className="flex items-center gap-4 rounded-lg border bg-accent/50 px-4 py-3 mt-4"
+          >
             <span className="text-sm font-medium">
               {selectedIds.size} selected
             </span>
@@ -284,8 +297,8 @@ export default function StudentSubmissions() {
           </motion.div>
         )}
 
-        {/* Table */}
-        <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
+        {/* Table - 24px spacing from controls */}
+        <div className="rounded-xl border bg-card shadow-sm overflow-x-auto mt-6">
           <Table className="min-w-full">
             <TableHeader>
               <TableRow>
@@ -332,8 +345,8 @@ export default function StudentSubmissions() {
                             setSampleDataLoaded(true);
                           }
                           setSearchTerm("");
-                          setTypeFilter("all");
-                          setStatusFilter("all");
+                          setTypeFilter("Resume");
+                          setStatusFilter("Pending");
                           setCohortFilter("all");
                           setCurrentPage(1);
                         }
@@ -343,13 +356,12 @@ export default function StudentSubmissions() {
                         tooltip: !sampleDataLoaded ? "Load a few example submissions to explore how the review process works." : undefined,
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            // TODO: Open invite students modal/flow
                             console.log("Invite students");
                           } else {
                             setSampleDataLoaded(false);
                             setSearchTerm("");
-                            setTypeFilter("all");
-                            setStatusFilter("all");
+                            setTypeFilter("Resume");
+                            setStatusFilter("Pending");
                             setCohortFilter("all");
                             setCurrentPage(1);
                           }
@@ -429,7 +441,7 @@ export default function StudentSubmissions() {
 
         {/* Pagination */}
         {filteredAndSortedData.length > 0 && (
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-2">
               <p className="text-sm text-muted-foreground">
                 Showing {paginatedData.length === 0 ? 0 : (currentPage - 1) * pageSize + 1} to{" "}
