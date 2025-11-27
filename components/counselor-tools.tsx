@@ -48,7 +48,7 @@ const counselorTools: Tool[] = [
   {
     id: "jd-decoder",
     title: "JD Decoder",
-    description: "Surface key skills fast.",
+    description: "Find key skills from any job posting.",
     icon: FileSearch,
     iconBg: "bg-blue-500/10",
     iconColor: "text-blue-600 dark:text-blue-500",
@@ -73,7 +73,7 @@ const counselorTools: Tool[] = [
   {
     id: "resume-red-flag",
     title: "Resume Red-Flag Detector",
-    description: "Catch ATS blockers fast.",
+    description: "Identify ATS blockers instantly.",
     icon: ShieldAlert,
     iconBg: "bg-red-500/10",
     iconColor: "text-red-600 dark:text-red-500",
@@ -98,7 +98,7 @@ const counselorTools: Tool[] = [
   {
     id: "mock-interview",
     title: "Interview Answer Analyzer",
-    description: "Score answers for clarity.",
+    description: "Assess spoken answers for clarity.",
     icon: MessageSquare,
     iconBg: "bg-purple-500/10",
     iconColor: "text-purple-600 dark:text-purple-500",
@@ -123,7 +123,7 @@ const counselorTools: Tool[] = [
   {
     id: "employer-alignment",
     title: "Employer Alignment Analyzer",
-    description: "Extract employer cues.",
+    description: "Find trending skills & hiring cues.",
     icon: Target,
     iconBg: "bg-emerald-500/10",
     iconColor: "text-emerald-600 dark:text-emerald-500",

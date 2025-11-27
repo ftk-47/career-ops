@@ -59,7 +59,6 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import {
   Users,
   Zap,
-  TrendingUp,
   Mail,
   FileText,
   ArrowUpRight,
@@ -404,8 +403,8 @@ export default function Dashboard() {
   };
 
 
-  // Impact Stats Data
-  const impactStats = [
+  // Unified Stats Data
+  const unifiedStats = [
     {
       title: "Active Students",
       value: "1,240",
@@ -418,7 +417,7 @@ export default function Dashboard() {
       href: "/student-portfolio",
     },
     {
-      title: "Resume Created",
+      title: "Resumes",
       value: "1,860",
       subtitle: undefined,
       icon: Zap,
@@ -428,73 +427,25 @@ export default function Dashboard() {
       trend: undefined,
       trendLabel: "842 resumes scored 80+",
     },
-   
     {
-      title: "Total Interviews",
+      title: "Interviews",
       value: "342",
       subtitle: undefined,
       icon: Video,
       iconBg: "bg-blue-500/10",
       iconColor: "text-blue-600 dark:text-blue-500",
       href: "/manage-interviews",
-      trendLabel: "89% students well-prepared",
+      trendLabel: "304 well-prepared",
     },
     {
-      title: "LinkedIn Reviews",
+      title: "LinkedIn",
       value: "782",
       subtitle: undefined,
       icon: UserRound,
       iconBg: "bg-indigo-500/10",
       iconColor: "text-indigo-600 dark:text-indigo-500",
       href: "/student-portfolio",
-      trendLabel: "67% scored 80+",
-    },
-  ];
-
-  // Progress Stats Data
-  const progressStats = [
-    {
-      title: "Students at Target Score",
-      value: "64%",
-      subtitle: "Score ≥ 80",
-      icon: CheckCircle2,
-      iconBg: "bg-violet-500/10",
-      iconColor: "text-violet-600 dark:text-violet-500",
-      href: "/student-portfolio",
-    },
-   
-    {
-      title: "Avg. Improvement / Student",
-      value: "+18.2",
-      subtitle: "Points gained",
-      icon: TrendingUp,
-      iconBg: "bg-emerald-500/10", 
-      iconColor: "text-emerald-600 dark:text-emerald-500",
-      href: "/student-portfolio",
-      trend: undefined,
-      trendLabel: undefined,
-    },
-    {
-      title: "Interview Success Rate",
-      value: "78%",
-      subtitle: "Offer conversion",
-      icon: TrendingUp,
-      iconBg: "bg-amber-500/10",
-      iconColor: "text-amber-600 dark:text-amber-500",
-      href: "/manage-interviews",
-      trend: undefined,
-      trendLabel: undefined,
-    },
-    {
-      title: "Total Student Interactions",
-      value: "3,428",
-      subtitle: "This month",
-      icon: Users,
-      iconBg: "bg-rose-500/10",
-      iconColor: "text-rose-600 dark:text-rose-500",
-      href: "/student-portfolio",
-      trend: undefined,
-      trendLabel: undefined,
+      trendLabel: "524 scored 80+",
     },
   ];
 
@@ -589,15 +540,15 @@ export default function Dashboard() {
           <CounselorTools />
         </div>
 
-        {/* Impact Overview */}
+        {/* Key Metrics */}
         <div className="space-y-3 max-w-full">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Impact Overview
+            Key Metrics
           </h2>
           <Card className="rounded-xl shadow-sm py-0">
             <CardContent className="p-0">
               <div className="flex divide-x">
-                {impactStats.map((stat) => (
+                {unifiedStats.map((stat) => (
                   <div key={stat.title} className="flex-1 p-6">
                     <div className="flex flex-col items-center text-center space-y-3">
                       <div className={`p-2.5 rounded-lg ${stat.iconBg}`}>
@@ -621,68 +572,16 @@ export default function Dashboard() {
                         )}
                         {stat.trendLabel && (
                           <p className="text-xs font-medium text-emerald-600 dark:text-emerald-500 flex items-center gap-1 justify-center">
-                            <span className="text-emerald-600 dark:text-emerald-500">✓</span>
                             {stat.trendLabel}
                           </p>
                         )}
                       </div>
-                      <Link href={stat.href}>
+                      {/* <Link href={stat.href}>
                         <Button variant="link" size="sm" className="text-xs h-auto p-0">
                           View Details
                           <ArrowUpRight className="h-3 w-3 ml-1" />
                         </Button>
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Progress Metrics */}
-        <div className="space-y-3 max-w-full">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Progress Metrics
-          </h2>
-          <Card className="rounded-xl shadow-sm py-0">
-            <CardContent className="p-0">
-              <div className="flex divide-x">
-                {progressStats.map((stat) => (
-                  <div key={stat.title} className="flex-1 p-6">
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className={`p-2.5 rounded-lg ${stat.iconBg}`}>
-                        <stat.icon className={`h-5 w-5 ${stat.iconColor}`} />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium text-muted-foreground">
-                          {stat.title}
-                        </p>
-                        <div className="flex items-baseline gap-2 justify-center">
-                          <p className="text-3xl font-bold tracking-tight">{stat.value}</p>
-                          {stat.trend && (
-                            <span className="text-sm font-medium text-emerald-600 flex items-center gap-1">
-                              <ArrowUpRight className="h-3 w-3" />
-                              {stat.trend}
-                            </span>
-                          )}
-                        </div>
-                        {stat.subtitle && (
-                          <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
-                        )}
-                        {stat.trendLabel && (
-                          <p className="text-xs font-medium text-emerald-600 dark:text-emerald-500 flex items-center gap-1 justify-center">
-                            <span className="text-emerald-600 dark:text-emerald-500">✓</span>
-                            {stat.trendLabel}
-                          </p>
-                        )}
-                      </div>
-                      <Link href={stat.href}>
-                        <Button variant="link" size="sm" className="text-xs h-auto p-0">
-                          View Details
-                          <ArrowUpRight className="h-3 w-3 ml-1" />
-                        </Button>
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                 ))}
