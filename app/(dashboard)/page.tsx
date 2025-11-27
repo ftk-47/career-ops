@@ -405,7 +405,7 @@ export default function Dashboard() {
   };
 
 
-  // Impact & Progress Stats Data
+  // Impact Stats Data
   const impactStats = [
     {
       title: "Active Students",
@@ -418,13 +418,28 @@ export default function Dashboard() {
       href: "/student-portfolio",
     },
     {
-      title: "AI-Scanned Resumes",
-      value: "3,850",
-      subtitle: "ATS checks passed",
+      title: "Students at Target Score",
+      value: "64%",
+      subtitle: "Score ≥ 80",
+      icon: CheckCircle2,
+      iconBg: "bg-violet-500/10",
+      iconColor: "text-violet-600 dark:text-violet-500",
+      href: "/student-portfolio",
+    },
+  ];
+
+  // Progress Stats Data
+  const progressStats = [
+    {
+      title: "Resume Created",
+      value: "1,860",
+      subtitle: "Resumes processed",
       icon: Zap,
       iconBg: "bg-emerald-500/10",
       iconColor: "text-emerald-600 dark:text-emerald-500",
       href: "/student-portfolio",
+      trend: undefined,
+      trendLabel: undefined,
     },
     {
       title: "Avg. Improvement / Student",
@@ -434,15 +449,8 @@ export default function Dashboard() {
       iconBg: "bg-emerald-500/10", 
       iconColor: "text-emerald-600 dark:text-emerald-500",
       href: "/student-portfolio",
-    },
-    {
-      title: "Students at Target Score",
-      value: "64%",
-      subtitle: "Score ≥ 80",
-      icon: CheckCircle2,
-      iconBg: "bg-violet-500/10",
-      iconColor: "text-violet-600 dark:text-violet-500",
-      href: "/student-portfolio",
+      trend: undefined,
+      trendLabel: undefined,
     },
   ];
 
@@ -537,13 +545,61 @@ export default function Dashboard() {
           <CounselorTools />
         </div>
 
-        {/* Impact & Progress Stats */}
+        {/* Impact Overview */}
         <div className="space-y-3 max-w-full">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Impact & Progress Overview
+            Impact Overview
           </h2>
-          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
+          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 max-w-full">
             {impactStats.map((stat, index) => (
+              <AnimatedCard key={stat.title} delay={index * 0.05}>
+                <Link href={stat.href}>
+                  <Card className="rounded-xl shadow-sm py-0 transition-all duration-200 hover:shadow-md hover:scale-[1.02] cursor-pointer group relative overflow-hidden">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2 flex-1">
+                          <p className="text-sm font-medium text-muted-foreground">
+                            {stat.title}
+                          </p>
+                          <div className="flex items-baseline gap-2">
+                            <p className="text-3xl font-bold tracking-tight">{stat.value}</p>
+                            {stat.trend && (
+                              <span className="text-sm font-medium text-emerald-600 flex items-center gap-1">
+                                <ArrowUpRight className="h-3 w-3" />
+                                {stat.trend}
+                              </span>
+                            )}
+                          </div>
+                          {stat.subtitle && (
+                            <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
+                          )}
+                          {stat.trendLabel && (
+                            <p className="text-xs text-muted-foreground">{stat.trendLabel}</p>
+                          )}
+                        </div>
+                        <div className={`p-2.5 rounded-lg ${stat.iconBg} transition-transform group-hover:scale-110`}>
+                          <stat.icon className={`h-4.5 w-4.5 ${stat.iconColor}`} />
+                        </div>
+                      </div>
+                      <div className="absolute bottom-6 right-6 text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                        View Details
+                        <ArrowUpRight className="h-3 w-3" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </AnimatedCard>
+            ))}
+          </div>
+        </div>
+
+        {/* Progress Metrics */}
+        <div className="space-y-3 max-w-full">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            Progress Metrics
+          </h2>
+          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 max-w-full">
+            {progressStats.map((stat, index) => (
               <AnimatedCard key={stat.title} delay={index * 0.05}>
                 <Link href={stat.href}>
                   <Card className="rounded-xl shadow-sm py-0 transition-all duration-200 hover:shadow-md hover:scale-[1.02] cursor-pointer group relative overflow-hidden">
