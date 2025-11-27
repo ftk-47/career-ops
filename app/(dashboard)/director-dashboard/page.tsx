@@ -46,6 +46,7 @@ import {
   TrendingUp,
   CheckCircle2,
   Clock,
+  ArrowUpRight,
   FileSearch,
   ShieldAlert,
   MessageSquare,
@@ -63,6 +64,55 @@ import {
 } from "lucide-react";
 
 // Mock Data
+
+// Section 3: Students Needing Attention
+const studentsNeedingAttention = [
+  {
+    id: 1,
+    name: "Alex Morgan",
+    email: "alex.m@university.edu",
+    issue: "Resume score below 40",
+    badgeType: "Low Score",
+    badgeVariant: "warning" as const,
+    initials: "AM",
+  },
+  {
+    id: 2,
+    name: "Sarah Jenkins",
+    email: "sarah.j@university.edu",
+    issue: "No activity in 15 days",
+    badgeType: "Inactive",
+    badgeVariant: "secondary" as const,
+    initials: "SJ",
+  },
+  {
+    id: 3,
+    name: "Michael Chen",
+    email: "michael.c@university.edu",
+    issue: "Profile only 30% complete",
+    badgeType: "Incomplete",
+    badgeVariant: "error" as const,
+    initials: "MC",
+  },
+  {
+    id: 4,
+    name: "Jessica Wu",
+    email: "jessica.w@university.edu",
+    issue: "No interview practice started",
+    badgeType: "Low Score",
+    badgeVariant: "warning" as const,
+    initials: "JW",
+  },
+  {
+    id: 5,
+    name: "David Park",
+    email: "david.p@university.edu",
+    issue: "Resume stagnant at 55",
+    badgeType: "Low Score",
+    badgeVariant: "warning" as const,
+    initials: "DP",
+  },
+];
 
 // Section 4: Team Review Productivity
 const teamProductivityMetrics = [
@@ -495,51 +545,43 @@ export default function DirectorDashboard() {
           </FadeIn>
         </div>
 
-        {/* Quick Actions and Counselor Tools */}
-        <div className="grid gap-6 grid-cols-1 lg:grid-cols-4 max-w-full items-start">
+        {/* Quick Actions and Students Needing Attention */}
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-4 max-w-full">
           {/* Quick Actions */}
-          <div className="space-y-3 lg:col-span-1 flex flex-col">
+          <div className="space-y-3 lg:col-span-1">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
               Quick Actions
             </h2>
-            <Card className="rounded-xl py-0 shadow-sm border bg-card flex-1 flex flex-col">
-              <CardContent className="p-4 space-y-2 flex-1 flex flex-col">
+            <Card className="rounded-xl py-0 shadow-sm border bg-card">
+              <CardContent className="p-4 space-y-2">
                 {quickActions.map((action, index) => {
                   const isPrimary = index === 0;
                   return (
                     <AnimatedCard key={action.title} delay={index * 0.05}>
                       <Button
                         variant={isPrimary ? "default" : "outline"}
-                        className={`w-full justify-start h-auto py-3 px-4 relative ${
+                        className={`w-full justify-start h-auto py-3 px-4 ${
                           isPrimary
                             ? "bg-primary hover:bg-primary/90 text-primary-foreground"
                             : "bg-background hover:bg-muted border"
                         } transition-all duration-200`}
                       >
                         <div className="flex items-center gap-3 w-full">
-                          <div className={`shrink-0 ${
+                          <div className={`flex items-center justify-center shrink-0 relative ${
                             isPrimary ? "text-primary-foreground" : "text-foreground"
                           }`}>
                             <action.icon className="h-5 w-5" />
+                            {action.badgeCount !== undefined && action.badgeCount > 0 && (
+                              <Badge variant="warning" className="absolute -top-1 -right-1 h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-semibold border-2 border-background">
+                                {action.badgeCount}
+                              </Badge>
+                            )}
                           </div>
                           <span className={`font-medium text-sm ${
-                            action.badgeCount !== undefined && action.badgeCount > 0 ? "flex-1" : ""
-                          } ${
                             isPrimary ? "text-primary-foreground" : "text-foreground"
                           }`}>
                             {action.title}
                           </span>
-                          {action.badgeCount !== undefined && action.badgeCount > 0 && (
-                            <Badge 
-                              className={`h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-semibold rounded-full shrink-0 ${
-                                isPrimary 
-                                  ? "bg-amber-500 text-white border-2 border-amber-400/50 shadow-sm dark:bg-amber-600 dark:text-white dark:border-amber-500/50" 
-                                  : "bg-amber-500 text-white border-2 border-amber-400/30 shadow-sm dark:bg-amber-600 dark:text-white dark:border-amber-500/30"
-                              }`}
-                            >
-                              {action.badgeCount}
-                            </Badge>
-                          )}
                         </div>
                       </Button>
                     </AnimatedCard>
@@ -549,15 +591,100 @@ export default function DirectorDashboard() {
             </Card>
           </div>
 
-          {/* Counselor Tools */}
-          <div className="space-y-3 lg:col-span-3 flex flex-col">
+          {/* Section 3: Students Needing Attention */}
+          <div className="space-y-3 lg:col-span-3">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-              Counselor Tools
+              Students Needing Attention
             </h2>
-            <div className="flex-1 min-h-0">
-              <CounselorTools />
-            </div>
+            <FadeIn delay={0.2} direction="up">
+              <Card className="rounded-xl gap-2 shadow-sm hover:shadow-md transition-shadow duration-200">
+                <CardHeader>
+                  <p className="text-sm text-muted-foreground">
+                    Require immediate follow-up and support
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="rounded-lg border overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Student</TableHead>
+                          <TableHead>Issue</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <StaggerContainer
+                        as="tbody"
+                        delay={0.05}
+                        staggerDelay={0.03}
+                      >
+                        {studentsNeedingAttention.map((student) => (
+                          <StaggerItem
+                            key={student.id}
+                            as="tr"
+                            className="border-b transition-colors hover:bg-muted/50 group"
+                          >
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10 ring-2 ring-border group-hover:ring-primary/30 transition-all duration-200">
+                                  <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+                                    {student.initials}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-medium text-sm">{student.name}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {student.email}
+                                  </p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-start gap-2">
+                                <div className="mt-0.5 p-1 rounded-md bg-muted/50 shrink-0">
+                                  <Info className="h-3.5 w-3.5 text-muted-foreground" />
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  {student.issue}
+                                </p>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant={student.badgeVariant} 
+                                className="text-xs font-medium"
+                              >
+                                {student.badgeType}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="group/btn hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                              >
+                                View Student
+                                <ArrowUpRight className="h-3.5 w-3.5 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
+                              </Button>
+                            </TableCell>
+                          </StaggerItem>
+                        ))}
+                      </StaggerContainer>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </FadeIn>
           </div>
+        </div>
+
+        {/* Counselor Tools */}
+        <div className="space-y-3 max-w-full">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            Counselor Tools
+          </h2>
+          <CounselorTools />
         </div>
 
         {/* Section 4: Team Review Productivity */}
