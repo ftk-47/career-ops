@@ -285,6 +285,72 @@ const chartConfig = {
   },
 };
 
+// Priority Center Data
+const pendingReviewsData = [
+  { student: "David Kim", major: "CS", doc: "Resume_v3.pdf", aiScore: 92, time: "2h ago", initials: "DK" },
+  { student: "Emma Wilson", major: "Psychology", doc: "Cover_Letter.docx", aiScore: 88, time: "3h ago", initials: "EW" },
+  { student: "James Rod", major: "Business", doc: "Resume_Final.pdf", aiScore: 95, time: "4h ago", initials: "JR" },
+  { student: "Lisa Park", major: "Economics", doc: "Resume.pdf", aiScore: 87, time: "5h ago", initials: "LP" },
+  { student: "Michael Chen", major: "Finance", doc: "Cover_Letter.docx", aiScore: 91, time: "6h ago", initials: "MC" },
+  { student: "Sarah Johnson", major: "Marketing", doc: "Resume_Tech.pdf", aiScore: 94, time: "7h ago", initials: "SJ" },
+  { student: "Alex Martinez", major: "Engineering", doc: "Interview_Prep.mp4", aiScore: 89, time: "8h ago", initials: "AM" },
+  { student: "Olivia Brown", major: "Design", doc: "Cover_Letter.docx", aiScore: 93, time: "9h ago", initials: "OB" },
+  { student: "Ryan Lee", major: "CS", doc: "Resume.pdf", aiScore: 86, time: "10h ago", initials: "RL" },
+  { student: "Nina Patel", major: "Business", doc: "Resume_v2.pdf", aiScore: 90, time: "11h ago", initials: "NP" },
+  { student: "Tom Hardy", major: "Finance", doc: "Cover_Letter.docx", aiScore: 85, time: "12h ago", initials: "TH" },
+  { student: "Kate Moore", major: "Marketing", doc: "Resume.pdf", aiScore: 92, time: "13h ago", initials: "KM" },
+  { student: "Ben Wilson", major: "Design", doc: "Portfolio_Resume.pdf", aiScore: 88, time: "14h ago", initials: "BW" },
+  { student: "Amy Chen", major: "CS", doc: "Resume_SWE.pdf", aiScore: 91, time: "15h ago", initials: "AC" },
+];
+
+const lowScoringStudentsData = [
+  { student: "Jake Thompson", major: "CS", score: 42, issues: "Weak verbs, no metrics", lastActive: "3 days ago", initials: "JT" },
+  { student: "Maria Garcia", major: "Business", score: 38, issues: "Poor formatting", lastActive: "5 days ago", initials: "MG" },
+  { student: "Chris Lee", major: "Finance", score: 45, issues: "Vague descriptions", lastActive: "2 days ago", initials: "CL" },
+  { student: "Sophia Brown", major: "Marketing", score: 40, issues: "Missing keywords", lastActive: "4 days ago", initials: "SB" },
+  { student: "Daniel Kim", major: "Design", score: 48, issues: "No portfolio link", lastActive: "1 day ago", initials: "DK" },
+  { student: "Rachel White", major: "Psychology", score: 35, issues: "Too generic", lastActive: "6 days ago", initials: "RW" },
+  { student: "Kevin Park", major: "Engineering", score: 43, issues: "Typos & grammar", lastActive: "3 days ago", initials: "KP" },
+  { student: "Laura Chen", major: "CS", score: 39, issues: "Incomplete profile", lastActive: "7 days ago", initials: "LC" },
+  { student: "Mark Davis", major: "Business", score: 46, issues: "Weak action verbs", lastActive: "2 days ago", initials: "MD" },
+];
+
+const interviewSubmissionsData = [
+  { student: "Alice Johnson", major: "CS", type: "Technical", aiScore: 85, submitted: "1h ago", initials: "AJ" },
+  { student: "Bob Martinez", major: "Business", type: "Behavioral", aiScore: 78, submitted: "2h ago", initials: "BM" },
+  { student: "Carol Singh", major: "Finance", type: "Case Study", aiScore: 92, submitted: "3h ago", initials: "CS" },
+];
+
+const inactiveStudentsData = [
+  { student: "John Doe", major: "CS", lastActive: "18 days ago", submissions: 3, initials: "JD" },
+  { student: "Emily White", major: "Marketing", lastActive: "21 days ago", submissions: 2, initials: "EW" },
+  { student: "Mike Brown", major: "Finance", lastActive: "15 days ago", submissions: 5, initials: "MB" },
+  { student: "Sarah Davis", major: "Design", lastActive: "25 days ago", submissions: 1, initials: "SD" },
+  { student: "Tom Wilson", major: "Business", lastActive: "14 days ago", submissions: 4, initials: "TW" },
+  { student: "Anna Lee", major: "Psychology", lastActive: "30 days ago", submissions: 2, initials: "AL" },
+  { student: "Chris Green", major: "Engineering", lastActive: "17 days ago", submissions: 3, initials: "CG" },
+  { student: "Lisa Martinez", major: "CS", lastActive: "22 days ago", submissions: 6, initials: "LM" },
+  { student: "David Park", major: "Business", lastActive: "19 days ago", submissions: 4, initials: "DP" },
+  { student: "Emma Chen", major: "Finance", lastActive: "16 days ago", submissions: 2, initials: "EC" },
+  { student: "Ryan Taylor", major: "Marketing", lastActive: "24 days ago", submissions: 3, initials: "RT" },
+  { student: "Olivia Kim", major: "Design", lastActive: "20 days ago", submissions: 5, initials: "OK" },
+  { student: "James Moore", major: "CS", lastActive: "28 days ago", submissions: 1, initials: "JM" },
+  { student: "Sophie Anderson", major: "Psychology", lastActive: "23 days ago", submissions: 2, initials: "SA" },
+  { student: "Alex Thomas", major: "Business", lastActive: "15 days ago", submissions: 4, initials: "AT" },
+  { student: "Nina Jackson", major: "Finance", lastActive: "26 days ago", submissions: 3, initials: "NJ" },
+  { student: "Ben Harris", major: "Engineering", lastActive: "14 days ago", submissions: 2, initials: "BH" },
+  { student: "Kate Martin", major: "Marketing", lastActive: "29 days ago", submissions: 1, initials: "KM" },
+  { student: "Sam Garcia", major: "Design", lastActive: "21 days ago", submissions: 5, initials: "SG" },
+  { student: "Zoe Robinson", major: "CS", lastActive: "17 days ago", submissions: 3, initials: "ZR" },
+  { student: "Max Clark", major: "Business", lastActive: "31 days ago", submissions: 2, initials: "MC" },
+  { student: "Mia Rodriguez", major: "Finance", lastActive: "18 days ago", submissions: 4, initials: "MR" },
+  { student: "Leo Lewis", major: "Psychology", lastActive: "22 days ago", submissions: 1, initials: "LL" },
+  { student: "Ella Walker", major: "Marketing", lastActive: "16 days ago", submissions: 3, initials: "EW" },
+  { student: "Noah Hall", major: "Design", lastActive: "27 days ago", submissions: 2, initials: "NH" },
+  { student: "Ava Young", major: "CS", lastActive: "19 days ago", submissions: 5, initials: "AY" },
+  { student: "Liam King", major: "Business", lastActive: "20 days ago", submissions: 4, initials: "LK" },
+];
+
 
 // Top 10 Resume Issues by Cohort
 const resumeIssuesByCohort: Record<string, Array<{ issue: string; count: number }>> = {
@@ -733,6 +799,107 @@ export default function Dashboard() {
               </PopoverContent>
             </Popover>
           </div>
+        </div>
+
+        {/* Priority Center */}
+        <div className="space-y-3 max-w-full">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">Priority Center</h2>
+            <p className="text-muted-foreground text-sm mt-1">
+              Your students&apos; most urgent needs at a glance.
+            </p>
+          </div>
+          <FadeIn delay={0.2} direction="up">
+            <Card className="rounded-xl shadow-sm">
+              <CardContent className="p-0">
+                <div className="flex divide-x">
+                  {/* Card 1: Pending Reviews */}
+                  <div className="flex-1 p-0">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div className="p-2.5 rounded-lg bg-emerald-500/10">
+                        <FileText className="h-5 w-5 text-emerald-600 dark:text-emerald-500" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">
+                          Pending Reviews
+                        </p>
+                        <p className="text-3xl font-bold tracking-tight">{pendingReviewsData.length}</p>
+                        <p className="text-xs text-muted-foreground">resumes need evaluation</p>
+                        
+                      </div>
+                      <Button variant="link" size="sm" className="text-xs h-auto p-0 ">
+                        Review Now
+                        <ArrowUpRight className="h-3 w-3 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Card 2: Low-Scoring Students */}
+                  <div className="flex-1 p-0">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div className="p-2.5 rounded-lg bg-amber-500/10">
+                        <Users className="h-5 w-5 text-amber-600 dark:text-amber-500" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">
+                          Low-Scoring Students
+                        </p>
+                        <p className="text-3xl font-bold tracking-tight">{lowScoringStudentsData.length}</p>
+                        <p className="text-xs text-muted-foreground">students scored ≤ 50</p>
+                        
+                      </div>
+                      <Button variant="link" size="sm" className="text-xs h-auto p-0">
+                        View Students
+                        <ArrowUpRight className="h-3 w-3 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Card 3: Interview Submissions */}
+                  <div className="flex-1 p-0">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div className="p-2.5 rounded-lg bg-blue-500/10">
+                        <Video className="h-5 w-5 text-blue-600 dark:text-blue-500" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">
+                          Interview Submissions
+                        </p>
+                        <p className="text-3xl font-bold tracking-tight">{interviewSubmissionsData.length}</p>
+                        <p className="text-xs text-muted-foreground">mock interviews awaiting</p>
+                        
+                      </div>
+                      <Button variant="link" size="sm" className="text-xs h-auto p-0 ">
+                        Evaluate
+                        <ArrowUpRight className="h-3 w-3 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Card 4: Inactive Students */}
+                  <div className="flex-1 p-0">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div className="p-2.5 rounded-lg bg-indigo-500/10">
+                        <Calendar className="h-5 w-5 text-indigo-600 dark:text-indigo-500" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium text-muted-foreground">
+                          Inactive Students
+                        </p>
+                        <p className="text-3xl font-bold tracking-tight">{inactiveStudentsData.length}</p>
+                        <p className="text-xs text-muted-foreground">students inactive 14+ days</p>
+                       
+                      </div>
+                      <Button variant="link" size="sm" className="text-xs h-auto p-0 ">
+                        Re-engage
+                        <ArrowUpRight className="h-3 w-3 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </FadeIn>
         </div>
 
         {/* Counselor Tools */}
