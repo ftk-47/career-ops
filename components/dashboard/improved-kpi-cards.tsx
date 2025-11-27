@@ -7,13 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Users, FileText, Video, UserRound, MoreVertical } from "lucide-react";
+import { Users, FileText, Video, UserRound, ArrowRight } from "lucide-react";
 
 // Compact Progress Bar Component
 interface ProgressBarProps {
@@ -56,17 +50,10 @@ export function SignupKpiCard() {
                     <p className="text-[10px] text-muted-foreground">+{weeklyNew} this week</p>
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="p-1 hover:bg-muted rounded opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View funnel</DropdownMenuItem>
-                    <DropdownMenuItem>Export</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                  View invites
+                  <ArrowRight className="h-3 w-3" />
+                </span>
               </div>
               
               <div className="flex items-end justify-between mt-3 mb-2">
@@ -114,17 +101,10 @@ export function ResumeKpiCard() {
                     <p className="text-[10px] text-muted-foreground">Avg score: {avgScore}/100</p>
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="p-1 hover:bg-muted rounded opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>Review low-scoring</DropdownMenuItem>
-                    <DropdownMenuItem>Export</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                  View resumes
+                  <ArrowRight className="h-3 w-3" />
+                </span>
               </div>
               
               <div className="flex items-end justify-between mt-3 mb-2">
@@ -172,17 +152,10 @@ export function InterviewKpiCard() {
                     <p className="text-[10px] text-muted-foreground">{lowScoreCount} need attention</p>
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="p-1 hover:bg-muted rounded opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>See low scores</DropdownMenuItem>
-                    <DropdownMenuItem>Export</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                  View interviews
+                  <ArrowRight className="h-3 w-3" />
+                </span>
               </div>
               
               <div className="flex items-end justify-between mt-3 mb-2">
@@ -230,17 +203,10 @@ export function LinkedInKpiCard() {
                     <p className="text-[10px] text-muted-foreground">Avg score: {avgScore}/100</p>
                   </div>
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button className="p-1 hover:bg-muted rounded opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                      <MoreVertical className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem>View incomplete</DropdownMenuItem>
-                    <DropdownMenuItem>Export</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                  View profiles
+                  <ArrowRight className="h-3 w-3" />
+                </span>
               </div>
               
               <div className="flex items-end justify-between mt-3 mb-2">
