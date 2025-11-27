@@ -129,8 +129,8 @@ export function ResumeKpiCard() {
               
               <div className="flex items-end justify-between mt-3 mb-2">
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-bold tracking-tight">{created.toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground">created</span>
+                  <span className="text-2xl font-bold tracking-tight">{downloaded.toLocaleString()}</span>
+                  <span className="text-xs text-muted-foreground">/ {created.toLocaleString()}</span>
                 </div>
                 <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
                   {downloadRate}% downloaded
@@ -187,11 +187,11 @@ export function InterviewKpiCard() {
               
               <div className="flex items-end justify-between mt-3 mb-2">
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-bold tracking-tight">{started}</span>
-                  <span className="text-xs text-muted-foreground">sessions</span>
+                  <span className="text-2xl font-bold tracking-tight">{reportsViewed}</span>
+                  <span className="text-xs text-muted-foreground">/ {started}</span>
                 </div>
                 <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 flex items-center gap-0.5">
-                  {followThrough}% completed
+                  {followThrough}% reviewed
                 </span>
               </div>
               
@@ -245,8 +245,8 @@ export function LinkedInKpiCard() {
               
               <div className="flex items-end justify-between mt-3 mb-2">
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-bold tracking-tight">{uploads}</span>
-                  <span className="text-xs text-muted-foreground">uploaded</span>
+                  <span className="text-2xl font-bold tracking-tight">{optimized}</span>
+                  <span className="text-xs text-muted-foreground">/ {uploads}</span>
                 </div>
                 <span className="text-xs font-semibold text-orange-600 dark:text-orange-400 flex items-center gap-0.5">
                   {adoptionRate}% optimized
