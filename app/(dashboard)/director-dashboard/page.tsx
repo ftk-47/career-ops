@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { FadeIn } from "@/components/motion/fade-in";
 import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
 import { PageHeader } from "@/components/page-header";
@@ -24,6 +26,12 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import {
   Bar,
   BarChart,
   CartesianGrid,
@@ -35,90 +43,23 @@ import {
   Video,
   UserRound,
   TrendingUp,
-  AlertTriangle,
   CheckCircle2,
   Clock,
   ArrowUpRight,
-  ArrowDownRight,
   FileSearch,
   ShieldAlert,
   MessageSquare,
   Target,
   Mail,
   Eye,
+  Calendar,
+  ChevronLeft,
+  Check,
+  Info,
+  X,
 } from "lucide-react";
 
 // Mock Data
-
-// Section 2: AI Impact & Engagement
-const aiImpactMetrics = [
-  {
-    id: "avg-resume",
-    title: "Avg Resume Score",
-    value: "82.4",
-    subtitle: "Out of 100",
-    delta: "+4.2",
-    deltaType: "positive" as const,
-    icon: CheckCircle2,
-    iconBg: "bg-emerald-500/10",
-    iconColor: "text-emerald-600 dark:text-emerald-500",
-  },
-  {
-    id: "avg-interview",
-    title: "Avg Interview Confidence",
-    value: "78%",
-    subtitle: "Self-reported",
-    delta: "+6%",
-    deltaType: "positive" as const,
-    icon: TrendingUp,
-    iconBg: "bg-blue-500/10",
-    iconColor: "text-blue-600 dark:text-blue-500",
-  },
-  {
-    id: "red-flags",
-    title: "Red Flags Found",
-    value: "156",
-    subtitle: "This week",
-    delta: "-8%",
-    deltaType: "positive" as const,
-    icon: AlertTriangle,
-    iconBg: "bg-amber-500/10",
-    iconColor: "text-amber-600 dark:text-amber-500",
-  },
-  {
-    id: "improvement",
-    title: "Score Improvement",
-    value: "+18.2",
-    subtitle: "Past 30 days",
-    delta: "+2.1",
-    deltaType: "positive" as const,
-    icon: TrendingUp,
-    iconBg: "bg-violet-500/10",
-    iconColor: "text-violet-600 dark:text-violet-500",
-  },
-  {
-    id: "resume-adoption",
-    title: "Resume Adoption",
-    value: "89%",
-    subtitle: "≥ 1 resume created",
-    delta: "+5%",
-    deltaType: "positive" as const,
-    icon: FileText,
-    iconBg: "bg-rose-500/10",
-    iconColor: "text-rose-600 dark:text-rose-500",
-  },
-  {
-    id: "interview-adoption",
-    title: "Interview Practice",
-    value: "72%",
-    subtitle: "≥ 1 interview done",
-    delta: "+8%",
-    deltaType: "positive" as const,
-    icon: Video,
-    iconBg: "bg-purple-500/10",
-    iconColor: "text-purple-600 dark:text-purple-500",
-  },
-];
 
 // Section 3: Students Needing Attention
 const studentsNeedingAttention = [
@@ -431,6 +372,70 @@ const activityIcons: Record<ActivityEvent["type"], React.ElementType> = {
 };
 
 export default function DirectorDashboard() {
+  // Booking modal state
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [bookingStep, setBookingStep] = useState(1);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
+  
+  // Banner dismissal state with localStorage
+  const [isBannerDismissed, setIsBannerDismissed] = useState(false);
+  
+  // Check localStorage after mount to avoid hydration mismatch
+  useEffect(() => {
+    const dismissed = localStorage.getItem("demo-banner-dismissed") === "true";
+    if (dismissed) {
+      // Necessary for hydration: update state after mount to match localStorage
+      // eslint-disable-next-line
+      setIsBannerDismissed(true);
+    }
+  }, []);
+  
+  // Time slots from 9 AM to 5 PM in 1-hour intervals
+  const timeSlots = [
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+  ];
+  
+  // Reset modal state when closed
+  const handleCloseModal = () => {
+    setIsBookingOpen(false);
+    setTimeout(() => {
+      setBookingStep(1);
+      setSelectedDate(undefined);
+      setSelectedTime(undefined);
+    }, 200);
+  };
+
+  // Get dialog title based on current step
+  const getDialogTitle = () => {
+    switch (bookingStep) {
+      case 1:
+        return "Select a Date";
+      case 2:
+        return "Select a Time";
+      case 3:
+        return "Confirm Your Booking";
+      case 4:
+        return "Thank you for booking!";
+      default:
+        return "Book Consultation";
+    }
+  };
+  
+  // Handle banner dismissal
+  const handleDismissBanner = () => {
+    setIsBannerDismissed(true);
+    localStorage.setItem("demo-banner-dismissed", "true");
+  };
+
   return (
     <div className="flex flex-col w-full min-h-screen">
       <PageHeader
@@ -444,7 +449,56 @@ export default function DirectorDashboard() {
         }
       />
 
+      {/* Demo Banner */}
+      {!isBannerDismissed && (
+        <div className="w-full px-4 md:px-6 xl:px-8 py-4 bg-linear-to-r from-primary/10 via-primary/5 to-transparent">
+          <div className="max-w-full rounded-lg border border-primary/30 bg-card shadow-sm">
+            <div className="px-4 md:px-6 py-4">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
+                    <Info className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                    <span className="text-sm font-semibold">You&apos;re Viewing a Demo</span>
+                    <span className="text-sm text-muted-foreground">
+                      To get a personalized consultation and unlock full features, book a session with our experts.
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <Button 
+                    size="lg" 
+                    onClick={() => setIsBookingOpen(true)}
+                    className="whitespace-nowrap"
+                  >
+                    Book Consultation
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="ghost"
+                    onClick={handleDismissBanner}
+                    className="h-10 w-10 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <main className="flex-1 w-full max-w-7xl mx-auto p-4 md:p-6 xl:p-8 space-y-8">
+        {/* Welcome Section */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between max-w-full">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">Welcome, Sarah</h2>
+            <p className="text-muted-foreground text-sm mt-1">
+              Get started by exploring your dashboard and connecting with students.
+            </p>
+          </div>
+        </div>
         {/* Section 1: Primary KPIs */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
@@ -455,199 +509,199 @@ export default function DirectorDashboard() {
           </FadeIn>
         </div>
 
-        {/* Section 2: AI Impact & Engagement */}
+        {/* Section 2: Your Review Queue */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            AI Impact & Engagement
+            Your Review Queue
           </h2>
           <FadeIn delay={0.15} direction="up">
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {aiImpactMetrics.map((metric) => (
-                <Card key={metric.id} className="rounded-xl shadow-sm">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`p-2.5 rounded-lg ${metric.iconBg}`}>
-                        <metric.icon className={`h-5 w-5 ${metric.iconColor}`} />
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {metric.deltaType === "positive" ? (
-                          <ArrowUpRight className="h-4 w-4 text-emerald-600" />
-                        ) : (
-                          <ArrowDownRight className="h-4 w-4 text-red-600" />
-                        )}
-                        <span
-                          className={`text-sm font-medium ${
-                            metric.deltaType === "positive"
-                              ? "text-emerald-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          {metric.delta}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium text-muted-foreground">
-                        {metric.title}
-                      </p>
-                      <p className="text-3xl font-bold tracking-tight">{metric.value}</p>
-                      <p className="text-xs text-muted-foreground">{metric.subtitle}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <Card className="rounded-xl shadow-sm">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-base font-medium">
+                      Your Review Queue
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">
+                      Submissions requiring director-level review
+                    </p>
+                  </div>
+                  <Link href="/student-submissions">
+                    <Button variant="outline" size="sm">
+                      View All
+                      <ArrowUpRight className="h-3.5 w-3.5 ml-1.5" />
+                    </Button>
+                  </Link>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-lg border overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Student</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>AI Score</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Priority</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <StaggerContainer
+                      as="tbody"
+                      delay={0.05}
+                      staggerDelay={0.03}
+                    >
+                      {directorReviews.slice(-3).map((review) => {
+                        const TypeIcon = submissionTypeIcons[review.type];
+                        return (
+                          <StaggerItem
+                            key={review.id}
+                            as="tr"
+                            className="border-b transition-colors hover:bg-muted/50"
+                          >
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                <Avatar className="h-8 w-8">
+                                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                                    {review.initials}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-medium text-sm">{review.student}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {review.email}
+                                  </p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <TypeIcon className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm">{review.type}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="success" className="gap-1">
+                                <CheckCircle2 className="h-3 w-3" />
+                                {review.aiScore}%
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={statusVariants[review.status]}>
+                                {review.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={priorityVariants[review.priority]}>
+                                {review.priority}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button size="sm" variant="default">
+                                Review
+                              </Button>
+                            </TableCell>
+                          </StaggerItem>
+                        );
+                      })}
+                    </StaggerContainer>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
           </FadeIn>
         </div>
 
-        {/* Section 3 & 4: Team Productivity + Students Needing Attention */}
-        <div className="grid gap-6 grid-cols-1 xl:grid-cols-12">
-          {/* Section 4: Team Review Productivity */}
-          <div className="xl:col-span-8">
-            <FadeIn delay={0.2} direction="up">
-              <Card className="rounded-xl shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-base font-medium">
-                    Team Review Productivity
-                  </CardTitle>
-                  <p className="text-xs text-muted-foreground">
-                    Team performance and workload distribution
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Metrics Row */}
-                  <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-                    {teamProductivityMetrics.map((metric) => (
-                      <div
-                        key={metric.title}
-                        className="flex items-start gap-3 p-4 rounded-lg border bg-card"
-                      >
-                        <div className={`p-2 rounded-lg ${metric.iconBg}`}>
-                          <metric.icon className={`h-4 w-4 ${metric.iconColor}`} />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-xs font-medium text-muted-foreground">
-                            {metric.title}
-                          </p>
-                          <p className="text-2xl font-bold tracking-tight">
-                            {metric.value}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {metric.subtitle}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Reviewer Load Distribution Chart */}
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-medium">Reviewer Load Distribution</h3>
-                    <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                      <BarChart
-                        data={reviewerLoadData}
-                        layout="vertical"
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                        <XAxis
-                          type="number"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          className="text-xs"
-                        />
-                        <YAxis
-                          type="category"
-                          dataKey="reviewer"
-                          tickLine={false}
-                          axisLine={false}
-                          tickMargin={8}
-                          className="text-xs"
-                          width={80}
-                        />
-                        <ChartTooltip
-                          cursor={false}
-                          content={<ChartTooltipContent />}
-                        />
-                        <Bar
-                          dataKey="count"
-                          fill="var(--color-count)"
-                          radius={[0, 4, 4, 0]}
-                          name="Reviews"
-                        />
-                      </BarChart>
-                    </ChartContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          </div>
-
-          {/* Section 3: Students Needing Attention */}
-          <div className="xl:col-span-4">
-            <FadeIn delay={0.25} direction="up">
-              <Card className="rounded-xl shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-base font-medium">
-                    Students Needing Attention
-                  </CardTitle>
-                  <p className="text-xs text-muted-foreground">
-                    Require immediate follow-up
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <ScrollArea className="h-[400px] pr-4">
-                    <div className="space-y-3">
-                      {studentsNeedingAttention.map((student) => (
-                        <div
-                          key={student.id}
-                          className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
-                        >
-                          <Avatar className="h-10 w-10">
-                            <AvatarFallback className="bg-primary/10 text-primary text-sm font-medium">
-                              {student.initials}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0 space-y-2">
-                            <div>
-                              <p className="font-medium text-sm leading-none">
-                                {student.name}
-                              </p>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {student.email}
-                              </p>
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                              {student.issue}
-                            </p>
-                            <Badge variant={student.badgeVariant} className="text-xs">
-                              {student.badgeType}
-                            </Badge>
-                            <Button size="sm" variant="outline" className="w-full mt-2">
-                              View Student
-                              <ArrowUpRight className="h-3 w-3 ml-1" />
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          </div>
-        </div>
-
-        {/* Section 5: Director Review Queue */}
-        <FadeIn delay={0.3} direction="up">
+        {/* Section 3: Team Review Productivity */}
+        <FadeIn delay={0.2} direction="up">
           <Card className="rounded-xl shadow-sm">
             <CardHeader>
               <CardTitle className="text-base font-medium">
-                Your Review Queue
+                Team Review Productivity
               </CardTitle>
               <p className="text-xs text-muted-foreground">
-                Submissions requiring director-level review
+                Team performance and workload distribution
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Metrics Row */}
+              <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+                {teamProductivityMetrics.map((metric) => (
+                  <div
+                    key={metric.title}
+                    className="flex items-start gap-3 p-4 rounded-lg border bg-card"
+                  >
+                    <div className={`p-2 rounded-lg ${metric.iconBg}`}>
+                      <metric.icon className={`h-4 w-4 ${metric.iconColor}`} />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-muted-foreground">
+                        {metric.title}
+                      </p>
+                      <p className="text-2xl font-bold tracking-tight">
+                        {metric.value}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {metric.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Reviewer Load Distribution Chart */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-medium">Reviewer Load Distribution</h3>
+                <ChartContainer config={chartConfig} className="h-[250px] w-full">
+                  <BarChart
+                    data={reviewerLoadData}
+                    layout="vertical"
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis
+                      type="number"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      className="text-xs"
+                    />
+                    <YAxis
+                      type="category"
+                      dataKey="reviewer"
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={8}
+                      className="text-xs"
+                      width={80}
+                    />
+                    <ChartTooltip
+                      cursor={false}
+                      content={<ChartTooltipContent />}
+                    />
+                    <Bar
+                      dataKey="count"
+                      fill="var(--color-count)"
+                      radius={[0, 4, 4, 0]}
+                      name="Reviews"
+                    />
+                  </BarChart>
+                </ChartContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </FadeIn>
+
+        {/* Section 4: Students Needing Attention */}
+        <FadeIn delay={0.25} direction="up">
+          <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">
+                Students Needing Attention
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Require immediate follow-up and support
               </p>
             </CardHeader>
             <CardContent>
@@ -656,10 +710,8 @@ export default function DirectorDashboard() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Student</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>AI Score</TableHead>
+                      <TableHead>Issue</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Priority</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -668,59 +720,57 @@ export default function DirectorDashboard() {
                     delay={0.05}
                     staggerDelay={0.03}
                   >
-                    {directorReviews.map((review) => {
-                      const TypeIcon = submissionTypeIcons[review.type];
-                      return (
-                        <StaggerItem
-                          key={review.id}
-                          as="tr"
-                          className="border-b transition-colors hover:bg-muted/50"
-                        >
-                          <TableCell>
-                            <div className="flex items-center gap-3">
-                              <Avatar className="h-8 w-8">
-                                <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
-                                  {review.initials}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="font-medium text-sm">{review.student}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {review.email}
-                                </p>
-                              </div>
+                    {studentsNeedingAttention.map((student) => (
+                      <StaggerItem
+                        key={student.id}
+                        as="tr"
+                        className="border-b transition-colors hover:bg-muted/50 group"
+                      >
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-10 w-10 ring-2 ring-border group-hover:ring-primary/30 transition-all duration-200">
+                              <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+                                {student.initials}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium text-sm">{student.name}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {student.email}
+                              </p>
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <TypeIcon className="h-4 w-4 text-muted-foreground" />
-                              <span className="text-sm">{review.type}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-start gap-2">
+                            <div className="mt-0.5 p-1 rounded-md bg-muted/50 shrink-0">
+                              <Info className="h-3.5 w-3.5 text-muted-foreground" />
                             </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="success" className="gap-1">
-                              <CheckCircle2 className="h-3 w-3" />
-                              {review.aiScore}%
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={statusVariants[review.status]}>
-                              {review.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={priorityVariants[review.priority]}>
-                              {review.priority}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <Button size="sm" variant="default">
-                              Review
-                            </Button>
-                          </TableCell>
-                        </StaggerItem>
-                      );
-                    })}
+                            <p className="text-sm text-muted-foreground">
+                              {student.issue}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge 
+                            variant={student.badgeVariant} 
+                            className="text-xs font-medium"
+                          >
+                            {student.badgeType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="group/btn hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                          >
+                            View Student
+                            <ArrowUpRight className="h-3.5 w-3.5 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
+                          </Button>
+                        </TableCell>
+                      </StaggerItem>
+                    ))}
                   </StaggerContainer>
                 </Table>
               </div>
@@ -728,7 +778,7 @@ export default function DirectorDashboard() {
           </Card>
         </FadeIn>
 
-        {/* Section 6: AI Tools */}
+        {/* Section 5: AI Tools */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             AI Tools
@@ -759,7 +809,7 @@ export default function DirectorDashboard() {
           </FadeIn>
         </div>
 
-        {/* Section 7: Activity Feed */}
+        {/* Section 6: Activity Feed */}
         <FadeIn delay={0.4} direction="up">
           <Card className="rounded-xl shadow-sm">
             <CardHeader>
@@ -802,6 +852,151 @@ export default function DirectorDashboard() {
           </Card>
         </FadeIn>
       </main>
+
+      {/* Booking Modal */}
+      <Dialog open={isBookingOpen} onOpenChange={handleCloseModal}>
+        <DialogContent className="max-w-md">
+          <DialogTitle className={bookingStep === 4 ? "text-center text-xl" : ""}>
+            {getDialogTitle()}
+          </DialogTitle>
+          {bookingStep === 1 && (
+            <p className="text-sm text-muted-foreground mt-2 mb-2">
+              Select a date to book your consultation
+            </p>
+          )}
+          {bookingStep === 2 && selectedDate && (
+            <p className="text-sm text-muted-foreground mt-2">
+              {selectedDate.toLocaleDateString("en-US", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          )}
+
+          {/* Step 1: Calendar Selection */}
+          {bookingStep === 1 && (
+            <div className="flex flex-col items-center gap-4">
+              <CalendarComponent
+                mode="single"
+                selected={selectedDate}
+                onSelect={(date) => {
+                  setSelectedDate(date);
+                  if (date) {
+                    setBookingStep(2);
+                  }
+                }}
+                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                className="rounded-md border"
+              />
+            </div>
+          )}
+
+          {/* Step 2: Time Slot Selection */}
+          {bookingStep === 2 && selectedDate && (
+            <>
+              <div className="grid grid-cols-3 gap-2 py-4">
+                {timeSlots.map((time) => (
+                  <Button
+                    key={time}
+                    variant={selectedTime === time ? "default" : "outline"}
+                    onClick={() => {
+                      setSelectedTime(time);
+                      setBookingStep(3);
+                    }}
+                    className="w-full"
+                  >
+                    {time}
+                  </Button>
+                ))}
+              </div>
+              <Button
+                variant="ghost"
+                onClick={() => setBookingStep(1)}
+                className="w-full"
+              >
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Back to Calendar
+              </Button>
+            </>
+          )}
+
+          {/* Step 3: Booking Confirmation */}
+          {bookingStep === 3 && selectedDate && selectedTime && (
+            <div className="flex flex-col gap-4 py-4">
+              <div className="rounded-lg border p-4 space-y-3 bg-muted/30">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">
+                    {selectedDate.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">{selectedTime}</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setBookingStep(2)}
+                  className="flex-1"
+                >
+                  <ChevronLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Button>
+                <Button
+                  onClick={() => setBookingStep(4)}
+                  className="flex-1"
+                >
+                  Confirm Booking
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Thank You Message */}
+          {bookingStep === 4 && selectedDate && selectedTime && (
+            <div className="flex flex-col items-center gap-4 py-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                <Check className="h-8 w-8 text-primary" />
+              </div>
+              <p className="text-sm text-muted-foreground text-center">
+                Your consultation has been successfully scheduled.
+              </p>
+              <div className="rounded-lg border p-4 space-y-3 bg-muted/30 w-full">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">
+                    {selectedDate.toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <UserRound className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">{selectedTime}</span>
+                </div>
+              </div>
+              <Button
+                onClick={handleCloseModal}
+                className="w-full"
+              >
+                Close
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
