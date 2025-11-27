@@ -433,11 +433,11 @@ export function CounselorTools() {
 
   return (
     <>
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
+      <div className="grid gap-4 grid-cols-2 h-full max-w-full">
         {counselorTools.map((tool, index) => (
             <AnimatedCard key={tool.id} delay={index * 0.05}>
               <Card
-              className="rounded-4xl py-0 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer group relative overflow-hidden border border-border/60 dark:border-border/50"
+              className="rounded-4xl py-0 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer group relative overflow-hidden border border-border/60 dark:border-border/50 h-full flex flex-col"
                 onClick={() => handleToolClick(tool)}
               >
                 <div
@@ -455,7 +455,7 @@ export function CounselorTools() {
                 />
                 <div className="absolute inset-0 rounded-2xl ring-1 ring-black/5 dark:ring-white/5 pointer-events-none" />
 
-              <CardContent className="relative z-10 p-4 flex flex-col gap-3 text-left">
+              <CardContent className="relative z-10 p-4 flex flex-col gap-3 text-left flex-1">
                 <div className="flex items-start gap-3">
                   <div
                     className={`flex h-10 w-10 items-center justify-center rounded-full ${
