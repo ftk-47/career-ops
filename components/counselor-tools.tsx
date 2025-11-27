@@ -47,8 +47,8 @@ interface Tool {
 const counselorTools: Tool[] = [
   {
     id: "jd-decoder",
-    title: "JD Decoder for Counselors",
-    description: "Analyze job descriptions",
+    title: "JD Decoder",
+    description: "Surface key skills fast.",
     icon: FileSearch,
     iconBg: "bg-blue-500/10",
     iconColor: "text-blue-600 dark:text-blue-500",
@@ -72,8 +72,8 @@ const counselorTools: Tool[] = [
   },
   {
     id: "resume-red-flag",
-    title: "Resume Red-Flag Detector",
-    description: "Identify resume issues",
+    title: "Resume Scan",
+    description: "Catch ATS blockers fast.",
     icon: ShieldAlert,
     iconBg: "bg-red-500/10",
     iconColor: "text-red-600 dark:text-red-500",
@@ -97,8 +97,8 @@ const counselorTools: Tool[] = [
   },
   {
     id: "mock-interview",
-    title: "Interview Assessment Helper",
-    description: "Evaluate interview responses",
+    title: "Interview Review",
+    description: "Score answers for clarity.",
     icon: MessageSquare,
     iconBg: "bg-purple-500/10",
     iconColor: "text-purple-600 dark:text-purple-500",
@@ -122,8 +122,8 @@ const counselorTools: Tool[] = [
   },
   {
     id: "employer-alignment",
-    title: "Employer Alignment Analyzer",
-    description: "Extract employer priorities",
+    title: "Employer Insights",
+    description: "Extract employer cues.",
     icon: Target,
     iconBg: "bg-emerald-500/10",
     iconColor: "text-emerald-600 dark:text-emerald-500",
@@ -412,24 +412,33 @@ export function CounselorTools() {
 
   return (
     <>
-      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
         {counselorTools.map((tool, index) => (
-          <AnimatedCard key={tool.id} delay={index * 0.05}>
-            <Card
-              className="rounded-xl shadow-sm py-0 transition-all duration-200 hover:shadow-lg hover:scale-[1.03] cursor-pointer group relative overflow-hidden bg-linear-to-br from-primary/5 to-transparent border-primary/20 h-full"
-              onClick={() => handleToolClick(tool)}
-            >
-              <CardContent className="p-4 flex flex-col items-center text-center gap-3 h-full">
-                <div
-                  className={`flex h-12 w-12 items-center justify-center rounded-lg ${tool.iconBg} transition-transform group-hover:scale-110 shrink-0`}
-                >
-                  <tool.icon className={`h-6 w-6 ${tool.iconColor}`} />
-                </div>
-                <div className="space-y-1 flex-1 flex flex-col justify-center">
-                  <h3 className="font-semibold text-sm leading-tight">{tool.title}</h3>
-                  <p className="text-xs text-muted-foreground">
-                    {tool.description}
-                  </p>
+            <AnimatedCard key={tool.id} delay={index * 0.05}>
+              <Card
+              className="rounded-xl py-0 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 cursor-pointer group relative overflow-hidden bg-card/95 border border-border/70 hover:border-primary/40 dark:border-border/60"
+                onClick={() => handleToolClick(tool)}
+              >
+              <CardContent className="p-4 flex flex-col gap-3 text-left">
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`flex h-10 w-10 items-center justify-center rounded-full ${tool.iconBg} transition-transform group-hover:scale-105 shrink-0`}
+                  >
+                    <tool.icon className={`h-5 w-5 ${tool.iconColor}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-semibold text-sm text-foreground truncate">
+                        {tool.title}
+                      </h3>
+                      <div className="rounded-full border border-border/60 dark:border-border/40 p-1 text-muted-foreground group-hover:text-primary group-hover:border-primary/50 transition-colors bg-background/60 dark:bg-background/30 shrink-0">
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-snug line-clamp-2 mt-0.5">
+                      {tool.description}
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>

@@ -418,7 +418,7 @@ export default function Dashboard() {
       href: "/student-portfolio",
     },
     {
-      title: "AI-Optimized Resumes",
+      title: "AI-Scanned Resumes",
       value: "3,850",
       subtitle: "ATS checks passed",
       icon: Zap,
