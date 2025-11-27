@@ -552,6 +552,8 @@ export default function DirectorDashboard() {
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
               Quick Actions
             </h2>
+            <FadeIn delay={0.2} direction="up">
+
             <Card className="rounded-xl py-0 shadow-sm border bg-card">
               <CardContent className="p-4 space-y-2">
                 {quickActions.map((action, index) => {
@@ -567,21 +569,21 @@ export default function DirectorDashboard() {
                         } transition-all duration-200`}
                       >
                         <div className="flex items-center gap-3 w-full">
-                          <div className={`flex items-center justify-center shrink-0 relative ${
+                          <div className={`flex items-center justify-center shrink-0 ${
                             isPrimary ? "text-primary-foreground" : "text-foreground"
                           }`}>
                             <action.icon className="h-5 w-5" />
-                            {action.badgeCount !== undefined && action.badgeCount > 0 && (
-                              <Badge variant="warning" className="absolute -top-1 -right-1 h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-semibold border-2 border-background">
-                                {action.badgeCount}
-                              </Badge>
-                            )}
                           </div>
-                          <span className={`font-medium text-sm ${
+                          <span className={`font-medium text-sm flex-1 text-left ${
                             isPrimary ? "text-primary-foreground" : "text-foreground"
                           }`}>
                             {action.title}
                           </span>
+                          {action.badgeCount !== undefined && action.badgeCount > 0 && (
+                            <span className="h-5 min-w-5 px-1.5 flex items-center justify-center text-xs font-bold rounded-full bg-white text-primary shadow-sm">
+                              {action.badgeCount}
+                            </span>
+                          )}
                         </div>
                       </Button>
                     </AnimatedCard>
@@ -589,6 +591,7 @@ export default function DirectorDashboard() {
                 })}
               </CardContent>
             </Card>
+            </FadeIn>
           </div>
 
           {/* Section 3: Students Needing Attention */}
