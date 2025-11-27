@@ -98,7 +98,7 @@ const counselorTools: Tool[] = [
   {
     id: "mock-interview",
     title: "Interview Answer Analyzer",
-    description: "Assess spoken answers for clarity.",
+    description: "Evaluate spoken answers for clarity.",
     icon: MessageSquare,
     iconBg: "bg-purple-500/10",
     iconColor: "text-purple-600 dark:text-purple-500",
@@ -435,9 +435,9 @@ export function CounselorTools() {
     <>
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
         {counselorTools.map((tool, index) => (
-            <AnimatedCard key={tool.id} delay={index * 0.05}>
+            <AnimatedCard key={tool.id} delay={index * 0.05} className="h-full">
               <Card
-              className="rounded-4xl py-0 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer group relative overflow-hidden border border-border/60 dark:border-border/50"
+              className="rounded-xl py-0 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer group relative overflow-hidden border border-border/60 dark:border-border/50 h-full"
                 onClick={() => handleToolClick(tool)}
               >
                 <div
@@ -453,30 +453,24 @@ export function CounselorTools() {
                   }`}
                   aria-hidden
                 />
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-black/5 dark:ring-white/5 pointer-events-none" />
+                <div className="absolute inset-0 rounded-xl ring-1 ring-black/5 dark:ring-white/5 pointer-events-none" />
 
-              <CardContent className="relative z-10 p-4 flex flex-col gap-3 text-left">
-                <div className="flex items-start gap-3">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                      ICON_GRADIENTS[tool.id] ?? tool.iconBg
-                    } transition-transform group-hover:scale-105 shrink-0 ring-1 ring-black/5 dark:ring-white/10 shadow-inner`}
-                  >
-                    <tool.icon className={`h-5 w-5 ${tool.iconColor}`} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-semibold text-sm text-foreground truncate">
-                        {tool.title}
-                      </h3>
-                      <div className="rounded-full border border-border/60 dark:border-border/40 p-1 text-muted-foreground group-hover:text-primary group-hover:border-primary/50 transition-colors bg-background/60 dark:bg-background/30 shrink-0">
-                        <ArrowUpRight className="h-3.5 w-3.5" />
-                      </div>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-snug line-clamp-2 ">
-                      {tool.description}
-                    </p>
-                  </div>
+              <CardContent className="relative z-10 p-3 flex flex-col items-center justify-center text-center h-full gap-4">
+                <div
+                  className={`flex h-12 w-12 items-center justify-center rounded-full ${
+                    ICON_GRADIENTS[tool.id] ?? tool.iconBg
+                  } transition-transform group-hover:scale-105 shrink-0 ring-1 ring-black/5 dark:ring-white/10 shadow-inner`}
+                >
+                  <tool.icon className={`h-6 w-6 ${tool.iconColor}`} />
+                </div>
+                
+                <div className="flex flex-col items-center gap-2">
+                  <h3 className="font-semibold text-base text-foreground">
+                    {tool.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-snug">
+                    {tool.description}
+                  </p>
                 </div>
                 {/* <div className="h-px bg-linear-to-r from-transparent via-border/80 to-transparent dark:via-border/40" /> */}
                 {/* <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-muted-foreground/80">
