@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/motion/fade-in";
 import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
@@ -55,6 +54,11 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import {
   Users,
@@ -70,21 +74,23 @@ import {
   X,
   Info,
   Calendar,
+  CalendarIcon,
   UserRound,
   ChevronLeft,
+  ChevronDown,
   Check,
   ExternalLink,
 } from "lucide-react";
 
 // Mock Data
 const performanceData = [
-  { name: "Mon", total: 145, human: 12 },
-  { name: "Tue", total: 230, human: 18 },
-  { name: "Wed", total: 185, human: 15 },
-  { name: "Thu", total: 270, human: 22 },
-  { name: "Fri", total: 190, human: 14 },
-  { name: "Sat", total: 50, human: 4 },
-  { name: "Sun", total: 85, human: 8 },
+  { name: "Mon", total: 145, human: 12, cohort: "cs-2025", date: new Date("2024-11-18") },
+  { name: "Tue", total: 230, human: 18, cohort: "business-2025", date: new Date("2024-11-19") },
+  { name: "Wed", total: 185, human: 15, cohort: "cs-2025", date: new Date("2024-11-20") },
+  { name: "Thu", total: 270, human: 22, cohort: "design-2025", date: new Date("2024-11-21") },
+  { name: "Fri", total: 190, human: 14, cohort: "business-2025", date: new Date("2024-11-22") },
+  { name: "Sat", total: 50, human: 4, cohort: "cs-2025", date: new Date("2024-11-23") },
+  { name: "Sun", total: 85, human: 8, cohort: "design-2025", date: new Date("2024-11-24") },
 ];
 
 const studentsWatchlist = [
@@ -95,6 +101,8 @@ const studentsWatchlist = [
     issue: "Resume Score < 40",
     daysInactive: 12,
     initials: "AM",
+    cohort: "cs-2025",
+    lastActivity: new Date("2024-11-15"),
   },
   {
     id: 2,
@@ -103,6 +111,8 @@ const studentsWatchlist = [
     issue: "No Interview Practice",
     daysInactive: 5,
     initials: "SJ",
+    cohort: "business-2025",
+    lastActivity: new Date("2024-11-22"),
   },
   {
     id: 3,
@@ -111,6 +121,8 @@ const studentsWatchlist = [
     issue: "Profile Incomplete",
     daysInactive: 20,
     initials: "MC",
+    cohort: "business-2025",
+    lastActivity: new Date("2024-11-07"),
   },
   {
     id: 4,
@@ -119,6 +131,8 @@ const studentsWatchlist = [
     issue: "Resume Score Stagnant",
     daysInactive: 8,
     initials: "JW",
+    cohort: "design-2025",
+    lastActivity: new Date("2024-11-19"),
   },
 ];
 
@@ -137,6 +151,8 @@ interface Review {
   status: SubmissionStatus;
   time: string;
   initials: string;
+  cohort: string;
+  submittedDate: Date;
 }
 
 const recentReviews: Review[] = [
@@ -152,6 +168,8 @@ const recentReviews: Review[] = [
     status: "In Queue",
     time: "2 hrs ago",
     initials: "DK",
+    cohort: "cs-2025",
+    submittedDate: new Date("2024-11-27"),
   },
   {
     id: "2",
@@ -165,6 +183,8 @@ const recentReviews: Review[] = [
     status: "In Queue",
     time: "4 hrs ago",
     initials: "EW",
+    cohort: "business-2025",
+    submittedDate: new Date("2024-11-27"),
   },
   {
     id: "3",
@@ -178,6 +198,8 @@ const recentReviews: Review[] = [
     status: "In Review",
     time: "5 hrs ago",
     initials: "JR",
+    cohort: "business-2025",
+    submittedDate: new Date("2024-11-27"),
   },
   {
     id: "4",
@@ -191,6 +213,8 @@ const recentReviews: Review[] = [
     status: "In Queue",
     time: "1 day ago",
     initials: "LP",
+    cohort: "business-2025",
+    submittedDate: new Date("2024-11-26"),
   },
   {
     id: "5",
@@ -204,6 +228,8 @@ const recentReviews: Review[] = [
     status: "In Queue",
     time: "3 hrs ago",
     initials: "MC",
+    cohort: "business-2025",
+    submittedDate: new Date("2024-11-27"),
   },
   {
     id: "6",
@@ -217,6 +243,8 @@ const recentReviews: Review[] = [
     status: "Completed",
     time: "1 day ago",
     initials: "SJ",
+    cohort: "business-2025",
+    submittedDate: new Date("2024-11-26"),
   },
   {
     id: "7",
@@ -230,6 +258,8 @@ const recentReviews: Review[] = [
     status: "In Queue",
     time: "6 hrs ago",
     initials: "AM",
+    cohort: "cs-2025",
+    submittedDate: new Date("2024-11-27"),
   },
   {
     id: "8",
@@ -243,6 +273,8 @@ const recentReviews: Review[] = [
     status: "In Review",
     time: "4 hrs ago",
     initials: "OB",
+    cohort: "design-2025",
+    submittedDate: new Date("2024-11-27"),
   },
 ];
 
@@ -307,7 +339,14 @@ const submissionTypeIcons: Record<SubmissionType, React.ElementType> = {
 };
 
 export default function Dashboard() {
-  const [selectedCohort, setSelectedCohort] = useState("cs-2025");
+  // Filter states
+  const [filterCohort, setFilterCohort] = useState("all");
+  const [dateRange, setDateRange] = useState<{ start: Date | undefined; end: Date | undefined }>({
+    start: undefined,
+    end: undefined,
+  });
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  
   const [activeTab, setActiveTab] = useState("all");
   const [selectedReviewIds, setSelectedReviewIds] = useState<Set<string>>(new Set());
   
@@ -375,14 +414,48 @@ export default function Dashboard() {
     localStorage.setItem("demo-banner-dismissed", "true");
   };
 
-  // Filter reviews by tab
-  const filteredReviews = recentReviews.filter((review) => {
-    if (activeTab === "all") return true;
-    if (activeTab === "resumes") return review.type === "Resume";
-    if (activeTab === "cover-letters") return review.type === "Cover Letter";
-    if (activeTab === "interviews") return review.type === "Interview";
-    return true;
-  });
+  // Helper function to check if date is in range
+  const isDateInRange = useCallback((date: Date) => {
+    if (!dateRange.start && !dateRange.end) return true;
+    if (dateRange.start && !dateRange.end) return date >= dateRange.start;
+    if (!dateRange.start && dateRange.end) return date <= dateRange.end;
+    return date >= dateRange.start! && date <= dateRange.end!;
+  }, [dateRange]);
+
+  // Filter performance data
+  const filteredPerformanceData = useMemo(() => {
+    return performanceData.filter((item) => {
+      const cohortMatch = filterCohort === "all" || item.cohort === filterCohort;
+      const dateMatch = isDateInRange(item.date);
+      return cohortMatch && dateMatch;
+    });
+  }, [filterCohort, isDateInRange]);
+
+  // Filter students watchlist
+  const filteredStudentsWatchlist = useMemo(() => {
+    return studentsWatchlist.filter((student) => {
+      const cohortMatch = filterCohort === "all" || student.cohort === filterCohort;
+      const dateMatch = isDateInRange(student.lastActivity);
+      return cohortMatch && dateMatch;
+    });
+  }, [filterCohort, isDateInRange]);
+
+  // Filter reviews by tab, cohort, and date
+  const filteredReviews = useMemo(() => {
+    return recentReviews.filter((review) => {
+      // Tab filter
+      let tabMatch = true;
+      if (activeTab === "resumes") tabMatch = review.type === "Resume";
+      else if (activeTab === "cover-letters") tabMatch = review.type === "Cover Letter";
+      else if (activeTab === "interviews") tabMatch = review.type === "Interview";
+      
+      // Cohort and date filters
+      const cohortMatch = filterCohort === "all" || review.cohort === filterCohort;
+      const dateMatch = isDateInRange(review.submittedDate);
+      
+      return tabMatch && cohortMatch && dateMatch;
+    });
+  }, [activeTab, filterCohort, isDateInRange]);
 
   const toggleSelectReview = (id: string) => {
     const newSelected = new Set(selectedReviewIds);
@@ -403,51 +476,110 @@ export default function Dashboard() {
   };
 
 
-  // Unified Stats Data
-  const unifiedStats = [
-    {
-      title: "Active Students",
-      value: "1,240",
-      subtitle: undefined,
-      trend: "+12%",
-      trendLabel: "892 actively engaged (72%)",
-      icon: Users,
-      iconBg: "bg-primary/10",
-      iconColor: "text-primary",
-      href: "/student-portfolio",
-    },
-    {
-      title: "Resumes",
-      value: "1,860",
-      subtitle: undefined,
-      icon: Zap,
-      iconBg: "bg-emerald-500/10",
-      iconColor: "text-emerald-600 dark:text-emerald-500",
-      href: "/student-portfolio",
-      trend: undefined,
-      trendLabel: "842 resumes scored 80+",
-    },
-    {
-      title: "Interviews",
-      value: "342",
-      subtitle: undefined,
-      icon: Video,
-      iconBg: "bg-blue-500/10",
-      iconColor: "text-blue-600 dark:text-blue-500",
-      href: "/manage-interviews",
-      trendLabel: "304 well-prepared",
-    },
-    {
-      title: "LinkedIn",
-      value: "782",
-      subtitle: undefined,
-      icon: UserRound,
-      iconBg: "bg-indigo-500/10",
-      iconColor: "text-indigo-600 dark:text-indigo-500",
-      href: "/student-portfolio",
-      trendLabel: "524 scored 80+",
-    },
-  ];
+  // Unified Stats Data - dynamically calculated based on filters
+  const unifiedStats = useMemo(() => {
+    // Mock stats per cohort
+    interface CohortStats {
+      students: string;
+      engaged: string;
+      resumes: string;
+      resumesHigh: string;
+      interviews: string;
+      interviewsPrepared: string;
+      linkedin: string;
+      linkedinHigh: string;
+    }
+    
+    const statsByCohort: Record<string, CohortStats> = {
+      "all": {
+        students: "1,240",
+        engaged: "892 actively engaged (72%)",
+        resumes: "1,860",
+        resumesHigh: "842 resumes scored 80+",
+        interviews: "342",
+        interviewsPrepared: "304 well-prepared",
+        linkedin: "782",
+        linkedinHigh: "524 scored 80+",
+      },
+      "cs-2025": {
+        students: "485",
+        engaged: "352 actively engaged (73%)",
+        resumes: "720",
+        resumesHigh: "328 resumes scored 80+",
+        interviews: "142",
+        interviewsPrepared: "126 well-prepared",
+        linkedin: "312",
+        linkedinHigh: "218 scored 80+",
+      },
+      "business-2025": {
+        students: "526",
+        engaged: "378 actively engaged (72%)",
+        resumes: "812",
+        resumesHigh: "372 resumes scored 80+",
+        interviews: "135",
+        interviewsPrepared: "118 well-prepared",
+        linkedin: "298",
+        linkedinHigh: "196 scored 80+",
+      },
+      "design-2025": {
+        students: "229",
+        engaged: "162 actively engaged (71%)",
+        resumes: "328",
+        resumesHigh: "142 resumes scored 80+",
+        interviews: "65",
+        interviewsPrepared: "60 well-prepared",
+        linkedin: "172",
+        linkedinHigh: "110 scored 80+",
+      },
+    };
+
+    const stats = statsByCohort[filterCohort] || statsByCohort["all"];
+
+    return [
+      {
+        title: "Active Students",
+        value: stats.students,
+        subtitle: undefined,
+        trend: "+12%",
+        trendLabel: stats.engaged,
+        icon: Users,
+        iconBg: "bg-primary/10",
+        iconColor: "text-primary",
+        href: "/student-portfolio",
+      },
+      {
+        title: "Resumes",
+        value: stats.resumes,
+        subtitle: undefined,
+        icon: Zap,
+        iconBg: "bg-emerald-500/10",
+        iconColor: "text-emerald-600 dark:text-emerald-500",
+        href: "/student-portfolio",
+        trend: undefined,
+        trendLabel: stats.resumesHigh,
+      },
+      {
+        title: "Interviews",
+        value: stats.interviews,
+        subtitle: undefined,
+        icon: Video,
+        iconBg: "bg-blue-500/10",
+        iconColor: "text-blue-600 dark:text-blue-500",
+        href: "/manage-interviews",
+        trendLabel: stats.interviewsPrepared,
+      },
+      {
+        title: "LinkedIn",
+        value: stats.linkedin,
+        subtitle: undefined,
+        icon: UserRound,
+        iconBg: "bg-indigo-500/10",
+        iconColor: "text-indigo-600 dark:text-indigo-500",
+        href: "/student-portfolio",
+        trendLabel: stats.linkedinHigh,
+      },
+    ];
+  }, [filterCohort]);
 
   return (
     <div className="flex flex-col w-full min-h-screen ">
@@ -525,10 +657,81 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {/* <Button size="lg" className="gap-2">
-              <Plus className="h-4 w-4" />
-              Invite Students
-            </Button> */}
+            {/* Cohort Filter */}
+            <Select value={filterCohort} onValueChange={setFilterCohort}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select cohort" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Cohorts</SelectItem>
+                <SelectItem value="cs-2025">CS 2025</SelectItem>
+                <SelectItem value="business-2025">Business 2025</SelectItem>
+                <SelectItem value="design-2025">Design 2025</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Date Range Filter */}
+            <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="w-[280px] justify-between text-left font-normal">
+                  <div className="flex items-center">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dateRange.start ? (
+                      dateRange.end ? (
+                        <>
+                          {dateRange.start.toLocaleDateString()} - {dateRange.end.toLocaleDateString()}
+                        </>
+                      ) : (
+                        dateRange.start.toLocaleDateString()
+                      )
+                    ) : (
+                      <span>Pick a date range</span>
+                    )}
+                  </div>
+                  {!dateRange.start && <ChevronDown className="h-4 w-4 opacity-50" />}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <div className="p-4">
+                  <CalendarComponent
+                    mode="range"
+                    selected={{
+                      from: dateRange.start,
+                      to: dateRange.end,
+                    }}
+                    onSelect={(range) => {
+                      setDateRange({
+                        start: range?.from,
+                        end: range?.to,
+                      });
+                    }}
+                    numberOfMonths={2}
+                    defaultMonth={dateRange.start || new Date(new Date().setMonth(new Date().getMonth() - 1))}
+                    initialFocus
+                  />
+                  <div className="flex gap-2 mt-4 px-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => {
+                        setDateRange({ start: undefined, end: undefined });
+                        setIsDatePickerOpen(false);
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => setIsDatePickerOpen(false)}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
 
@@ -607,7 +810,7 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent className="overflow-hidden">
                   <ChartContainer config={chartConfig} className="h-[350px] w-full max-w-full">
-                    <AreaChart data={performanceData}>
+                    <AreaChart data={filteredPerformanceData}>
                       <defs>
                         <linearGradient id="fillTotal" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
@@ -662,7 +865,7 @@ export default function Dashboard() {
                 <CardContent>
                   <ScrollArea className="h-[350px] pr-4">
                     <div className="space-y-3">
-                      {studentsWatchlist.map((student) => (
+                      {filteredStudentsWatchlist.map((student) => (
                         <div
                           key={student.id}
                           className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
@@ -712,7 +915,7 @@ export default function Dashboard() {
                     Most common issues identified by AI across cohorts
                   </p>
                 </div>
-                <Select value={selectedCohort} onValueChange={setSelectedCohort}>
+                <Select value={filterCohort === "all" ? "cs-2025" : filterCohort} onValueChange={(value) => setFilterCohort(value)}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select cohort" />
                   </SelectTrigger>
@@ -735,7 +938,7 @@ export default function Dashboard() {
                 className="h-[400px] w-full max-w-full"
               >
                 <BarChart 
-                  data={resumeIssuesByCohort[selectedCohort] || []}
+                  data={resumeIssuesByCohort[filterCohort === "all" ? "cs-2025" : filterCohort] || []}
                   layout="vertical"
                   margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
