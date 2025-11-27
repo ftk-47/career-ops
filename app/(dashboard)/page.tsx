@@ -410,13 +410,50 @@ export default function Dashboard() {
     {
       title: "Active Students",
       value: "1,240",
+      subtitle: undefined,
       trend: "+12%",
-      trendLabel: "from last month",
+      trendLabel: "892 actively engaged (72%)",
       icon: Users,
       iconBg: "bg-primary/10",
       iconColor: "text-primary",
       href: "/student-portfolio",
     },
+    {
+      title: "Resume Created",
+      value: "1,860",
+      subtitle: undefined,
+      icon: Zap,
+      iconBg: "bg-emerald-500/10",
+      iconColor: "text-emerald-600 dark:text-emerald-500",
+      href: "/student-portfolio",
+      trend: undefined,
+      trendLabel: "842 resumes scored 80+",
+    },
+   
+    {
+      title: "Total Interviews",
+      value: "342",
+      subtitle: undefined,
+      icon: Video,
+      iconBg: "bg-blue-500/10",
+      iconColor: "text-blue-600 dark:text-blue-500",
+      href: "/manage-interviews",
+      trendLabel: "89% students well-prepared",
+    },
+    {
+      title: "LinkedIn Reviews",
+      value: "782",
+      subtitle: undefined,
+      icon: UserRound,
+      iconBg: "bg-indigo-500/10",
+      iconColor: "text-indigo-600 dark:text-indigo-500",
+      href: "/student-portfolio",
+      trendLabel: "67% scored 80+",
+    },
+  ];
+
+  // Progress Stats Data
+  const progressStats = [
     {
       title: "Students at Target Score",
       value: "64%",
@@ -426,21 +463,7 @@ export default function Dashboard() {
       iconColor: "text-violet-600 dark:text-violet-500",
       href: "/student-portfolio",
     },
-  ];
-
-  // Progress Stats Data
-  const progressStats = [
-    {
-      title: "Resume Created",
-      value: "1,860",
-      subtitle: "Resumes processed",
-      icon: Zap,
-      iconBg: "bg-emerald-500/10",
-      iconColor: "text-emerald-600 dark:text-emerald-500",
-      href: "/student-portfolio",
-      trend: undefined,
-      trendLabel: undefined,
-    },
+   
     {
       title: "Avg. Improvement / Student",
       value: "+18.2",
@@ -448,6 +471,28 @@ export default function Dashboard() {
       icon: TrendingUp,
       iconBg: "bg-emerald-500/10", 
       iconColor: "text-emerald-600 dark:text-emerald-500",
+      href: "/student-portfolio",
+      trend: undefined,
+      trendLabel: undefined,
+    },
+    {
+      title: "Interview Success Rate",
+      value: "78%",
+      subtitle: "Offer conversion",
+      icon: TrendingUp,
+      iconBg: "bg-amber-500/10",
+      iconColor: "text-amber-600 dark:text-amber-500",
+      href: "/manage-interviews",
+      trend: undefined,
+      trendLabel: undefined,
+    },
+    {
+      title: "Total Student Interactions",
+      value: "3,428",
+      subtitle: "This month",
+      icon: Users,
+      iconBg: "bg-rose-500/10",
+      iconColor: "text-rose-600 dark:text-rose-500",
       href: "/student-portfolio",
       trend: undefined,
       trendLabel: undefined,
@@ -550,7 +595,7 @@ export default function Dashboard() {
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             Impact Overview
           </h2>
-          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 max-w-full">
+          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
             {impactStats.map((stat, index) => (
               <AnimatedCard key={stat.title} delay={index * 0.05}>
                 <Link href={stat.href}>
@@ -574,7 +619,10 @@ export default function Dashboard() {
                             <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
                           )}
                           {stat.trendLabel && (
-                            <p className="text-xs text-muted-foreground">{stat.trendLabel}</p>
+                            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-500 flex items-center gap-1">
+                              <span className="text-emerald-600 dark:text-emerald-500">✓</span>
+                              {stat.trendLabel}
+                            </p>
                           )}
                         </div>
                         <div className={`p-2.5 rounded-lg ${stat.iconBg} transition-transform group-hover:scale-110`}>
@@ -598,7 +646,7 @@ export default function Dashboard() {
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             Progress Metrics
           </h2>
-          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 max-w-full">
+          <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
             {progressStats.map((stat, index) => (
               <AnimatedCard key={stat.title} delay={index * 0.05}>
                 <Link href={stat.href}>
@@ -622,7 +670,10 @@ export default function Dashboard() {
                             <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
                           )}
                           {stat.trendLabel && (
-                            <p className="text-xs text-muted-foreground">{stat.trendLabel}</p>
+                            <p className="text-xs font-medium text-emerald-600 dark:text-emerald-500 flex items-center gap-1">
+                              <span className="text-emerald-600 dark:text-emerald-500">✓</span>
+                              {stat.trendLabel}
+                            </p>
                           )}
                         </div>
                         <div className={`p-2.5 rounded-lg ${stat.iconBg} transition-transform group-hover:scale-110`}>
