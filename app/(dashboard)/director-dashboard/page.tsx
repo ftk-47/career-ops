@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { FadeIn } from "@/components/motion/fade-in";
 import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
+import { AnimatedCard } from "@/components/motion/animated-card";
 import { PageHeader } from "@/components/page-header";
 import { ThemeSelector } from "@/components/theme-selector";
 import { StyleSelector } from "@/components/style-selector";
 import { PrimaryKpisRow } from "@/components/dashboard/improved-kpi-cards";
+import { CounselorTools } from "@/components/counselor-tools";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,9 @@ import {
   Check,
   Info,
   X,
+  UserPlus,
+  GraduationCap,
+  ClipboardList,
 } from "lucide-react";
 
 // Mock Data
@@ -371,6 +375,38 @@ const activityIcons: Record<ActivityEvent["type"], React.ElementType> = {
   linkedin: UserRound,
 };
 
+const quickActions = [
+  {
+    title: "Review Submission",
+    description: "You have 7 pending reviews",
+    icon: ClipboardList,
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
+    badgeCount: 7,
+  },
+  {
+    title: "Invite Member",
+    description: "Add a new team member",
+    icon: UserPlus,
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
+  },
+  {
+    title: "Create Cohort",
+    description: "Start a new student cohort",
+    icon: GraduationCap,
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
+  },
+  {
+    title: "Create Interview",
+    description: "Set up interview template",
+    icon: Calendar,
+    iconBg: "bg-primary/10",
+    iconColor: "text-primary",
+  },
+];
+
 export default function DirectorDashboard() {
   // Booking modal state
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -509,111 +545,44 @@ export default function DirectorDashboard() {
           </FadeIn>
         </div>
 
-        {/* Section 2: Your Review Queue */}
-        <div className="space-y-3">
+        {/* Quick Actions */}
+        <div className="space-y-3 max-w-full">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            Your Review Queue
+            Quick Actions
           </h2>
-          <FadeIn delay={0.15} direction="up">
-            <Card className="rounded-xl shadow-sm">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-base font-medium">
-                      Your Review Queue
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground">
-                      Submissions requiring director-level review
-                    </p>
-                  </div>
-                  <Link href="/student-submissions">
-                    <Button variant="outline" size="sm">
-                      View All
-                      <ArrowUpRight className="h-3.5 w-3.5 ml-1.5" />
-                    </Button>
-                  </Link>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-lg border overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Student</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>AI Score</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Priority</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <StaggerContainer
-                      as="tbody"
-                      delay={0.05}
-                      staggerDelay={0.03}
-                    >
-                      {directorReviews.slice(-3).map((review) => {
-                        const TypeIcon = submissionTypeIcons[review.type];
-                        return (
-                          <StaggerItem
-                            key={review.id}
-                            as="tr"
-                            className="border-b transition-colors hover:bg-muted/50"
-                          >
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                <Avatar className="h-8 w-8">
-                                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
-                                    {review.initials}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <p className="font-medium text-sm">{review.student}</p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {review.email}
-                                  </p>
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <TypeIcon className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm">{review.type}</span>
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant="success" className="gap-1">
-                                <CheckCircle2 className="h-3 w-3" />
-                                {review.aiScore}%
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={statusVariants[review.status]}>
-                                {review.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={priorityVariants[review.priority]}>
-                                {review.priority}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <Button size="sm" variant="default">
-                                Review
-                              </Button>
-                            </TableCell>
-                          </StaggerItem>
-                        );
-                      })}
-                    </StaggerContainer>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </FadeIn>
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 max-w-full">
+            {quickActions.map((action, index) => (
+              <AnimatedCard key={action.title} delay={index * 0.05}>
+                <Card className="rounded-xl shadow-sm py-0 transition-all duration-200 hover:shadow-lg hover:scale-[1.03] cursor-pointer group relative overflow-hidden bg-linear-to-br from-primary/5 to-transparent border-primary/20">
+                  <CardContent className="p-5 flex items-center gap-3">
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${action.iconBg} transition-transform group-hover:scale-110 shrink-0 relative`}>
+                      <action.icon className={`h-5 w-5 ${action.iconColor}`} />
+                      {action.badgeCount !== undefined && action.badgeCount > 0 && (
+                        <Badge variant="warning" className="absolute -top-1 -right-1 h-5 min-w-5 px-1.5 flex items-center justify-center text-[10px] font-semibold border-2 border-background">
+                          {action.badgeCount}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="space-y-0.5 text-left flex-1 min-w-0">
+                      <h3 className="font-semibold text-sm">{action.title}</h3>
+                      <p className="text-xs text-muted-foreground">{action.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </AnimatedCard>
+            ))}
+          </div>
         </div>
 
-        {/* Section 3: Team Review Productivity */}
+        {/* Counselor Tools */}
+        <div className="space-y-3 max-w-full">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            Counselor Tools
+          </h2>
+          <CounselorTools />
+        </div>
+
+        {/* Section 4: Team Review Productivity */}
         <FadeIn delay={0.2} direction="up">
           <Card className="rounded-xl shadow-sm">
             <CardHeader>
@@ -693,7 +662,7 @@ export default function DirectorDashboard() {
           </Card>
         </FadeIn>
 
-        {/* Section 4: Students Needing Attention */}
+        {/* Section 3: Students Needing Attention */}
         <FadeIn delay={0.25} direction="up">
           <Card className="rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200">
             <CardHeader>
@@ -778,7 +747,96 @@ export default function DirectorDashboard() {
           </Card>
         </FadeIn>
 
-        {/* Section 5: AI Tools */}
+        {/* Section 5: Director Review Queue */}
+        <FadeIn delay={0.3} direction="up">
+          <Card className="rounded-xl shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-base font-medium">
+                Your Review Queue
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Submissions requiring director-level review
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-lg border overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Student</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>AI Score</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Priority</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <StaggerContainer
+                    as="tbody"
+                    delay={0.05}
+                    staggerDelay={0.03}
+                  >
+                    {directorReviews.map((review) => {
+                      const TypeIcon = submissionTypeIcons[review.type];
+                      return (
+                        <StaggerItem
+                          key={review.id}
+                          as="tr"
+                          className="border-b transition-colors hover:bg-muted/50"
+                        >
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-8 w-8">
+                                <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                                  {review.initials}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="font-medium text-sm">{review.student}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {review.email}
+                                </p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <TypeIcon className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-sm">{review.type}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="success" className="gap-1">
+                              <CheckCircle2 className="h-3 w-3" />
+                              {review.aiScore}%
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={statusVariants[review.status]}>
+                              {review.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={priorityVariants[review.priority]}>
+                              {review.priority}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button size="sm" variant="default">
+                              Review
+                            </Button>
+                          </TableCell>
+                        </StaggerItem>
+                      );
+                    })}
+                  </StaggerContainer>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </FadeIn>
+
+        {/* Section 6: AI Tools */}
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             AI Tools
@@ -809,7 +867,7 @@ export default function DirectorDashboard() {
           </FadeIn>
         </div>
 
-        {/* Section 6: Activity Feed */}
+        {/* Section 7: Activity Feed */}
         <FadeIn delay={0.4} direction="up">
           <Card className="rounded-xl shadow-sm">
             <CardHeader>
