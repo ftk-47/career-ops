@@ -147,6 +147,27 @@ const counselorTools: Tool[] = [
   },
 ];
 
+const CARD_GRADIENTS: Record<string, string> = {
+  "jd-decoder": "from-blue-50 via-white to-white dark:from-blue-500/20 dark:via-background dark:to-background",
+  "resume-red-flag": "from-rose-50 via-white to-white dark:from-rose-500/20 dark:via-background dark:to-background",
+  "mock-interview": "from-purple-50 via-white to-white dark:from-purple-500/20 dark:via-background dark:to-background",
+  "employer-alignment": "from-emerald-50 via-white to-white dark:from-emerald-500/20 dark:via-background dark:to-background",
+};
+
+const ICON_GRADIENTS: Record<string, string> = {
+  "jd-decoder": "bg-gradient-to-br from-blue-500/20 via-blue-500/5 to-white dark:from-blue-500/40 dark:via-blue-500/10 dark:to-transparent",
+  "resume-red-flag": "bg-gradient-to-br from-rose-500/20 via-rose-500/5 to-white dark:from-rose-500/40 dark:via-rose-500/10 dark:to-transparent",
+  "mock-interview": "bg-gradient-to-br from-purple-500/20 via-purple-500/5 to-white dark:from-purple-500/40 dark:via-purple-500/10 dark:to-transparent",
+  "employer-alignment": "bg-gradient-to-br from-emerald-500/20 via-emerald-500/5 to-white dark:from-emerald-500/40 dark:via-emerald-500/10 dark:to-transparent",
+};
+
+const GLOW_COLORS: Record<string, string> = {
+  "jd-decoder": "bg-blue-500/25",
+  "resume-red-flag": "bg-rose-500/25",
+  "mock-interview": "bg-purple-500/25",
+  "employer-alignment": "bg-emerald-500/25",
+};
+
 export function CounselorTools() {
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -416,13 +437,30 @@ export function CounselorTools() {
         {counselorTools.map((tool, index) => (
             <AnimatedCard key={tool.id} delay={index * 0.05}>
               <Card
-              className="rounded-xl py-0 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 cursor-pointer group relative overflow-hidden bg-card/95 border border-border/70 hover:border-primary/40 dark:border-border/60"
+              className="rounded-4xl py-0 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 cursor-pointer group relative overflow-hidden border border-border/60 dark:border-border/50"
                 onClick={() => handleToolClick(tool)}
               >
-              <CardContent className="p-4 flex flex-col gap-3 text-left">
+                <div
+                  className={`absolute inset-0 bg-linear-to-br ${
+                    CARD_GRADIENTS[tool.id] ??
+                    "from-white via-white to-white dark:from-white/10 dark:via-background dark:to-background"
+                  } opacity-90 transition-opacity duration-300 group-hover:opacity-100`}
+                  aria-hidden
+                />
+                <div
+                  className={`absolute inset-0 scale-[0.98] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                    GLOW_COLORS[tool.id] ?? "bg-primary/25"
+                  }`}
+                  aria-hidden
+                />
+                <div className="absolute inset-0 rounded-2xl ring-1 ring-black/5 dark:ring-white/5 pointer-events-none" />
+
+              <CardContent className="relative z-10 p-4 flex flex-col gap-3 text-left">
                 <div className="flex items-start gap-3">
                   <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full ${tool.iconBg} transition-transform group-hover:scale-105 shrink-0`}
+                    className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                      ICON_GRADIENTS[tool.id] ?? tool.iconBg
+                    } transition-transform group-hover:scale-105 shrink-0 ring-1 ring-black/5 dark:ring-white/10 shadow-inner`}
                   >
                     <tool.icon className={`h-5 w-5 ${tool.iconColor}`} />
                   </div>
@@ -435,11 +473,20 @@ export function CounselorTools() {
                         <ArrowUpRight className="h-3.5 w-3.5" />
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground leading-snug line-clamp-2 mt-0.5">
+                    <p className="text-xs text-muted-foreground leading-snug line-clamp-2 ">
                       {tool.description}
                     </p>
                   </div>
                 </div>
+                {/* <div className="h-px bg-linear-to-r from-transparent via-border/80 to-transparent dark:via-border/40" /> */}
+                {/* <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-muted-foreground/80">
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      GLOW_COLORS[tool.id]?.replace("/25", "/60") ?? "bg-primary/60"
+                    }`}
+                  />
+                  <span>{tool.modalContent.primaryCTA}</span>
+                </div> */}
               </CardContent>
             </Card>
           </AnimatedCard>
