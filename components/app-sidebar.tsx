@@ -272,12 +272,13 @@ export function AppSidebar() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <CardTitle className="text-sm leading-tight">
-                    Book 1:1 Expert Consultation
+                    Need Help?
                   </CardTitle>
                 </div>
               </div>
                   <CardDescription className="text-xs leading-relaxed">
-                    Get expert guidance for student success
+                  Talk to your Hiration success manager.
+
                   </CardDescription>
               <Button
                 onClick={() => setIsBookingOpen(true)}

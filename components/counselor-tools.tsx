@@ -72,7 +72,7 @@ const counselorTools: Tool[] = [
   },
   {
     id: "resume-red-flag",
-    title: "Resume Scan",
+    title: "Resume Red-Flag Detector",
     description: "Catch ATS blockers fast.",
     icon: ShieldAlert,
     iconBg: "bg-red-500/10",
@@ -97,7 +97,7 @@ const counselorTools: Tool[] = [
   },
   {
     id: "mock-interview",
-    title: "Interview Review",
+    title: "Interview Answer Analyzer",
     description: "Score answers for clarity.",
     icon: MessageSquare,
     iconBg: "bg-purple-500/10",
@@ -122,7 +122,7 @@ const counselorTools: Tool[] = [
   },
   {
     id: "employer-alignment",
-    title: "Employer Insights",
+    title: "Employer Alignment Analyzer",
     description: "Extract employer cues.",
     icon: Target,
     iconBg: "bg-emerald-500/10",
