@@ -79,7 +79,7 @@ const navItems = [
     label: "Submissions",
     href: "/student-submissions",
     icon: FileText,
-    count: 14,
+    count: 7,
   },
   {
     label: "Student Portfolio",
@@ -189,10 +189,10 @@ export function AppSidebar() {
           </div>
         </motion.div>
       </SidebarHeader>
-      <SidebarContent className="px-3 py-4 group-data-[collapsible=icon]:px-2">
+      <SidebarContent className="px-3 py-4 pl-1 group-data-[collapsible=icon]:px-2">
         <SidebarGroup className="group-data-[collapsible=icon]:items-center">
           <SidebarGroupContent className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center">
-            <SidebarMenu className="gap-1.5 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:items-center">
+            <SidebarMenu className="gap-0.5 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:items-center">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive =
@@ -212,11 +212,11 @@ export function AppSidebar() {
                         asChild
                         isActive={isActive}
                         tooltip={item.label}
-                        className="h-10 px-3 transition-all duration-200 hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
+                        className="h-10 px-2 transition-all duration-200 hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
                       >
                         <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
                           <Icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-accent-foreground"}`} />
-                          <span className="text-sm ml-3 group-data-[collapsible=icon]:hidden">{item.label}</span>
+                          <span className="text-sm  group-data-[collapsible=icon]:hidden">{item.label}</span>
                           {item.beta && (
                             <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 h-4 group-data-[collapsible=icon]:hidden">
                               Beta
@@ -301,10 +301,10 @@ export function AppSidebar() {
             >
               <Button
                 variant="ghost"
-                className="w-full justify-start h-10 px-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+                className="w-full justify-start h-10 px-2 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
               >
                 <User className="h-5 w-5 shrink-0 text-muted-foreground" />
-                <span className="text-sm ml-3 flex-1 text-left group-data-[collapsible=icon]:hidden">My Account</span>
+                <span className="text-sm  flex-1 text-left group-data-[collapsible=icon]:hidden">My Account</span>
                 <motion.div
                   animate={{ rotate: isAccountDropdownOpen ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
