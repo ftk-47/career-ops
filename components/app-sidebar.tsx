@@ -71,6 +71,11 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
+    label: "Director Dashboard",
+    href: "/director-dashboard",
+    icon: UserRound,
+  },
+  {
     label: "Analytics",
     href: "/analytics",
     icon: BarChart3,
