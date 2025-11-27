@@ -9,6 +9,7 @@ import { ThemeSelector } from "@/components/theme-selector";
 import { StyleSelector } from "@/components/style-selector";
 import { PrimaryKpisRow } from "@/components/dashboard/improved-kpi-cards";
 import { CounselorTools } from "@/components/counselor-tools";
+import { WelcomeModal } from "@/components/welcome-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -417,6 +418,9 @@ export default function DirectorDashboard() {
   // Banner dismissal state with localStorage
   const [isBannerDismissed, setIsBannerDismissed] = useState(false);
   
+  // Welcome modal state
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(false);
+  
   // Check localStorage after mount to avoid hydration mismatch
   useEffect(() => {
     const dismissed = localStorage.getItem("demo-banner-dismissed") === "true";
@@ -424,6 +428,13 @@ export default function DirectorDashboard() {
       // Necessary for hydration: update state after mount to match localStorage
       // eslint-disable-next-line
       setIsBannerDismissed(true);
+    }
+    
+    // Check if welcome modal has been seen
+    const welcomeModalSeen = localStorage.getItem("welcome-modal-seen") === "true";
+    if (!welcomeModalSeen) {
+      // Show welcome modal on first visit
+      setIsWelcomeModalOpen(true);
     }
   }, []);
   
@@ -1078,6 +1089,12 @@ export default function DirectorDashboard() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Welcome Modal */}
+      <WelcomeModal 
+        open={isWelcomeModalOpen} 
+        onOpenChange={setIsWelcomeModalOpen} 
+      />
     </div>
   );
 }
