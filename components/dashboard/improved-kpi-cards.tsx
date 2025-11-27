@@ -26,7 +26,6 @@ function ProgressBar({ value, color }: ProgressBarProps) {
   );
 }
 
-
 // Card 1: Student Signups
 export function SignupKpiCard() {
   const totalSignups = 248;
@@ -38,7 +37,7 @@ export function SignupKpiCard() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="py-0 w-full rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-200 bg-card/80 backdrop-blur-sm cursor-pointer group">
+          <Card className="py-0 w-full cursor-pointer group">
             <div className="p-4">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2.5">
@@ -50,28 +49,50 @@ export function SignupKpiCard() {
                     <p className="text-[10px] text-muted-foreground">+{weeklyNew} this week</p>
                   </div>
                 </div>
-                <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  View invites
+                <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                  View Invites
                   <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
-              
+
               <div className="flex items-end justify-between mt-3 mb-2">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-2xl font-bold tracking-tight">{totalSignups}</span>
                   <span className="text-xs text-muted-foreground">/ {invited}</span>
                 </div>
-                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-0.5">
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
                   {completionRate}% onboarded
                 </span>
               </div>
-              
+
               <ProgressBar value={completionRate} color="hsl(217, 91%, 60%)" />
             </div>
           </Card>
         </TooltipTrigger>
-        <TooltipContent side="bottom" className="text-xs">
-          <p>{totalSignups} of {invited} invited students completed onboarding</p>
+        <TooltipContent side="bottom" className="p-4 w-[280px] bg-popover text-popover-foreground border shadow-lg">
+          <p className="font-semibold text-sm border-b border-border pb-2 mb-3">Onboarding Progress</p>
+          <div className="space-y-2.5 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Invited</span>
+              <span className="font-semibold text-foreground">{invited} students</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Signed up</span>
+              <span className="font-semibold text-foreground">{totalSignups} students</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Pending</span>
+              <span className="font-semibold text-amber-600 dark:text-amber-400">{invited - totalSignups} students</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">This week</span>
+              <span className="font-semibold text-emerald-600 dark:text-emerald-400">+{weeklyNew} new</span>
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs">
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">↑ 18%</span>
+            <span className="text-muted-foreground">vs last month</span>
+          </div>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -89,7 +110,7 @@ export function ResumeKpiCard() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="py-0 w-full rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-200 bg-card/80 backdrop-blur-sm cursor-pointer group">
+          <Card className="py-0 w-full cursor-pointer group">
             <div className="p-4">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2.5">
@@ -97,32 +118,54 @@ export function ResumeKpiCard() {
                     <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-foreground">Resumes Created</p>
+                    <p className="text-xs font-medium text-foreground">Resumes </p>
                     <p className="text-[10px] text-muted-foreground">Avg score: {avgScore}/100</p>
                   </div>
                 </div>
-                <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  View resumes
+                <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                  View Resumes
                   <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
-              
+
               <div className="flex items-end justify-between mt-3 mb-2">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-2xl font-bold tracking-tight">{downloaded.toLocaleString()}</span>
                   <span className="text-xs text-muted-foreground">/ {created.toLocaleString()}</span>
                 </div>
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                   {downloadRate}% downloaded
                 </span>
               </div>
-              
+
               <ProgressBar value={downloadRate} color="hsl(142, 76%, 36%)" />
             </div>
           </Card>
         </TooltipTrigger>
-        <TooltipContent side="bottom" className="text-xs">
-          <p>{downloaded.toLocaleString()} of {created.toLocaleString()} resumes downloaded</p>
+        <TooltipContent side="bottom" className="p-4 w-[280px] bg-popover text-popover-foreground border shadow-lg">
+          <p className="font-semibold text-sm border-b border-border pb-2 mb-3">Resume Funnel</p>
+          <div className="space-y-2.5 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Created</span>
+              <span className="font-semibold text-foreground">{created.toLocaleString()} resumes</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Downloaded</span>
+              <span className="font-semibold text-foreground">{downloaded.toLocaleString()} resumes</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Not downloaded</span>
+              <span className="font-semibold text-amber-600 dark:text-amber-400">{(created - downloaded).toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Avg quality</span>
+              <span className="font-semibold text-foreground">{avgScore}/100</span>
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs">
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">↑ 22%</span>
+            <span className="text-muted-foreground">vs last month</span>
+          </div>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -140,7 +183,7 @@ export function InterviewKpiCard() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="py-0 w-full rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-200 bg-card/80 backdrop-blur-sm cursor-pointer group">
+          <Card className="py-0 w-full cursor-pointer group">
             <div className="p-4">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2.5">
@@ -148,32 +191,54 @@ export function InterviewKpiCard() {
                     <Video className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-foreground">Mock Interviews</p>
+                    <p className="text-xs font-medium text-foreground">Interviews</p>
                     <p className="text-[10px] text-muted-foreground">{lowScoreCount} need attention</p>
                   </div>
                 </div>
-                <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  View interviews
+                <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                  View Interviews
                   <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
-              
+
               <div className="flex items-end justify-between mt-3 mb-2">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-2xl font-bold tracking-tight">{reportsViewed}</span>
                   <span className="text-xs text-muted-foreground">/ {started}</span>
                 </div>
-                <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 flex items-center gap-0.5">
+                <span className="text-xs font-semibold text-purple-600 dark:text-purple-400">
                   {followThrough}% reviewed
                 </span>
               </div>
-              
+
               <ProgressBar value={followThrough} color="hsl(271, 91%, 65%)" />
             </div>
           </Card>
         </TooltipTrigger>
-        <TooltipContent side="bottom" className="text-xs">
-          <p>{reportsViewed} of {started} reviewed their feedback reports</p>
+        <TooltipContent side="bottom" className="p-4 w-[280px] bg-popover text-popover-foreground border shadow-lg">
+          <p className="font-semibold text-sm border-b border-border pb-2 mb-3">Interview Practice</p>
+          <div className="space-y-2.5 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Sessions</span>
+              <span className="font-semibold text-foreground">{started} completed</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Reviewed</span>
+              <span className="font-semibold text-foreground">{reportsViewed} reports</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Skipped review</span>
+              <span className="font-semibold text-amber-600 dark:text-amber-400">{started - reportsViewed} students</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Need coaching</span>
+              <span className="font-semibold text-red-600 dark:text-red-400">{lowScoreCount} students</span>
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs">
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">↑ 15%</span>
+            <span className="text-muted-foreground">vs last month</span>
+          </div>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -191,7 +256,7 @@ export function LinkedInKpiCard() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="py-0 w-full rounded-xl border-0 shadow-sm hover:shadow-md transition-all duration-200 bg-card/80 backdrop-blur-sm cursor-pointer group">
+          <Card className="py-0 w-full cursor-pointer group">
             <div className="p-4">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2.5">
@@ -203,28 +268,50 @@ export function LinkedInKpiCard() {
                     <p className="text-[10px] text-muted-foreground">Avg score: {avgScore}/100</p>
                   </div>
                 </div>
-                <span className="text-[10px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  View profiles
+                <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                  View Profiles
                   <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
-              
+
               <div className="flex items-end justify-between mt-3 mb-2">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-2xl font-bold tracking-tight">{optimized}</span>
                   <span className="text-xs text-muted-foreground">/ {uploads}</span>
                 </div>
-                <span className="text-xs font-semibold text-orange-600 dark:text-orange-400 flex items-center gap-0.5">
+                <span className="text-xs font-semibold text-orange-600 dark:text-orange-400">
                   {adoptionRate}% optimized
                 </span>
               </div>
-              
+
               <ProgressBar value={adoptionRate} color="hsl(24, 95%, 53%)" />
             </div>
           </Card>
         </TooltipTrigger>
-        <TooltipContent side="bottom" className="text-xs">
-          <p>{optimized} of {uploads} profiles AI-optimized</p>
+        <TooltipContent side="bottom" className="p-4 w-[280px] bg-popover text-popover-foreground border shadow-lg">
+          <p className="font-semibold text-sm border-b border-border pb-2 mb-3">LinkedIn Profiles</p>
+          <div className="space-y-2.5 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Uploaded</span>
+              <span className="font-semibold text-foreground">{uploads} profiles</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">AI optimized</span>
+              <span className="font-semibold text-foreground">{optimized} profiles</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Not optimized</span>
+              <span className="font-semibold text-amber-600 dark:text-amber-400">{uploads - optimized} profiles</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Avg quality</span>
+              <span className="font-semibold text-foreground">{avgScore}/100</span>
+            </div>
+          </div>
+          <div className="mt-3 pt-3 border-t border-border flex items-center gap-1.5 text-xs">
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">↑ 12%</span>
+            <span className="text-muted-foreground">vs last month</span>
+          </div>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -242,4 +329,3 @@ export function PrimaryKpisRow() {
     </div>
   );
 }
-
