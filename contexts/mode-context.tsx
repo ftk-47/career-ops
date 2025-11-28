@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
-type Mode = "director" | "reviewer";
+export type Mode = "director" | "reviewer";
 
 interface ModeContextType {
   mode: Mode;

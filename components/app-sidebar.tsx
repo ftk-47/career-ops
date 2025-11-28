@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useMode } from "@/contexts/mode-context";
+import { useMode, type Mode } from "@/contexts/mode-context";
 
 import {
   Sidebar,
@@ -129,7 +129,7 @@ export function AppSidebar() {
   const { mode } = useMode();
   
   // Filter nav items based on current mode
-  const navItems = allNavItems.filter(item => item.modes.includes(mode));
+  const navItems = allNavItems.filter(item => (item.modes as readonly Mode[]).includes(mode));
   
   // Booking modal state
   const [isBookingOpen, setIsBookingOpen] = useState(false);
