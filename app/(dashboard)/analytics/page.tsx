@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { AnimatedCard } from "@/components/motion/animated-card";
 import { FadeIn } from "@/components/motion/fade-in";
 import { PageHeader } from "@/components/page-header";
@@ -34,15 +33,11 @@ import {
   CartesianGrid,
   XAxis,
   YAxis,
-  PieChart,
-  Pie,
-  Cell,
   RadarChart,
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  Legend,
   Line,
   LineChart,
 } from "recharts";
@@ -67,7 +62,16 @@ import {
 import { Button } from "@/components/ui/button";
 
 // Mock Data - Students
-const studentMetricsByCohort: Record<string, any> = {
+interface StudentMetrics {
+  total: number;
+  trend: string;
+  newSignups: number;
+  signupsTrend: string;
+  pendingInvites: number;
+  activeRate: number;
+}
+
+const studentMetricsByCohort: Record<string, StudentMetrics> = {
   "all": {
     total: 1240,
     trend: "+12%",
@@ -160,7 +164,14 @@ const studentsNeedingAttention = [
 ];
 
 // Mock Data - Resumes
-const resumeMetricsByCohort: Record<string, any> = {
+interface ResumeMetrics {
+  total: number;
+  downloads: number;
+  avgScore: number;
+  highPerformers: number;
+}
+
+const resumeMetricsByCohort: Record<string, ResumeMetrics> = {
   "all": {
     total: 3850,
     downloads: 2940,
@@ -216,7 +227,14 @@ const commonIssuesData = [
 ];
 
 // Mock Data - Interviews
-const interviewMetricsByCohort: Record<string, any> = {
+interface InterviewMetrics {
+  total: number;
+  avgOverall: number;
+  avgPosture: number;
+  avgSpeech: number;
+}
+
+const interviewMetricsByCohort: Record<string, InterviewMetrics> = {
   "all": {
     total: 892,
     avgOverall: 7.8,
@@ -276,7 +294,14 @@ const commonFeedbackAreas = [
 ];
 
 // Mock Data - LinkedIn
-const linkedinMetricsByCohort: Record<string, any> = {
+interface LinkedInMetrics {
+  uploaded: number;
+  optimized: number;
+  avgScore: number;
+  highScorers: number;
+}
+
+const linkedinMetricsByCohort: Record<string, LinkedInMetrics> = {
   "all": {
     uploaded: 1045,
     optimized: 823,
@@ -311,10 +336,6 @@ const linkedinScoreDistribution = [
   { range: "81-100", count: 207 },
 ];
 
-const optimizationImpact = [
-  { metric: "Before", score: 54.2 },
-  { metric: "After", score: 68.5 },
-];
 
 const linkedinCommonIssues = [
   { issue: "Weak Headline", count: 342 },
@@ -337,13 +358,9 @@ export default function AnalyticsPage() {
   const [selectedCohort, setSelectedCohort] = useState("all");
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
-  const [activeTab, setActiveTab] = useState(tabParam || "students");
-
-  useEffect(() => {
-    if (tabParam && ["students", "resumes", "interviews", "linkedin"].includes(tabParam)) {
-      setActiveTab(tabParam);
-    }
-  }, [tabParam]);
+  const validTabs = ["students", "resumes", "interviews", "linkedin"];
+  const initialTab = tabParam && validTabs.includes(tabParam) ? tabParam : "students";
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   return (
     <div className="flex flex-col w-full min-h-screen">
@@ -571,7 +588,7 @@ export default function AnalyticsPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {cohortDistributionData.map((cohort, index) => (
+                        {cohortDistributionData.map((cohort) => (
                           <div key={cohort.name} className="space-y-2">
                             <div className="flex justify-between text-sm">
                               <div className="flex items-center gap-2">
@@ -588,10 +605,6 @@ export default function AnalyticsPage() {
                             <Progress
                               value={(cohort.value / 1240) * 100}
                               className="h-2"
-                              style={{
-                                // @ts-ignore
-                                '--progress-background': cohort.fill,
-                              } as React.CSSProperties}
                             />
                           </div>
                         ))}
@@ -616,7 +629,7 @@ export default function AnalyticsPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {activityFunnelData.map((stage, index) => (
+                      {activityFunnelData.map((stage) => (
                         <div key={stage.stage} className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <div className="flex items-center gap-2">
@@ -633,10 +646,6 @@ export default function AnalyticsPage() {
                           <Progress 
                             value={stage.percentage} 
                             className="h-3"
-                            style={{
-                              // @ts-ignore
-                              '--progress-background': stage.color,
-                            } as React.CSSProperties}
                           />
                         </div>
                       ))}
@@ -1022,10 +1031,6 @@ export default function AnalyticsPage() {
                           <Progress 
                             value={92} 
                             className="h-2"
-                            style={{
-                              // @ts-ignore
-                              '--progress-background': '#10b981',
-                            } as React.CSSProperties}
                           />
                         </div>
 
@@ -1040,10 +1045,6 @@ export default function AnalyticsPage() {
                           <Progress 
                             value={85} 
                             className="h-2"
-                            style={{
-                              // @ts-ignore
-                              '--progress-background': '#3b82f6',
-                            } as React.CSSProperties}
                           />
                         </div>
 
@@ -1058,10 +1059,6 @@ export default function AnalyticsPage() {
                           <Progress 
                             value={89} 
                             className="h-2"
-                            style={{
-                              // @ts-ignore
-                              '--progress-background': '#8b5cf6',
-                            } as React.CSSProperties}
                           />
                         </div>
 
@@ -1076,10 +1073,6 @@ export default function AnalyticsPage() {
                           <Progress 
                             value={83} 
                             className="h-2"
-                            style={{
-                              // @ts-ignore
-                              '--progress-background': '#f59e0b',
-                            } as React.CSSProperties}
                           />
                         </div>
                       </div>
@@ -1588,7 +1581,7 @@ export default function AnalyticsPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
-                      {sectionCompleteness.map((section, index) => (
+                      {sectionCompleteness.map((section) => (
                         <div key={section.section} className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <div className="flex items-center gap-2">
@@ -1605,10 +1598,6 @@ export default function AnalyticsPage() {
                           <Progress 
                             value={section.completeness} 
                             className="h-2"
-                            style={{
-                              // @ts-ignore
-                              '--progress-background': section.color,
-                            } as React.CSSProperties}
                           />
                         </div>
                       ))}
