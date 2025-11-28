@@ -24,19 +24,19 @@ export function PendingReviewsCard() {
             </div>
           </div>
           <Badge variant="default" className="h-8 px-3 text-base font-bold">
-            5
+            7
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col items-center justify-center p-3 rounded-lg border bg-card">
-            <p className="text-2xl font-bold text-primary">4</p>
+            <p className="text-2xl font-bold text-primary">5</p>
             <p className="text-xs text-muted-foreground">Resumes</p>
           </div>
           <div className="flex flex-col items-center justify-center p-3 rounded-lg border bg-card">
-            <p className="text-2xl font-bold text-primary">1</p>
-            <p className="text-xs text-muted-foreground">Interview</p>
+            <p className="text-2xl font-bold text-primary">2</p>
+            <p className="text-xs text-muted-foreground">Interviews</p>
           </div>
         </div>
 
