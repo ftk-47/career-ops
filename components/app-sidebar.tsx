@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useMode } from "@/contexts/mode-context";
 
 import {
   Sidebar,
@@ -64,63 +65,71 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-const navItems = [
+const allNavItems = [
   {
     label: "Dashboard",
     href: "/",
     icon: LayoutDashboard,
-  },
-  {
-    label: "Director Dashboard",
-    href: "/director-dashboard",
-    icon: UserRound,
+    modes: ["director", "reviewer"] as const,
   },
   {
     label: "Analytics",
     href: "/analytics",
     icon: BarChart3,
+    modes: ["director"] as const,
   },
   {
     label: "Submissions",
     href: "/student-submissions",
     icon: FileText,
     count: 7,
+    modes: ["director", "reviewer"] as const,
   },
   {
     label: "Student Portfolio",
     href: "/student-portfolio",
     icon: Database,
+    modes: ["director", "reviewer"] as const,
   },
   {
     label: "Review Center",
     href: "/review-center",
     icon: ListChecks,
+    modes: ["director"] as const,
   },
   {
     label: "Team",
     href: "/manage-team",
     icon: Users,
+    modes: ["director"] as const,
   },
   {
-  label: "Cohorts",
+    label: "Cohorts",
     href: "/manage-cohorts",
     icon: GraduationCap,
+    modes: ["director"] as const,
   },
   {
-  label: "Interviews",
+    label: "Interviews",
     href: "/manage-interviews",
     icon: Calendar,
+    modes: ["director"] as const,
   },
   {
     label: "Coaching Library",
     href: "/coaching-library",
     icon: BookOpen,
     beta: true,
+    modes: ["director", "reviewer"] as const,
   },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { mode } = useMode();
+  
+  // Filter nav items based on current mode
+  const navItems = allNavItems.filter(item => item.modes.includes(mode));
   
   // Booking modal state
   const [isBookingOpen, setIsBookingOpen] = useState(false);

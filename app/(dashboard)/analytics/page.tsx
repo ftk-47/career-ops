@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { AnimatedCard } from "@/components/motion/animated-card";
 import { FadeIn } from "@/components/motion/fade-in";
@@ -334,6 +335,15 @@ const sectionCompleteness = [
 
 export default function AnalyticsPage() {
   const [selectedCohort, setSelectedCohort] = useState("all");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState(tabParam || "students");
+
+  useEffect(() => {
+    if (tabParam && ["students", "resumes", "interviews", "linkedin"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
 
   return (
     <div className="flex flex-col w-full min-h-screen">
@@ -350,7 +360,7 @@ export default function AnalyticsPage() {
 
       {/* Main Content */}
       <main className="flex-1 w-full max-w-full overflow-x-hidden p-4 md:p-6 xl:p-8">
-        <Tabs defaultValue="students" className="w-full space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-6">
           <TabsList className="grid w-full max-w-2xl grid-cols-4">
             <TabsTrigger value="students">
               <Users className="h-4 w-4 mr-2" />

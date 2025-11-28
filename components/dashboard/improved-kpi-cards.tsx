@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import {
   Tooltip,
@@ -37,37 +38,39 @@ export function SignupKpiCard() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="py-0 w-full cursor-pointer group">
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-md bg-blue-500/10">
-                    <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <Link href="/analytics?tab=students">
+            <Card className="py-0 w-full cursor-pointer group hover:shadow-md transition-shadow duration-200">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-md bg-blue-500/10">
+                      <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-foreground">Student Signups</p>
+                      <p className="text-[10px] text-muted-foreground">+{weeklyNew} this week</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-medium text-foreground">Student Signups</p>
-                    <p className="text-[10px] text-muted-foreground">+{weeklyNew} this week</p>
+                  <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                    View Analytics
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </div>
+
+                <div className="flex items-end justify-between mt-3 mb-2">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-bold tracking-tight">{totalSignups}</span>
+                    <span className="text-xs text-muted-foreground">/ {invited}</span>
                   </div>
+                  <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+                    {completionRate}% onboarded
+                  </span>
                 </div>
-                <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  View Invites
-                  <ArrowRight className="h-3 w-3" />
-                </span>
-              </div>
 
-              <div className="flex items-end justify-between mt-3 mb-2">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-bold tracking-tight">{totalSignups}</span>
-                  <span className="text-xs text-muted-foreground">/ {invited}</span>
-                </div>
-                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
-                  {completionRate}% onboarded
-                </span>
+                <ProgressBar value={completionRate} color="hsl(217, 91%, 60%)" />
               </div>
-
-              <ProgressBar value={completionRate} color="hsl(217, 91%, 60%)" />
-            </div>
-          </Card>
+            </Card>
+          </Link>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="p-4 w-[280px] bg-popover text-popover-foreground border shadow-lg">
           <p className="font-semibold text-sm border-b border-border pb-2 mb-3">Onboarding Progress</p>
@@ -110,37 +113,39 @@ export function ResumeKpiCard() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="py-0 w-full cursor-pointer group">
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-md bg-emerald-500/10">
-                    <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          <Link href="/analytics?tab=resumes">
+            <Card className="py-0 w-full cursor-pointer group hover:shadow-md transition-shadow duration-200">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-md bg-emerald-500/10">
+                      <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-foreground">Resumes </p>
+                      <p className="text-[10px] text-muted-foreground">Avg score: {avgScore}/100</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-medium text-foreground">Resumes </p>
-                    <p className="text-[10px] text-muted-foreground">Avg score: {avgScore}/100</p>
+                  <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                    View Analytics
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </div>
+
+                <div className="flex items-end justify-between mt-3 mb-2">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-bold tracking-tight">{downloaded.toLocaleString()}</span>
+                    <span className="text-xs text-muted-foreground">/ {created.toLocaleString()}</span>
                   </div>
+                  <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                    {downloadRate}% downloaded
+                  </span>
                 </div>
-                <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  View Resumes
-                  <ArrowRight className="h-3 w-3" />
-                </span>
-              </div>
 
-              <div className="flex items-end justify-between mt-3 mb-2">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-bold tracking-tight">{downloaded.toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground">/ {created.toLocaleString()}</span>
-                </div>
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  {downloadRate}% downloaded
-                </span>
+                <ProgressBar value={downloadRate} color="hsl(142, 76%, 36%)" />
               </div>
-
-              <ProgressBar value={downloadRate} color="hsl(142, 76%, 36%)" />
-            </div>
-          </Card>
+            </Card>
+          </Link>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="p-4 w-[280px] bg-popover text-popover-foreground border shadow-lg">
           <p className="font-semibold text-sm border-b border-border pb-2 mb-3">Resume Funnel</p>
@@ -183,37 +188,39 @@ export function InterviewKpiCard() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="py-0 w-full cursor-pointer group">
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-md bg-purple-500/10">
-                    <Video className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+          <Link href="/analytics?tab=interviews">
+            <Card className="py-0 w-full cursor-pointer group hover:shadow-md transition-shadow duration-200">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-md bg-purple-500/10">
+                      <Video className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-foreground">Interviews</p>
+                      <p className="text-[10px] text-muted-foreground">{lowScoreCount} need attention</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-medium text-foreground">Interviews</p>
-                    <p className="text-[10px] text-muted-foreground">{lowScoreCount} need attention</p>
+                  <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                    View Analytics
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </div>
+
+                <div className="flex items-end justify-between mt-3 mb-2">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-bold tracking-tight">{reportsViewed}</span>
+                    <span className="text-xs text-muted-foreground">/ {started}</span>
                   </div>
+                  <span className="text-xs font-semibold text-purple-600 dark:text-purple-400">
+                    {followThrough}% reviewed
+                  </span>
                 </div>
-                <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  View Interviews
-                  <ArrowRight className="h-3 w-3" />
-                </span>
-              </div>
 
-              <div className="flex items-end justify-between mt-3 mb-2">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-bold tracking-tight">{reportsViewed}</span>
-                  <span className="text-xs text-muted-foreground">/ {started}</span>
-                </div>
-                <span className="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                  {followThrough}% reviewed
-                </span>
+                <ProgressBar value={followThrough} color="hsl(271, 91%, 65%)" />
               </div>
-
-              <ProgressBar value={followThrough} color="hsl(271, 91%, 65%)" />
-            </div>
-          </Card>
+            </Card>
+          </Link>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="p-4 w-[280px] bg-popover text-popover-foreground border shadow-lg">
           <p className="font-semibold text-sm border-b border-border pb-2 mb-3">Interview Practice</p>
@@ -256,37 +263,39 @@ export function LinkedInKpiCard() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="py-0 w-full cursor-pointer group">
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-md bg-orange-500/10">
-                    <UserRound className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+          <Link href="/analytics?tab=linkedin">
+            <Card className="py-0 w-full cursor-pointer group hover:shadow-md transition-shadow duration-200">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-md bg-orange-500/10">
+                      <UserRound className="h-4 w-4 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-foreground">LinkedIn Profiles</p>
+                      <p className="text-[10px] text-muted-foreground">Avg score: {avgScore}/100</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs font-medium text-foreground">LinkedIn Profiles</p>
-                    <p className="text-[10px] text-muted-foreground">Avg score: {avgScore}/100</p>
+                  <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
+                    View Analytics
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </div>
+
+                <div className="flex items-end justify-between mt-3 mb-2">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-bold tracking-tight">{optimized}</span>
+                    <span className="text-xs text-muted-foreground">/ {uploads}</span>
                   </div>
+                  <span className="text-xs font-semibold text-orange-600 dark:text-orange-400">
+                    {adoptionRate}% optimized
+                  </span>
                 </div>
-                <span className="text-[12px] text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
-                  View Profiles
-                  <ArrowRight className="h-3 w-3" />
-                </span>
-              </div>
 
-              <div className="flex items-end justify-between mt-3 mb-2">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-bold tracking-tight">{optimized}</span>
-                  <span className="text-xs text-muted-foreground">/ {uploads}</span>
-                </div>
-                <span className="text-xs font-semibold text-orange-600 dark:text-orange-400">
-                  {adoptionRate}% optimized
-                </span>
+                <ProgressBar value={adoptionRate} color="hsl(24, 95%, 53%)" />
               </div>
-
-              <ProgressBar value={adoptionRate} color="hsl(24, 95%, 53%)" />
-            </div>
-          </Card>
+            </Card>
+          </Link>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="p-4 w-[280px] bg-popover text-popover-foreground border shadow-lg">
           <p className="font-semibold text-sm border-b border-border pb-2 mb-3">LinkedIn Profiles</p>
