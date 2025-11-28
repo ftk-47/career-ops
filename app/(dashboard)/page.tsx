@@ -359,13 +359,9 @@ export default function Dashboard() {
                 Students Needing Attention
               </h2>
               <FadeIn delay={0.2} direction="up">
-                <Card className="rounded-xl gap-2 shadow-sm hover:shadow-md transition-shadow duration-200">
-                  <CardHeader>
-                    <p className="text-sm text-muted-foreground">
-                      Require immediate follow-up and support
-                    </p>
-                  </CardHeader>
-                  <CardContent>
+                <Card className="rounded-xl gap-2 p-0 px-0 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  
+                  <CardContent className="p-0 px-0">
                     <div className="rounded-lg border overflow-x-auto">
                       <Table>
                         <TableHeader>
@@ -461,13 +457,8 @@ export default function Dashboard() {
                 Students Needing Attention
               </h2>
               <FadeIn delay={0.2} direction="up">
-                <Card className="rounded-xl gap-2 shadow-sm hover:shadow-md transition-shadow duration-200">
-                  <CardHeader>
-                    <p className="text-sm text-muted-foreground">
-                      Require immediate follow-up and support
-                    </p>
-                  </CardHeader>
-                  <CardContent>
+                <Card className="rounded-xl p-0 px-0 gap-2 shadow-sm hover:shadow-md transition-shadow duration-200">
+                  <CardContent className="p-0 px-0">
                     <div className="rounded-lg border overflow-x-auto">
                       <Table>
                         <TableHeader>
