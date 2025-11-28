@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { AnimatedCard } from "@/components/motion/animated-card";
 import { FadeIn } from "@/components/motion/fade-in";
@@ -354,7 +354,7 @@ const sectionCompleteness = [
   { section: "Education", completeness: 92, color: "#06b6d4" },
 ];
 
-export default function AnalyticsPage() {
+function AnalyticsContent() {
   const [selectedCohort, setSelectedCohort] = useState("all");
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
@@ -1717,5 +1717,31 @@ export default function AnalyticsPage() {
         </Tabs>
       </main>
     </div>
+  );
+}
+
+export default function AnalyticsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex flex-col w-full min-h-screen">
+        <PageHeader
+          title="Analytics"
+          description="Comprehensive insights across students, resumes, interviews, and LinkedIn profiles."
+          actions={
+            <div className="flex items-center gap-2">
+              <StyleSelector />
+              <ThemeSelector />
+            </div>
+          }
+        />
+        <main className="flex-1 w-full max-w-full overflow-x-hidden p-4 md:p-6 xl:p-8">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-muted-foreground">Loading analytics...</div>
+          </div>
+        </main>
+      </div>
+    }>
+      <AnalyticsContent />
+    </Suspense>
   );
 }
