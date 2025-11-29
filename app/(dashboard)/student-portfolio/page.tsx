@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
+import { useBookingModal } from "@/contexts/booking-modal-context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,6 @@ import { motion } from "framer-motion";
 import { Combobox } from "@/components/ui/combobox";
 import {
     Table,
-    TableBody,
     TableCell,
     TableHead,
     TableHeader,
@@ -42,10 +42,8 @@ import {
     Filter,
     X,
     Linkedin,
-    Database,
     ExternalLink,
     User,
-    GraduationCap,
     Briefcase,
 } from "lucide-react";
 
@@ -110,6 +108,7 @@ const submissionTypeIcons: Record<SubmissionType, React.ElementType> = {
 };
 
 export default function StudentPortfolio() {
+    const { openBookingModal } = useBookingModal();
     const [searchTerm, setSearchTerm] = useState("");
     const [typeFilter, setTypeFilter] = useState<SubmissionType | "all">("all");
     const [statusFilter, setStatusFilter] = useState<SubmissionStatus | "all">("all");
@@ -479,7 +478,7 @@ export default function StudentPortfolio() {
                                                 label: !sampleDataLoaded ? "Add Student" : "Clear All Filters",
                                                 onClick: () => {
                                                     if (!sampleDataLoaded) {
-                                                        console.log("Add new student - action not yet implemented");
+                                                        openBookingModal("add-student");
                                                     } else {
                                                         clearAllFilters();
                                                     }

@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
+import { useBookingModal } from "@/contexts/booking-modal-context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -74,6 +75,7 @@ const statusVariants: Record<InterviewStatus, "success" | "warning"> = {
 };
 
 export default function ManageInterviews() {
+  const { openBookingModal } = useBookingModal();
   const [searchTerm, setSearchTerm] = useState("");
   const [assignmentTypeFilter, setAssignmentTypeFilter] = useState<AssignmentType | "all">("all");
   const [statusFilter, setStatusFilter] = useState<InterviewStatus | "all">("all");
@@ -146,7 +148,7 @@ export default function ManageInterviews() {
         title="Manage Interviews" 
         description="Create and manage interview templates and assignments"
         actions={
-          <Button onClick={() => setCreateDialogOpen(true)}>
+          <Button onClick={() => openBookingModal("create-interview")}>
             <Plus className="mr-2 h-4 w-4" />
             Create Interview
           </Button>
@@ -296,7 +298,7 @@ export default function ManageInterviews() {
                         label: !sampleDataLoaded ? "Create Interview" : "Clear Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            console.log("Create interview - action not yet implemented");
+                            openBookingModal("create-interview");
                           } else {
                             setSearchTerm("");
                             setAssignmentTypeFilter("all");

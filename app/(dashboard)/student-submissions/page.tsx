@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
+import { useBookingModal } from "@/contexts/booking-modal-context";
 import { TableTopbar, StatusTab, TopbarTab } from "@/components/table-topbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -73,6 +74,7 @@ const submissionTypeIcons: Record<SubmissionType, React.ElementType> = {
 };
 
 export default function StudentSubmissions() {
+  const { openBookingModal } = useBookingModal();
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<SubmissionType>("Resume");
   const [statusFilter, setStatusFilter] = useState<SubmissionStatus>("Pending");
@@ -341,7 +343,7 @@ export default function StudentSubmissions() {
                         label: !sampleDataLoaded ? "Start Review" : "Clear All Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            console.log("Start review - action not yet implemented");
+                            openBookingModal("start-review");
                           } else {
                             setSearchTerm("");
                             setTypeFilter("Resume");

@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
+import { useBookingModal } from "@/contexts/booking-modal-context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -79,6 +80,7 @@ const statusVariants: Record<TeamStatus, "success" | "warning"> = {
 };
 
 export default function ManageTeam() {
+  const { openBookingModal } = useBookingModal();
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<TeamRole | "all">("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -159,7 +161,7 @@ export default function ManageTeam() {
         title="Manage Team" 
         description="Invite and manage your team of reviewers and administrators"
         actions={
-          <Button onClick={() => setInviteSheetOpen(true)}>
+          <Button onClick={() => openBookingModal("invite-member")}>
             <UserPlus className="mr-2 h-4 w-4" />
             Invite Member
           </Button>
@@ -265,7 +267,7 @@ export default function ManageTeam() {
                         label: !sampleDataLoaded ? "Invite Member" : "Clear Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            console.log("Invite member - action not yet implemented");
+                            openBookingModal("invite-member");
                           } else {
                             setSearchTerm("");
                             setRoleFilter("all");

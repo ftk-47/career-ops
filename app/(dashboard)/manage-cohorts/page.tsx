@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
+import { useBookingModal } from "@/contexts/booking-modal-context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,7 @@ const mockData: Cohort[] = [
 ];
 
 export default function ManageCohorts() {
+  const { openBookingModal } = useBookingModal();
   const [searchTerm, setSearchTerm] = useState("");
   const [sizeFilter, setSizeFilter] = useState<string>("all");
   const [activeFilter, setActiveFilter] = useState<string>("all");
@@ -132,7 +134,7 @@ export default function ManageCohorts() {
         title="Manage Cohorts" 
         description="Organize and track your student cohorts"
         actions={
-          <Button onClick={() => setCreateDialogOpen(true)}>
+          <Button onClick={() => openBookingModal("create-cohort")}>
             <Plus className="mr-2 h-4 w-4" />
             Create Cohort
           </Button>
@@ -275,7 +277,7 @@ export default function ManageCohorts() {
                         label: !sampleDataLoaded ? "Create Cohort" : "Clear Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            console.log("Create cohort - action not yet implemented");
+                            openBookingModal("create-cohort");
                           } else {
                             setSearchTerm("");
                             setSizeFilter("all");
