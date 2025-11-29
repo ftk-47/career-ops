@@ -11,27 +11,22 @@ function Progress({
   style,
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root>) {
-  const progressBg = (style as any)?.[`--progress-background`];
-  
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
+      value={value}
       className={cn(
-        "relative h-2 w-full overflow-hidden rounded-full",
+        "relative h-2 w-full overflow-hidden rounded-full bg-primary/20",
         className
       )}
-      style={{
-        backgroundColor: progressBg ? `color-mix(in srgb, ${progressBg} 20%, transparent)` : 'hsl(var(--primary) / 0.2)',
-        ...style,
-      }}
+      style={style}
       {...props}
     >
       <ProgressPrimitive.Indicator
         data-slot="progress-indicator"
-        className="h-full w-full flex-1 transition-all"
+        className="h-full w-0 bg-primary transition-all duration-300 ease-in-out"
         style={{ 
-          transform: `translateX(-${100 - (value || 0)}%)`,
-          backgroundColor: progressBg || 'hsl(var(--primary))',
+          width: `${value ?? 0}%`,
         }}
       />
     </ProgressPrimitive.Root>
