@@ -479,13 +479,14 @@ export default function StudentPortfolio() {
                                                 label: !sampleDataLoaded ? "Add Student" : "Clear All Filters",
                                                 onClick: () => {
                                                     if (!sampleDataLoaded) {
-                                                        setSampleDataLoaded(true);
+                                                        console.log("Add new student - action not yet implemented");
+                                                    } else {
+                                                        clearAllFilters();
                                                     }
-                                                    clearAllFilters();
                                                 }
                                             }}
                                             secondaryAction={{
-                                                label: !sampleDataLoaded ? "Load Sample Student Profile" : "Reset View",
+                                                label: !sampleDataLoaded ? "Load Sample Data" : "Reset View",
                                                 tooltip: !sampleDataLoaded ? "Load a sample student to preview portfolio insights and progress tracking." : undefined,
                                                 onClick: () => {
                                                     if (!sampleDataLoaded) {

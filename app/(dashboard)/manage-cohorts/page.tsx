@@ -275,7 +275,7 @@ export default function ManageCohorts() {
                         label: !sampleDataLoaded ? "Create Cohort" : "Clear Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            setCreateDialogOpen(true);
+                            console.log("Create cohort - action not yet implemented");
                           } else {
                             setSearchTerm("");
                             setSizeFilter("all");
@@ -285,7 +285,7 @@ export default function ManageCohorts() {
                         }
                       }}
                       secondaryAction={{
-                        label: !sampleDataLoaded ? "Load Sample Cohort" : "Reset View",
+                        label: !sampleDataLoaded ? "Load Sample Data" : "Reset View",
                         tooltip: !sampleDataLoaded ? "Load a demo cohort with mock students and progress data to see how it works." : undefined,
                         onClick: () => {
                           if (!sampleDataLoaded) {

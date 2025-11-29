@@ -341,29 +341,30 @@ export default function StudentSubmissions() {
                         label: !sampleDataLoaded ? "Start Review" : "Clear All Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            setSampleDataLoaded(true);
-                          }
-                          setSearchTerm("");
-                          setTypeFilter("Resume");
-                          setStatusFilter("Pending");
-                          setCohortFilter("all");
-                          setCurrentPage(1);
-                        }
-                      }}
-                      secondaryAction={{
-                        label: !sampleDataLoaded ? "Add Sample Submissions" : "Reset View",
-                        tooltip: !sampleDataLoaded ? "Load a few example submissions to explore how the review process works." : undefined,
-                        onClick: () => {
-                          if (!sampleDataLoaded) {
-                            console.log("Invite students");
+                            console.log("Start review - action not yet implemented");
                           } else {
-                            setSampleDataLoaded(false);
                             setSearchTerm("");
                             setTypeFilter("Resume");
                             setStatusFilter("Pending");
                             setCohortFilter("all");
                             setCurrentPage(1);
                           }
+                        }
+                      }}
+                      secondaryAction={{
+                        label: !sampleDataLoaded ? "Load Sample Data" : "Reset View",
+                        tooltip: !sampleDataLoaded ? "Load a few example submissions to explore how the review process works." : undefined,
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            setSampleDataLoaded(true);
+                          } else {
+                            setSampleDataLoaded(false);
+                          }
+                          setSearchTerm("");
+                          setTypeFilter("Resume");
+                          setStatusFilter("Pending");
+                          setCohortFilter("all");
+                          setCurrentPage(1);
                         }
                       }}
                     />

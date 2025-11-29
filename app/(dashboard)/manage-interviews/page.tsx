@@ -293,10 +293,10 @@ export default function ManageInterviews() {
                         : "Create your first interview template to get started."}
                       icon={VideoIcon}
                       primaryAction={{
-                        label: !sampleDataLoaded ? "Create Interview Template" : "Clear Filters",
+                        label: !sampleDataLoaded ? "Create Interview" : "Clear Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            setCreateDialogOpen(true);
+                            console.log("Create interview - action not yet implemented");
                           } else {
                             setSearchTerm("");
                             setAssignmentTypeFilter("all");
@@ -306,7 +306,7 @@ export default function ManageInterviews() {
                         }
                       }}
                       secondaryAction={{
-                        label: !sampleDataLoaded ? "Load Sample Interview" : "Reset View",
+                        label: !sampleDataLoaded ? "Load Sample Data" : "Reset View",
                         tooltip: !sampleDataLoaded ? "Load a pre-configured interview session to experience the mock interview flow." : undefined,
                         onClick: () => {
                           if (!sampleDataLoaded) {

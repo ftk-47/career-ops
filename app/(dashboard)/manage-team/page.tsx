@@ -265,7 +265,7 @@ export default function ManageTeam() {
                         label: !sampleDataLoaded ? "Invite Member" : "Clear Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            setInviteSheetOpen(true);
+                            console.log("Invite member - action not yet implemented");
                           } else {
                             setSearchTerm("");
                             setRoleFilter("all");
@@ -274,7 +274,7 @@ export default function ManageTeam() {
                         }
                       }}
                       secondaryAction={{
-                        label: !sampleDataLoaded ? "See Example Team Setup" : "Reset View",
+                        label: !sampleDataLoaded ? "Load Sample Data" : "Reset View",
                         tooltip: !sampleDataLoaded ? "Load a mock team to understand roles, permissions, and collaboration views." : undefined,
                         onClick: () => {
                           if (!sampleDataLoaded) {

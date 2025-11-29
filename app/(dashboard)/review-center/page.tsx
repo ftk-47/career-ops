@@ -343,17 +343,18 @@ export default function ReviewCenter() {
                         label: !sampleDataLoaded ? "Start a Review" : "Clear All Filters",
                         onClick: () => {
                           if (!sampleDataLoaded) {
-                            setSampleDataLoaded(true);
+                            console.log("Start review - action not yet implemented");
+                          } else {
+                            setSearchTerm("");
+                            setTypeFilter("Resume");
+                            setStatusFilter("Pending");
+                            setCohortFilter("all");
+                            setCurrentPage(1);
                           }
-                          setSearchTerm("");
-                          setTypeFilter("Resume");
-                          setStatusFilter("Pending");
-                          setCohortFilter("all");
-                          setCurrentPage(1);
                         }
                       }}
                       secondaryAction={{
-                        label: !sampleDataLoaded ? "Load Sample Review" : "Reset View",
+                        label: !sampleDataLoaded ? "Load Sample Data" : "Reset View",
                         tooltip: !sampleDataLoaded ? "Explore a pre-filled review to experience the scoring and feedback workflow." : undefined,
                         onClick: () => {
                           if (!sampleDataLoaded) {
