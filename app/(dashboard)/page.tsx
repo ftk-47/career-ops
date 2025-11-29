@@ -234,26 +234,27 @@ export default function Dashboard() {
 
       {/* Demo Banner */}
       {!isBannerDismissed && (
-        <div className="w-full px-4 md:px-6 xl:px-8 py-4 bg-linear-to-r from-primary/10 via-primary/5 to-transparent">
-          <div className="max-w-full rounded-lg border border-primary/30 bg-card shadow-sm">
-            <div className="px-4 md:px-6 py-4">
+        <div className="w-full px-4 md:px-6 xl:px-8 py-3">
+          <div className="max-w-full rounded-lg border border-border bg-card shadow-sm">
+            <div className="px-4 md:px-5 py-3">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 shrink-0">
-                    <Info className="h-5 w-5 text-primary" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 shrink-0">
+                    <Info className="h-4 w-4 text-primary" />
                   </div>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                    <span className="text-sm font-semibold">You&apos;re Viewing a Demo</span>
-                    <span className="text-sm text-muted-foreground">
-                      To get a personalized consultation and unlock full features, book a session with our experts.
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-1 min-w-0">
+                    <span className="text-sm font-semibold text-foreground">You&apos;re Viewing a Demo</span>
+                    <span className="text-xs text-muted-foreground">
+                      <span className="hidden sm:inline mx-1.5">•</span>
+                      Book a consultation to unlock full features
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <Button 
-                    size="lg" 
+                    size="sm" 
                     onClick={() => setIsBookingOpen(true)}
-                    className="whitespace-nowrap"
+                    className="whitespace-nowrap h-8 text-xs"
                   >
                     Book Consultation
                   </Button>
@@ -261,7 +262,7 @@ export default function Dashboard() {
                     size="sm" 
                     variant="ghost"
                     onClick={handleDismissBanner}
-                    className="h-10 w-10 p-0"
+                    className="h-8 w-8 p-0"
                   >
                     <X className="h-4 w-4" />
                   </Button>
