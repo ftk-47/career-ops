@@ -219,13 +219,16 @@ export default function Dashboard() {
         description={mode === "director" ? "University-wide insights and team oversight" : "Review submissions and support students"}
         actions={
           <div className="flex items-center gap-2">
-            <Link href="/student-portfolio">
-              <Button variant="default" size="sm" className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
-                <GraduationCap className="h-4 w-4" />
-                View as Student
-                <ArrowUpRight className="h-4 w-4" />
-              </Button>
-            </Link>
+            <Button 
+              variant="default" 
+              size="sm" 
+              className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={() => window.open("https://www.hiration.com/app", "_blank", "noopener,noreferrer")}
+            >
+              <GraduationCap className="h-4 w-4" />
+              View as Student
+              <ArrowUpRight className="h-4 w-4" />
+            </Button>
             <StyleSelector />
             <ThemeSelector />
           </div>
