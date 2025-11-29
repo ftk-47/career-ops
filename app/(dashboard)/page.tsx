@@ -11,10 +11,10 @@ import { StyleSelector } from "@/components/style-selector";
 import { ModeToggle } from "@/components/mode-toggle";
 import { PrimaryKpisRow } from "@/components/dashboard/improved-kpi-cards";
 import { CounselorTools } from "@/components/counselor-tools";
-import { WelcomeModal } from "@/components/welcome-modal";
+import { OnboardingModal } from "@/components/onboarding-modal";
 import { PendingReviewsCard } from "@/components/pending-reviews-card";
 import { useMode } from "@/contexts/mode-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -138,8 +138,8 @@ export default function Dashboard() {
   // Banner dismissal state with localStorage
   const [isBannerDismissed, setIsBannerDismissed] = useState(false);
   
-  // Welcome modal state
-  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(false);
+  // Onboarding modal state
+  const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
   
   // Check localStorage after mount to avoid hydration mismatch
   useEffect(() => {
@@ -150,11 +150,11 @@ export default function Dashboard() {
       setIsBannerDismissed(true);
     }
     
-    // Check if welcome modal has been seen in this session
-    const welcomeModalSeen = sessionStorage.getItem("welcome-modal-seen") === "true";
-    if (!welcomeModalSeen) {
-      // Show welcome modal once per session
-      setIsWelcomeModalOpen(true);
+    // Check if onboarding has been completed in this session
+    const onboardingCompleted = sessionStorage.getItem("onboarding-completed") === "true";
+    if (!onboardingCompleted) {
+      // Show onboarding modal once per session
+      setIsOnboardingModalOpen(true);
     }
   }, []);
   
@@ -203,12 +203,12 @@ export default function Dashboard() {
     localStorage.setItem("demo-banner-dismissed", "true");
   };
 
-  // Handle welcome modal close
-  const handleWelcomeModalChange = (open: boolean) => {
-    setIsWelcomeModalOpen(open);
+  // Handle onboarding modal close
+  const handleOnboardingModalChange = (open: boolean) => {
+    setIsOnboardingModalOpen(open);
     if (!open) {
-      // Mark as seen in session storage when closed
-      sessionStorage.setItem("welcome-modal-seen", "true");
+      // Mark as completed in session storage when closed
+      sessionStorage.setItem("onboarding-completed", "true");
     }
   };
 
@@ -689,10 +689,10 @@ export default function Dashboard() {
         </DialogContent>
       </Dialog>
 
-      {/* Welcome Modal */}
-      <WelcomeModal 
-        open={isWelcomeModalOpen} 
-        onOpenChange={handleWelcomeModalChange} 
+      {/* Onboarding Modal */}
+      <OnboardingModal 
+        open={isOnboardingModalOpen} 
+        onOpenChange={handleOnboardingModalChange} 
       />
     </div>
   );
