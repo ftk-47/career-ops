@@ -219,7 +219,13 @@ export default function Dashboard() {
         description={mode === "director" ? "University-wide insights and team oversight" : "Review submissions and support students"}
         actions={
           <div className="flex items-center gap-2">
-            <ModeToggle />
+            <Link href="/student-portfolio">
+              <Button variant="default" size="sm" className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                <GraduationCap className="h-4 w-4" />
+                View as Student
+                <ArrowUpRight className="h-4 w-4" />
+              </Button>
+            </Link>
             <StyleSelector />
             <ThemeSelector />
           </div>
@@ -276,6 +282,10 @@ export default function Dashboard() {
                 ? "Get started by exploring your dashboard and connecting with students."
                 : "Review pending submissions and provide feedback to students."}
             </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">You are viewing as</span>
+            <ModeToggle />
           </div>
         </div>
 
