@@ -318,9 +318,9 @@ export function AppSidebar() {
             className="hover:shadow-lg transition-all duration-200 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent py-0"
           >
             <CardHeader className="p-4 space-y-1">
-              <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
-                  <UserRound className="h-4.5 w-4.5" />
+              <div className="flex items-center gap-3">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
+                  <UserRound className="h-3.5 w-3.5" />
                 </div>
                 <div className="flex flex-col gap-1">
                   <CardTitle className="text-sm leading-tight">
