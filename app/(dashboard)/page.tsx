@@ -215,7 +215,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full min-h-screen">
       <PageHeader
-        title={mode === "director" ? "Director Dashboard" : "Reviewer Dashboard"}
+        title={mode === "director" ? "Director Home" : "Reviewer Home"}
         description={mode === "director" ? "University-wide insights and team oversight" : "Review submissions and support students"}
         actions={
           <div className="flex items-center gap-2">

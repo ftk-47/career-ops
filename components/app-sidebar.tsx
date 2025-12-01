@@ -67,7 +67,7 @@ import {
 
 const allNavItems = [
   {
-    label: "Dashboard",
+    label: "Home",
     href: "/",
     icon: LayoutDashboard,
     modes: ["director", "reviewer"] as const,
