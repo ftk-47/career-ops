@@ -61,11 +61,12 @@ const teamSizeOptions = [
 ];
 
 const studentCountOptions = [
-  { value: "< 1,000", label: "< 1,000" },
-  { value: "1,000-5,000", label: "1,000-5,000" },
-  { value: "5,000-15,000", label: "5,000-15,000" },
-  { value: "15,000-30,000", label: "15,000-30,000" },
-  { value: "30,000+", label: "30,000+" },
+  { value: "< 100", label: "< 100" },
+  { value: "100-1,000", label: "100 - 1,000" },
+  { value: "1,000-5,000", label: "1,000 - 5,000" },
+  { value: "5,000-10,000", label: "5,000 - 10,000" },
+  { value: "10,000-20,000", label: "10,000 - 20,000" },
+  { value: "20,000+", label: "20,000+" },
 ];
 
 const roleOptions = [
@@ -286,7 +287,7 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                       transition={{ duration: 0.4, delay: 0.2 }}
                       className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-lg"
                     >
-                      Let's personalize your experience! We'll ask a few quick questions to tailor the platform to your career center's needs.
+                      Let&apos;s personalize your experience! We will ask a few quick questions to tailor the platform to your career center&apos;s needs.
                     </motion.p>
 
                     {/* Features List */}
@@ -349,7 +350,7 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                                 <Users className="h-5 w-5 text-primary" />
                               </div>
                               <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                                What's your Career Center team size?
+                                What&apos;s your Career Center team size?
                               </h2>
                             </div>
                           </motion.div>
@@ -538,7 +539,7 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                                 <Briefcase className="h-5 w-5 text-primary" />
                               </div>
                               <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                                What's your role?
+                                What&apos;s your role?
                               </h2>
                             </div>
                           </motion.div>
@@ -635,7 +636,7 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                         All Set! 🎉
                       </h2>
                       <p className="text-muted-foreground text-base md:text-lg max-w-md">
-                        Your profile has been configured. Let's get started with your career counseling journey!
+                        Your profile has been configured. Let&apos;s get started with your career counseling journey!
                       </p>
                     </motion.div>
 
