@@ -246,10 +246,10 @@ export default function Dashboard() {
                     <Info className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-1 min-w-0">
-                    <span className="text-sm font-semibold text-foreground">You&apos;re Viewing a Demo</span>
+                    <span className="text-sm font-semibold text-foreground">You&apos;re in demo mode</span>
                     <span className="text-xs text-muted-foreground">
                       <span className="hidden sm:inline mx-1.5">•</span>
-                      Book a consultation to unlock full features
+                      Want to bring in your students and team?
                     </span>
                   </div>
                 </div>
@@ -259,7 +259,7 @@ export default function Dashboard() {
                     onClick={() => setIsBookingOpen(true)}
                     className="whitespace-nowrap h-8 text-xs"
                   >
-                    Book Consultation
+                    Talk to us →
                   </Button>
                   <Button 
                     size="sm" 
