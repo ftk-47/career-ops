@@ -30,6 +30,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -65,62 +66,91 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
-const allNavItems = [
+type NavItem = {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  modes: readonly Mode[];
+  count?: number;
+  beta?: boolean;
+};
+
+type NavCategory = {
+  label: string;
+  items: NavItem[];
+};
+
+const navCategories: NavCategory[] = [
   {
-    label: "Home",
-    href: "/",
-    icon: LayoutDashboard,
-    modes: ["director", "reviewer"] as const,
+    label: "Overview",
+    items: [
+      {
+        label: "Home",
+        href: "/",
+        icon: LayoutDashboard,
+        modes: ["director", "reviewer"] as const,
+      },
+      {
+        label: "Analytics",
+        href: "/analytics",
+        icon: BarChart3,
+        modes: ["director"] as const,
+      },
+    ],
   },
   {
-    label: "Analytics",
-    href: "/analytics",
-    icon: BarChart3,
-    modes: ["director"] as const,
+    label: "Workbench",
+    items: [
+      {
+        label: "Submissions",
+        href: "/student-submissions",
+        icon: FileText,
+        count: 7,
+        modes: ["director", "reviewer"] as const,
+      },
+      {
+        label: "Student Portfolio",
+        href: "/student-portfolio",
+        icon: Database,
+        modes: ["director", "reviewer"] as const,
+      },
+      {
+        label: "Review Center",
+        href: "/review-center",
+        icon: ListChecks,
+        modes: ["director"] as const,
+      },
+      {
+        label: "Cohorts",
+        href: "/manage-cohorts",
+        icon: GraduationCap,
+        modes: ["director"] as const,
+      },
+      {
+        label: "Interviews",
+        href: "/manage-interviews",
+        icon: Calendar,
+        modes: ["director"] as const,
+      },
+    ],
   },
   {
-    label: "Submissions",
-    href: "/student-submissions",
-    icon: FileText,
-    count: 7,
-    modes: ["director", "reviewer"] as const,
-  },
-  {
-    label: "Student Portfolio",
-    href: "/student-portfolio",
-    icon: Database,
-    modes: ["director", "reviewer"] as const,
-  },
-  {
-    label: "Review Center",
-    href: "/review-center",
-    icon: ListChecks,
-    modes: ["director"] as const,
-  },
-  {
-    label: "Team",
-    href: "/manage-team",
-    icon: Users,
-    modes: ["director"] as const,
-  },
-  {
-    label: "Cohorts",
-    href: "/manage-cohorts",
-    icon: GraduationCap,
-    modes: ["director"] as const,
-  },
-  {
-    label: "Interviews",
-    href: "/manage-interviews",
-    icon: Calendar,
-    modes: ["director"] as const,
-  },
-  {
-    label: "Coaching Library",
-    href: "/coaching-library",
-    icon: BookOpen,
-    beta: true,
-    modes: ["director", "reviewer"] as const,
+    label: "Support",
+    items: [
+      {
+        label: "Team",
+        href: "/manage-team",
+        icon: Users,
+        modes: ["director"] as const,
+      },
+      {
+        label: "Coaching Library",
+        href: "/coaching-library",
+        icon: BookOpen,
+        beta: true,
+        modes: ["director", "reviewer"] as const,
+      },
+    ],
   },
 ];
 
@@ -128,8 +158,11 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { mode } = useMode();
   
-  // Filter nav items based on current mode
-  const navItems = allNavItems.filter(item => (item.modes as readonly Mode[]).includes(mode));
+  // Filter nav categories and items based on current mode
+  const filteredCategories = navCategories.map(category => ({
+    ...category,
+    items: category.items.filter(item => (item.modes as readonly Mode[]).includes(mode))
+  })).filter(category => category.items.length > 0);
   
   // Booking modal state
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -203,73 +236,78 @@ export function AppSidebar() {
           </div>
         </motion.div>
       </SidebarHeader>
-      <SidebarContent className="px-3 py-4 pl-1 group-data-[collapsible=icon]:px-2">
-        <SidebarGroup className="group-data-[collapsible=icon]:items-center">
-          <SidebarGroupContent className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center">
-            <SidebarMenu className="gap-0.5 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:items-center">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive =
-                  item.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(item.href);
+      <SidebarContent className="px-3 gap-0.5 py-1 pl-1 group-data-[collapsible=icon]:px-2">
+        {filteredCategories.map((category) => (
+          <SidebarGroup key={category.label} className="group-data-[collapsible=icon]:items-center p-0 pb-2">
+            <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-0.5 px-2">
+              {category.label}
+            </SidebarGroupLabel>
+            <SidebarGroupContent className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center">
+              <SidebarMenu className="gap-0.5 group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:items-center">
+                {category.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive =
+                    item.href === "/"
+                      ? pathname === "/"
+                      : pathname.startsWith(item.href);
 
-                return (
-                  <SidebarMenuItem key={item.href} className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center relative">
-                    <motion.div
-                      className="w-full relative z-10"
-                      whileHover={{ x: 4 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                    >
-                      <SidebarMenuButton
-                        asChild
-                        isActive={isActive}
-                        tooltip={item.label}
-                        className="h-10 px-2 transition-all duration-200 hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
+                  return (
+                    <SidebarMenuItem key={item.href} className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center relative">
+                      <motion.div
+                        className="w-full relative z-10"
+                        whileHover={{ x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
                       >
-                        <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
-                          <Icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-accent-foreground"}`} />
-                          <span className="text-sm  group-data-[collapsible=icon]:hidden">{item.label}</span>
-                          {item.beta && (
-                            <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 h-4 group-data-[collapsible=icon]:hidden">
-                              Beta
-                            </Badge>
-                          )}
-                          {item.count !== undefined && (
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Badge className="ml-auto text-[10px] px-1.5 py-0 h-4 bg-yellow-500/20 text-yellow-700 dark:text-yellow-600 hover:bg-yellow-500/30 group-data-[collapsible=icon]:hidden">
-                                    {item.count}
-                                  </Badge>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Pending Reviews</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          )}
-                          {/* {isActive && (
-                            <motion.div
-                              layoutId="activeIndicator"
-                              className="absolute left-0 w-1 h-7 bg-primary  group-data-[collapsible=icon]:hidden"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              exit={{ opacity: 0 }}
-                            />
-                          )} */}
-                        </Link>
-                      </SidebarMenuButton>
-                    </motion.div>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={isActive}
+                          tooltip={item.label}
+                          className="h-10 px-2 transition-all duration-200 hover:bg-accent hover:text-accent-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-semibold group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:gap-0"
+                        >
+                          <Link href={item.href} className="flex items-center w-full h-full group-data-[collapsible=icon]:justify-center">
+                            <Icon className={`h-5 w-5 shrink-0 transition-colors ${isActive ? "text-primary" : "text-muted-foreground group-hover:text-accent-foreground"}`} />
+                            <span className="text-sm  group-data-[collapsible=icon]:hidden">{item.label}</span>
+                            {item.beta && (
+                              <Badge variant="secondary" className="ml-auto text-[10px] px-1.5 py-0 h-4 group-data-[collapsible=icon]:hidden">
+                                Beta
+                              </Badge>
+                            )}
+                            {item.count !== undefined && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Badge className="ml-auto text-[10px] px-1.5 py-0 h-4 bg-yellow-500/20 text-yellow-700 dark:text-yellow-600 hover:bg-yellow-500/30 group-data-[collapsible=icon]:hidden">
+                                      {item.count}
+                                    </Badge>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Pending Reviews</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
+                            {/* {isActive && (
+                              <motion.div
+                                layoutId="activeIndicator"
+                                className="absolute left-0 w-1 h-7 bg-primary  group-data-[collapsible=icon]:hidden"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                              />
+                            )} */}
+                          </Link>
+                        </SidebarMenuButton>
+                      </motion.div>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
-      <SidebarFooter className=" border-border p-4 group-data-[collapsible=icon]:p-2">
+      <SidebarFooter className=" border-border px-4 py-0.5 group-data-[collapsible=icon]:p-2">
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
