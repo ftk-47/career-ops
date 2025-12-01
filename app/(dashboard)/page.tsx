@@ -283,7 +283,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold tracking-tight">Welcome, Sarah</h2>
             <p className="text-muted-foreground text-sm mt-1">
               {mode === "director" 
-                ? "Your Control Center is ready with sample data—explore program insights and workflows. "
+                ? "Your Control Center is ready with sample data, explore program insights and workflows. "
                 : "Review pending submissions and provide feedback to students."}
             </p>
           </div>
