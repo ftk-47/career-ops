@@ -136,7 +136,7 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
       setShowCustomInput({ ...showCustomInput, [field]: false });
       
       // Check if this is the final question
-      if (field === "role" && currentQuestion === 3) {
+      if (field === "teamSize" && currentQuestion === 3) {
         // Show thank you message
         setTimeout(() => {
           setShowThankYou(true);
@@ -148,7 +148,7 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
       } else {
         // Auto-advance to next question after a short delay
         setTimeout(() => {
-          if (field === "teamSize" && currentQuestion === 1) {
+          if (field === "role" && currentQuestion === 1) {
             setCurrentQuestion(2);
           } else if (field === "studentCount" && currentQuestion === 2) {
             setCurrentQuestion(3);
@@ -163,7 +163,7 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
       setFormData({ ...formData, [field]: customInputs[field] });
       
       // Check if this is the final question
-      if (field === "role" && currentQuestion === 3) {
+      if (field === "teamSize" && currentQuestion === 3) {
         // Show thank you message
         setTimeout(() => {
           setShowThankYou(true);
@@ -175,7 +175,7 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
       } else {
         // Auto-advance to next question
         setTimeout(() => {
-          if (field === "teamSize" && currentQuestion === 1) {
+          if (field === "role" && currentQuestion === 1) {
             setCurrentQuestion(2);
           } else if (field === "studentCount" && currentQuestion === 2) {
             setCurrentQuestion(3);
@@ -336,10 +336,9 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                       transition={{ duration: 0.3 }}
                       className="space-y-6"
                     >
-                      {/* Question 1: Team Size */}
+                      {/* Question 1: Role */}
                       {currentQuestion === 1 && (
                         <>
-                          {/* Title */}
                           <motion.div
                             variants={contentVariants}
                             initial="hidden"
@@ -352,76 +351,57 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                             </div>
                             <div className="flex items-center gap-3">
                               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                                <Users className="h-5 w-5 text-primary" />
+                                <Briefcase className="h-5 w-5 text-primary" />
                               </div>
                               <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                                What&apos;s your Career Center team size?
+                                What&apos;s your role?
                               </h2>
                             </div>
                           </motion.div>
 
-                          <div className="space-y-3 pt-2">
-                            <div className="grid grid-cols-2 gap-3">
-                              {teamSizeOptions.map((option, index) => (
-                                <motion.button
-                                  key={option.value}
-                                  initial={{ opacity: 0, y: 10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: 0.1 + index * 0.05 }}
-                                  onClick={() => handleQuestionAnswer("teamSize", option.value)}
-                                  className={`p-4 rounded-lg border-2 transition-all duration-200 text-left hover:scale-[1.02] ${
-                                    formData.teamSize === option.value
-                                      ? "border-primary bg-primary/5 shadow-md"
-                                      : "border-border hover:border-primary/50 hover:bg-muted/50"
-                                  }`}
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <div
-                                      className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-                                        formData.teamSize === option.value
-                                          ? "bg-primary/10"
-                                          : "bg-muted"
-                                      }`}
-                                    >
-                                      <option.icon
-                                        className={`h-5 w-5 ${
-                                          formData.teamSize === option.value
-                                            ? "text-primary"
-                                            : "text-muted-foreground"
-                                        }`}
-                                      />
-                                    </div>
-                                    <span className="text-sm font-medium">{option.label}</span>
-                                  </div>
-                                </motion.button>
-                              ))}
-                            </div>
+                          <div className="space-y-2 pt-2">
+                            {roleOptions.map((option, index) => (
+                              <motion.button
+                                key={option.value}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.1 + index * 0.05 }}
+                                onClick={() => handleQuestionAnswer("role", option.value)}
+                                className={`w-full p-4 rounded-lg border-2 transition-all duration-200 text-left hover:scale-[1.01] ${
+                                  formData.role === option.value
+                                    ? "border-primary bg-primary/5 shadow-md"
+                                    : "border-border hover:border-primary/50 hover:bg-muted/50"
+                                }`}
+                              >
+                                <span className="text-sm font-medium">{option.label}</span>
+                              </motion.button>
+                            ))}
                             
                             {/* Other Option */}
-                            {!showCustomInput.teamSize ? (
+                            {!showCustomInput.role ? (
                               <motion.button
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3 }}
-                                onClick={() => handleQuestionAnswer("teamSize", "other")}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.4 }}
+                                onClick={() => handleQuestionAnswer("role", "other")}
                                 className="w-full p-4 rounded-lg border-2 border-dashed border-border hover:border-primary/50 hover:bg-muted/50 transition-all duration-200"
                               >
                                 <span className="text-sm font-medium text-muted-foreground">Other (specify)</span>
                               </motion.button>
                             ) : (
                               <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
                                 className="flex gap-2"
                               >
                                 <Input
                                   type="text"
-                                  placeholder="Enter your team size..."
-                                  value={customInputs.teamSize}
-                                  onChange={(e) => setCustomInputs({ ...customInputs, teamSize: e.target.value })}
+                                  placeholder="Enter your role..."
+                                  value={customInputs.role}
+                                  onChange={(e) => setCustomInputs({ ...customInputs, role: e.target.value })}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                      handleCustomInputSubmit("teamSize");
+                                      handleCustomInputSubmit("role");
                                     }
                                   }}
                                   autoFocus
@@ -429,8 +409,8 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                                 />
                                 <Button
                                   size="sm"
-                                  onClick={() => handleCustomInputSubmit("teamSize")}
-                                  disabled={!customInputs.teamSize.trim()}
+                                  onClick={() => handleCustomInputSubmit("role")}
+                                  disabled={!customInputs.role.trim()}
                                 >
                                   <ChevronRight className="h-4 w-4" />
                                 </Button>
@@ -526,9 +506,10 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                         </>
                       )}
 
-                      {/* Question 3: Role */}
+                      {/* Question 3: Team Size */}
                       {currentQuestion === 3 && (
                         <>
+                          {/* Title */}
                           <motion.div
                             variants={contentVariants}
                             initial="hidden"
@@ -541,57 +522,76 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                             </div>
                             <div className="flex items-center gap-3">
                               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                                <Briefcase className="h-5 w-5 text-primary" />
+                                <Users className="h-5 w-5 text-primary" />
                               </div>
                               <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                                What&apos;s your role?
+                                What&apos;s your Career Center team size?
                               </h2>
                             </div>
                           </motion.div>
 
-                          <div className="space-y-2 pt-2">
-                            {roleOptions.map((option, index) => (
-                              <motion.button
-                                key={option.value}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.1 + index * 0.05 }}
-                                onClick={() => handleQuestionAnswer("role", option.value)}
-                                className={`w-full p-4 rounded-lg border-2 transition-all duration-200 text-left hover:scale-[1.01] ${
-                                  formData.role === option.value
-                                    ? "border-primary bg-primary/5 shadow-md"
-                                    : "border-border hover:border-primary/50 hover:bg-muted/50"
-                                }`}
-                              >
-                                <span className="text-sm font-medium">{option.label}</span>
-                              </motion.button>
-                            ))}
+                          <div className="space-y-3 pt-2">
+                            <div className="grid grid-cols-2 gap-3">
+                              {teamSizeOptions.map((option, index) => (
+                                <motion.button
+                                  key={option.value}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: 0.1 + index * 0.05 }}
+                                  onClick={() => handleQuestionAnswer("teamSize", option.value)}
+                                  className={`p-4 rounded-lg border-2 transition-all duration-200 text-left hover:scale-[1.02] ${
+                                    formData.teamSize === option.value
+                                      ? "border-primary bg-primary/5 shadow-md"
+                                      : "border-border hover:border-primary/50 hover:bg-muted/50"
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div
+                                      className={`flex h-10 w-10 items-center justify-center rounded-lg ${
+                                        formData.teamSize === option.value
+                                          ? "bg-primary/10"
+                                          : "bg-muted"
+                                      }`}
+                                    >
+                                      <option.icon
+                                        className={`h-5 w-5 ${
+                                          formData.teamSize === option.value
+                                            ? "text-primary"
+                                            : "text-muted-foreground"
+                                        }`}
+                                      />
+                                    </div>
+                                    <span className="text-sm font-medium">{option.label}</span>
+                                  </div>
+                                </motion.button>
+                              ))}
+                            </div>
                             
                             {/* Other Option */}
-                            {!showCustomInput.role ? (
+                            {!showCustomInput.teamSize ? (
                               <motion.button
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.4 }}
-                                onClick={() => handleQuestionAnswer("role", "other")}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                onClick={() => handleQuestionAnswer("teamSize", "other")}
                                 className="w-full p-4 rounded-lg border-2 border-dashed border-border hover:border-primary/50 hover:bg-muted/50 transition-all duration-200"
                               >
                                 <span className="text-sm font-medium text-muted-foreground">Other (specify)</span>
                               </motion.button>
                             ) : (
                               <motion.div
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 className="flex gap-2"
                               >
                                 <Input
                                   type="text"
-                                  placeholder="Enter your role..."
-                                  value={customInputs.role}
-                                  onChange={(e) => setCustomInputs({ ...customInputs, role: e.target.value })}
+                                  placeholder="Enter your team size..."
+                                  value={customInputs.teamSize}
+                                  onChange={(e) => setCustomInputs({ ...customInputs, teamSize: e.target.value })}
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter") {
-                                      handleCustomInputSubmit("role");
+                                      handleCustomInputSubmit("teamSize");
                                     }
                                   }}
                                   autoFocus
@@ -599,8 +599,8 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                                 />
                                 <Button
                                   size="sm"
-                                  onClick={() => handleCustomInputSubmit("role")}
-                                  disabled={!customInputs.role.trim()}
+                                  onClick={() => handleCustomInputSubmit("teamSize")}
+                                  disabled={!customInputs.teamSize.trim()}
                                 >
                                   <ChevronRight className="h-4 w-4" />
                                 </Button>
