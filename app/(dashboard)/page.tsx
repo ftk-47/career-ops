@@ -141,11 +141,11 @@ export default function Dashboard() {
   // Onboarding modal state
   const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
   
-  // Check localStorage after mount to avoid hydration mismatch
+  // Check sessionStorage after mount to avoid hydration mismatch
   useEffect(() => {
-    const dismissed = localStorage.getItem("demo-banner-dismissed") === "true";
+    const dismissed = sessionStorage.getItem("demo-banner-dismissed") === "true";
     if (dismissed) {
-      // Necessary for hydration: update state after mount to match localStorage
+      // Necessary for hydration: update state after mount to match sessionStorage
       // eslint-disable-next-line
       setIsBannerDismissed(true);
     }
@@ -200,7 +200,7 @@ export default function Dashboard() {
   // Handle banner dismissal
   const handleDismissBanner = () => {
     setIsBannerDismissed(true);
-    localStorage.setItem("demo-banner-dismissed", "true");
+    sessionStorage.setItem("demo-banner-dismissed", "true");
   };
 
   // Handle onboarding modal close
