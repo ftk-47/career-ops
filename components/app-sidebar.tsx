@@ -336,7 +336,7 @@ export function AppSidebar() {
                 className="w-full text-xs h-8"
                 size="sm"
               >
-                Schedule Now
+                Book a Call
               </Button>
             </CardHeader>
           </Card>
