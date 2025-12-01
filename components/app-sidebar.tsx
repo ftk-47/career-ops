@@ -307,7 +307,7 @@ export function AppSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarFooter className=" border-border px-4 py-0.5 group-data-[collapsible=icon]:p-2">
+      <SidebarFooter className="gap-0.5 border-border px-4 py-0.5 group-data-[collapsible=icon]:p-2">
         <motion.div
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
@@ -329,8 +329,7 @@ export function AppSidebar() {
                 </div>
               </div>
                   <CardDescription className="text-xs leading-relaxed">
-                  Talk to your Hiration success manager.
-
+                  Get setup guidance and best practices support.
                   </CardDescription>
               <Button
                 onClick={() => setIsBookingOpen(true)}
