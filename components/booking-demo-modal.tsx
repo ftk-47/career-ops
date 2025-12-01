@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -89,9 +88,9 @@ export function BookingDemoModal({
               transition={{ duration: 0.2 }}
               className="space-y-4 py-4"
             >
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <div className="text-sm text-muted-foreground leading-relaxed space-y-2">
                 {context.description}
-              </p>
+              </div>
               
               <div className="rounded-lg border bg-muted/30 p-4">
                 <p className="text-sm font-medium mb-1">Feature Access:</p>
