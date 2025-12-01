@@ -287,36 +287,41 @@ export function OnboardingModal({ open, onOpenChange }: OnboardingModalProps) {
                       transition={{ duration: 0.4, delay: 0.2 }}
                       className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-lg"
                     >
-                      Let&apos;s personalize your experience! We will ask a few quick questions to tailor the platform to your career center&apos;s needs.
+                      We&apos;ll load tailored sample data and set up a workspace based on your role and institution size, so you can explore how the platform works in real context.
                     </motion.p>
 
                     {/* Features List */}
-                    <motion.ul
+                    <motion.div
                       variants={contentVariants}
                       initial="hidden"
                       animate="visible"
                       transition={{ duration: 0.4, delay: 0.3 }}
-                      className="space-y-2"
+                      className="space-y-1"
                     >
-                      {[
-                        "Customize dashboards for your team size",
-                        "Get insights tailored to your institution",
-                        "Access role-specific tools and features",
-                      ].map((feature, index) => (
-                        <motion.li
-                          key={index}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.4 + index * 0.1 }}
-                          className="flex items-center gap-3 text-sm text-muted-foreground"
-                        >
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
-                            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                          </span>
-                          {feature}
-                        </motion.li>
-                      ))}
-                    </motion.ul>
+                      {/* <p className="text-sm font-medium text-foreground mb-3">You&apos;ll get:</p> */}
+                      <motion.ul
+                        className="space-y-2"
+                      >
+                        {[
+                          "Sample data matched to your institution",
+                          "Dashboards personalized to your role",
+                          "A guided workspace to understand key workflows",
+                        ].map((feature, index) => (
+                          <motion.li
+                            key={index}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.4 + index * 0.1 }}
+                            className="flex items-center gap-3 text-sm text-muted-foreground"
+                          >
+                            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10">
+                              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                            </span>
+                            {feature}
+                          </motion.li>
+                        ))}
+                      </motion.ul>
+                    </motion.div>
                   </>
                 )}
 
