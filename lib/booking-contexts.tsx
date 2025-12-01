@@ -16,43 +16,43 @@ export interface BookingContext {
 
 export const bookingContexts: Record<BookingContextType, BookingContext> = {
   "add-student": {
-    title: "Add Students to Your Portfolio",
+    title: "Student Portfolio Requires Setup",
     description: (
       <>
-        <p>Adding real students is part of your full workspace activation.</p>
-        <p>Book a quick demo and we&apos;ll guide you through setting up student portfolios, based on what&apos;s worked across 200+ career centers.</p>
-        <p className="font-medium mt-3 mb-2">You&apos;ll learn:</p>
+        <p>Adding students and managing portfolios is part of your full workspace setup.
+        Book a quick demo and we&apos;ll help you activate student management.</p>
+        <p className="font-medium mt-3 mb-2">What&apos;s included:</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>How student profiles and progress are tracked</li>
-          <li>Portfolio workflows used by top institutions</li>
-          <li>How to onboard students seamlessly</li>
+          <li>Student portfolio setup</li>
+          <li>Profile completion tracking</li>
+          <li>Progress monitoring</li>
         </ul>
       </>
     ),
     feature: "Student Portfolio Management",
   },
   "create-cohort": {
-    title: "Create and Manage Cohorts",
+    title: "Cohort Management Requires Setup",
     description: (
       <>
-        <p>Creating cohorts and organizing students is part of your full workspace activation.</p>
-        <p>Book a quick demo and we&apos;ll guide you through cohort setup, informed by what&apos;s worked across 200+ career centers.</p>
-        <p className="font-medium mt-3 mb-2">You&apos;ll learn:</p>
+        <p>Creating cohorts is part of the full workspace setup.
+        Book a quick demo and we&apos;ll guide you through cohort organization.</p>
+        <p className="font-medium mt-3 mb-2">What&apos;s included:</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>How to structure cohorts effectively</li>
-          <li>Ways top centers segment students</li>
-          <li>Best practices for tracking progress at scale</li>
+          <li>Cohort creation</li>
+          <li>Group-based tracking</li>
+          <li>Engagement insights</li>
         </ul>
       </>
     ),
     feature: "Cohort Management",
   },
   "invite-member": {
-    title: "Invite Team Members",
+    title: "Team Collaboration Requires Setup",
     description: (
       <>
-        <p>Inviting team members is part of the full workspace setup.</p>
-        <p>Book a quick demo and we&apos;ll walk you through team onboarding.</p>
+        <p>Inviting team members is part of the full workspace setup.
+        Book a quick demo and we&apos;ll walk you through team onboarding.</p>
         <p className="font-medium mt-3 mb-2">What&apos;s included:</p>
         <ul className="list-disc pl-5 space-y-1">
           <li>Shared reviewer workspace</li>
@@ -64,28 +64,28 @@ export const bookingContexts: Record<BookingContextType, BookingContext> = {
     feature: "Team Collaboration",
   },
   "create-interview": {
-    title: "Create Mock Interviews",
+    title: "Interview Management Requires Setup",
     description: (
       <>
-        <p>This feature is part of your full workspace setup.</p>
-        <p>Book a quick demo and we&apos;ll help you activate interview management based on what&apos;s worked for 200+ career centers.</p>
-        <p className="font-medium mt-3 mb-2">What you&apos;ll see:</p>
+        <p>Mock interviews are available as part of your full workspace setup.
+        Book a quick demo and we&apos;ll show you the interview workflow.</p>
+        <p className="font-medium mt-3 mb-2">What&apos;s included:</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>How mock interviews are set up</li>
-          <li>Best practices for tracking student performance</li>
-          <li>Your complete AI-powered interview workflow</li>
+          <li>Interview templates</li>
+          <li>Performance tracking</li>
+          <li>AI-powered insights</li>
         </ul>
       </>
     ),
     feature: "Interview Management",
   },
   "start-review": {
-    title: "Start Reviewing Submissions",
+    title: "Review System Requires Setup",
     description: (
       <>
-        <p>Submission reviews are enabled during full workspace onboarding.</p>
-        <p>Join a quick demo to see how our AI-supported review system is used by top career centers.</p>
-        <p className="font-medium mt-3 mb-2">Covers:</p>
+        <p>Reviewing student submissions is part of your full workspace setup.
+        Book a quick demo and we&apos;ll walk you through the complete review workflow.</p>
+        <p className="font-medium mt-3 mb-2">What&apos;s included:</p>
         <ul className="list-disc pl-5 space-y-1">
           <li>Review routing</li>
           <li>Feedback workflows</li>
