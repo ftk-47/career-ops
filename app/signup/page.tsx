@@ -17,6 +17,9 @@ import {
   Star,
   Quote,
   ChevronLeft,
+  FileCheck,
+  Globe,
+  ShieldCheck,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -43,6 +46,14 @@ const PARTICLES = [
   { x: "45%", y: "10%", duration: 4, delay: 0.3 },
   { x: "70%", y: "60%", duration: 7, delay: 2.5 },
 ];
+
+// Trust badges data
+const TRUST_BADGES = [
+  { icon: Shield, label: "FERPA" },
+  { icon: ShieldCheck, label: "SOC 2" },
+  { icon: FileCheck, label: "VPAT" },
+  { icon: Globe, label: "GDPR" },
+] as const;
 
 // Testimonials data
 const testimonials = [
@@ -623,15 +634,17 @@ export default function SignupPage() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
-                      className="flex items-center justify-center gap-4 pt-2 text-muted-foreground"
+                      className="flex flex-col items-center gap-2 pt-3"
                     >
-                      <div className="flex items-center gap-1 text-[10px]">
-                        <Shield className="size-3" />
-                        <span>SOC 2</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-[10px]">
-                        <Lock className="size-3" />
-                        <span>256-bit SSL</span>
+                      <p className="text-[11px] text-muted-foreground/70 font-medium">
+                        Certified & Compliant
+                      </p>
+                      <div className="flex items-center justify-center gap-4 text-muted-foreground">
+                        {TRUST_BADGES.map((badge) => (
+                          <span key={badge.label} className="text-[10px]">
+                            {badge.label}
+                          </span>
+                        ))}
                       </div>
                     </motion.div>
 
