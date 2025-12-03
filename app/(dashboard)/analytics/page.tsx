@@ -1680,33 +1680,35 @@ function AnalyticsContent() {
                         Score improvement after AI optimization
                       </p>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="space-y-4">
-                        <div className="p-4 rounded-lg border bg-muted/50">
-                          <p className="text-xs text-muted-foreground mb-1">Before</p>
-                          <p className="text-2xl font-bold">54.2</p>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 p-3 rounded-lg bg-muted/30">
+                          <p className="text-xs text-muted-foreground mb-0.5">Before</p>
+                          <p className="text-2xl font-bold tracking-tight">54.2</p>
                         </div>
 
-                        <div className="flex items-center justify-center">
-                          <TrendingUp className="h-6 w-6 text-emerald-600" />
+                        <div className="shrink-0">
+                          <TrendingUp className="h-5 w-5 text-emerald-600" />
                         </div>
 
-                        <div className="p-4 rounded-lg border bg-emerald-500/10 border-emerald-500/20">
-                          <p className="text-xs text-muted-foreground mb-1">After</p>
-                          <p className="text-2xl font-bold text-emerald-600">68.5</p>
+                        <div className="flex-1 p-3 rounded-lg bg-emerald-500/10">
+                          <p className="text-xs text-muted-foreground mb-0.5">After</p>
+                          <p className="text-2xl font-bold text-emerald-600 tracking-tight">68.5</p>
                         </div>
                       </div>
 
-                      <div className="pt-4 border-t">
+                      <div className="pt-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium">Improvement</span>
+                          <div>
+                            <span className="text-sm font-medium">Improvement</span>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              Average score increase
+                            </p>
+                          </div>
                           <span className="text-lg font-bold text-emerald-600">
                             +14.3 pts
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Average score increase
-                        </p>
                       </div>
                     </CardContent>
                   </Card>
