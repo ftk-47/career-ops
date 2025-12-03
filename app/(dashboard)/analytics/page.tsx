@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { format, subDays, subMonths, startOfYear } from "date-fns";
 import { AnimatedCard } from "@/components/motion/animated-card";
 import { FadeIn } from "@/components/motion/fade-in";
 import { PageHeader } from "@/components/page-header";
@@ -13,6 +14,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -58,8 +65,24 @@ import {
   AlertCircle,
   Clock,
   Mail,
+  CalendarIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+// Date filter types
+type DatePreset = "7d" | "30d" | "3m" | "6m" | "1y" | "custom";
+type DateRange = { from: Date; to: Date };
+
+// Date multipliers for mock data variation
+const dateMultipliers: Record<DatePreset, number> = {
+  "7d": 0.25,
+  "30d": 1,
+  "3m": 2.8,
+  "6m": 5.5,
+  "1y": 10,
+  "custom": 1,
+};
 
 // Mock Data - Students
 interface StudentMetrics {
@@ -106,14 +129,40 @@ const studentMetricsByCohort: Record<string, StudentMetrics> = {
   },
 };
 
-const signupTrendData = [
-  { month: "Jun", signups: 145 },
-  { month: "Jul", signups: 178 },
-  { month: "Aug", signups: 210 },
-  { month: "Sep", signups: 195 },
-  { month: "Oct", signups: 234 },
-  { month: "Nov", signups: 278 },
-];
+const signupTrendDataByCohort: Record<string, Array<{ month: string; signups: number }>> = {
+  "all": [
+    { month: "Jun", signups: 145 },
+    { month: "Jul", signups: 178 },
+    { month: "Aug", signups: 210 },
+    { month: "Sep", signups: 195 },
+    { month: "Oct", signups: 234 },
+    { month: "Nov", signups: 278 },
+  ],
+  "cs-2025": [
+    { month: "Jun", signups: 48 },
+    { month: "Jul", signups: 62 },
+    { month: "Aug", signups: 71 },
+    { month: "Sep", signups: 65 },
+    { month: "Oct", signups: 82 },
+    { month: "Nov", signups: 92 },
+  ],
+  "business-2025": [
+    { month: "Jun", signups: 42 },
+    { month: "Jul", signups: 55 },
+    { month: "Aug", signups: 68 },
+    { month: "Sep", signups: 61 },
+    { month: "Oct", signups: 74 },
+    { month: "Nov", signups: 85 },
+  ],
+  "design-2025": [
+    { month: "Jun", signups: 55 },
+    { month: "Jul", signups: 61 },
+    { month: "Aug", signups: 71 },
+    { month: "Sep", signups: 69 },
+    { month: "Oct", signups: 78 },
+    { month: "Nov", signups: 101 },
+  ],
+};
 
 const cohortDistributionData = [
   { name: "CS 2025", value: 420, fill: "#10b981" },
@@ -121,47 +170,147 @@ const cohortDistributionData = [
   { name: "Design 2025", value: 435, fill: "#8b5cf6" },
 ];
 
-const activityFunnelData = [
-  { stage: "Invited", count: 1485, percentage: 100, color: "#10b981" },
-  { stage: "Signed Up", count: 1240, percentage: 84, color: "#3b82f6" },
-  { stage: "Active (7d)", count: 967, percentage: 78, color: "#8b5cf6" },
-  { stage: "Profile Complete", count: 856, percentage: 69, color: "#ec4899" },
-];
+const activityFunnelDataByCohort: Record<string, Array<{ stage: string; count: number; percentage: number; color: string }>> = {
+  "all": [
+    { stage: "Invited", count: 1485, percentage: 100, color: "#10b981" },
+    { stage: "Signed Up", count: 1240, percentage: 84, color: "#3b82f6" },
+    { stage: "Active (7d)", count: 967, percentage: 78, color: "#8b5cf6" },
+    { stage: "Profile Complete", count: 856, percentage: 69, color: "#ec4899" },
+  ],
+  "cs-2025": [
+    { stage: "Invited", count: 512, percentage: 100, color: "#10b981" },
+    { stage: "Signed Up", count: 420, percentage: 82, color: "#3b82f6" },
+    { stage: "Active (7d)", count: 344, percentage: 82, color: "#8b5cf6" },
+    { stage: "Profile Complete", count: 302, percentage: 72, color: "#ec4899" },
+  ],
+  "business-2025": [
+    { stage: "Invited", count: 468, percentage: 100, color: "#10b981" },
+    { stage: "Signed Up", count: 385, percentage: 82, color: "#3b82f6" },
+    { stage: "Active (7d)", count: 289, percentage: 75, color: "#8b5cf6" },
+    { stage: "Profile Complete", count: 254, percentage: 66, color: "#ec4899" },
+  ],
+  "design-2025": [
+    { stage: "Invited", count: 505, percentage: 100, color: "#10b981" },
+    { stage: "Signed Up", count: 435, percentage: 86, color: "#3b82f6" },
+    { stage: "Active (7d)", count: 335, percentage: 77, color: "#8b5cf6" },
+    { stage: "Profile Complete", count: 300, percentage: 69, color: "#ec4899" },
+  ],
+};
 
-const studentsNeedingAttention = [
-  {
-    id: 1,
-    name: "Alex Morgan",
-    major: "Computer Science",
-    issue: "Resume Score < 40",
-    daysInactive: 12,
-    initials: "AM",
-  },
-  {
-    id: 2,
-    name: "Sarah Jenkins",
-    major: "Marketing",
-    issue: "No Interview Practice",
-    daysInactive: 5,
-    initials: "SJ",
-  },
-  {
-    id: 3,
-    name: "Michael Chen",
-    major: "Finance",
-    issue: "Profile Incomplete",
-    daysInactive: 20,
-    initials: "MC",
-  },
-  {
-    id: 4,
-    name: "Jessica Wu",
-    major: "Design",
-    issue: "Resume Score Stagnant",
-    daysInactive: 8,
-    initials: "JW",
-  },
-];
+const studentsNeedingAttentionByCohort: Record<string, Array<{ id: number; name: string; major: string; issue: string; daysInactive: number; initials: string }>> = {
+  "all": [
+    {
+      id: 1,
+      name: "Alex Morgan",
+      major: "Computer Science",
+      issue: "Resume Score < 40",
+      daysInactive: 12,
+      initials: "AM",
+    },
+    {
+      id: 2,
+      name: "Sarah Jenkins",
+      major: "Marketing",
+      issue: "No Interview Practice",
+      daysInactive: 5,
+      initials: "SJ",
+    },
+    {
+      id: 3,
+      name: "Michael Chen",
+      major: "Finance",
+      issue: "Profile Incomplete",
+      daysInactive: 20,
+      initials: "MC",
+    },
+    {
+      id: 4,
+      name: "Jessica Wu",
+      major: "Design",
+      issue: "Resume Score Stagnant",
+      daysInactive: 8,
+      initials: "JW",
+    },
+  ],
+  "cs-2025": [
+    {
+      id: 1,
+      name: "Alex Morgan",
+      major: "Computer Science",
+      issue: "Resume Score < 40",
+      daysInactive: 12,
+      initials: "AM",
+    },
+    {
+      id: 2,
+      name: "David Kim",
+      major: "Computer Science",
+      issue: "No Interview Practice",
+      daysInactive: 8,
+      initials: "DK",
+    },
+    {
+      id: 3,
+      name: "Emily Zhang",
+      major: "Computer Engineering",
+      issue: "Profile Incomplete",
+      daysInactive: 15,
+      initials: "EZ",
+    },
+  ],
+  "business-2025": [
+    {
+      id: 1,
+      name: "Sarah Jenkins",
+      major: "Marketing",
+      issue: "No Interview Practice",
+      daysInactive: 5,
+      initials: "SJ",
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      major: "Finance",
+      issue: "Profile Incomplete",
+      daysInactive: 20,
+      initials: "MC",
+    },
+    {
+      id: 3,
+      name: "Lisa Rodriguez",
+      major: "Business Analytics",
+      issue: "Resume Score < 40",
+      daysInactive: 11,
+      initials: "LR",
+    },
+  ],
+  "design-2025": [
+    {
+      id: 1,
+      name: "Jessica Wu",
+      major: "Design",
+      issue: "Resume Score Stagnant",
+      daysInactive: 8,
+      initials: "JW",
+    },
+    {
+      id: 2,
+      name: "Ryan Martinez",
+      major: "UX Design",
+      issue: "No Interview Practice",
+      daysInactive: 6,
+      initials: "RM",
+    },
+    {
+      id: 3,
+      name: "Sophie Taylor",
+      major: "Graphic Design",
+      issue: "Profile Incomplete",
+      daysInactive: 14,
+      initials: "ST",
+    },
+  ],
+};
 
 // Mock Data - Resumes
 interface ResumeMetrics {
@@ -198,33 +347,114 @@ const resumeMetricsByCohort: Record<string, ResumeMetrics> = {
   },
 };
 
-const scoreDistributionData = [
-  { range: "0-20", count: 45 },
-  { range: "21-40", count: 128 },
-  { range: "41-60", count: 342 },
-  { range: "61-80", count: 876 },
-  { range: "81-100", count: 459 },
-];
+const scoreDistributionDataByCohort: Record<string, Array<{ range: string; count: number }>> = {
+  "all": [
+    { range: "0-20", count: 45 },
+    { range: "21-40", count: 128 },
+    { range: "41-60", count: 342 },
+    { range: "61-80", count: 876 },
+    { range: "81-100", count: 459 },
+  ],
+  "cs-2025": [
+    { range: "0-20", count: 12 },
+    { range: "21-40", count: 38 },
+    { range: "41-60", count: 102 },
+    { range: "61-80", count: 312 },
+    { range: "81-100", count: 176 },
+  ],
+  "business-2025": [
+    { range: "0-20", count: 16 },
+    { range: "21-40", count: 45 },
+    { range: "41-60", count: 118 },
+    { range: "61-80", count: 278 },
+    { range: "81-100", count: 143 },
+  ],
+  "design-2025": [
+    { range: "0-20", count: 17 },
+    { range: "21-40", count: 45 },
+    { range: "41-60", count: 122 },
+    { range: "61-80", count: 286 },
+    { range: "81-100", count: 140 },
+  ],
+};
 
-const resumeScoreTrendData = [
-  { week: "Week 1", score: 68.2 },
-  { week: "Week 2", score: 69.5 },
-  { week: "Week 3", score: 70.1 },
-  { week: "Week 4", score: 71.3 },
-  { week: "Week 5", score: 71.8 },
-  { week: "Week 6", score: 72.4 },
-];
+const resumeScoreTrendDataByCohort: Record<string, Array<{ week: string; score: number }>> = {
+  "all": [
+    { week: "Week 1", score: 68.2 },
+    { week: "Week 2", score: 69.5 },
+    { week: "Week 3", score: 70.1 },
+    { week: "Week 4", score: 71.3 },
+    { week: "Week 5", score: 71.8 },
+    { week: "Week 6", score: 72.4 },
+  ],
+  "cs-2025": [
+    { week: "Week 1", score: 70.1 },
+    { week: "Week 2", score: 71.2 },
+    { week: "Week 3", score: 72.0 },
+    { week: "Week 4", score: 73.1 },
+    { week: "Week 5", score: 73.7 },
+    { week: "Week 6", score: 74.2 },
+  ],
+  "business-2025": [
+    { week: "Week 1", score: 67.5 },
+    { week: "Week 2", score: 68.8 },
+    { week: "Week 3", score: 69.6 },
+    { week: "Week 4", score: 70.5 },
+    { week: "Week 5", score: 71.2 },
+    { week: "Week 6", score: 71.8 },
+  ],
+  "design-2025": [
+    { week: "Week 1", score: 67.0 },
+    { week: "Week 2", score: 68.3 },
+    { week: "Week 3", score: 69.1 },
+    { week: "Week 4", score: 70.0 },
+    { week: "Week 5", score: 70.7 },
+    { week: "Week 6", score: 71.2 },
+  ],
+};
 
-const commonIssuesData = [
-  { issue: "Weak Action Verbs", count: 456 },
-  { issue: "Missing Metrics", count: 398 },
-  { issue: "Poor Formatting", count: 367 },
-  { issue: "Typos & Grammar", count: 312 },
-  { issue: "Vague Descriptions", count: 289 },
-  { issue: "Inconsistent Dates", count: 245 },
-  { issue: "Missing Keywords", count: 198 },
-  { issue: "Too Lengthy", count: 167 },
-];
+const commonIssuesDataByCohort: Record<string, Array<{ issue: string; count: number }>> = {
+  "all": [
+    { issue: "Weak Action Verbs", count: 456 },
+    { issue: "Missing Metrics", count: 398 },
+    { issue: "Poor Formatting", count: 367 },
+    { issue: "Typos & Grammar", count: 312 },
+    { issue: "Vague Descriptions", count: 289 },
+    { issue: "Inconsistent Dates", count: 245 },
+    { issue: "Missing Keywords", count: 198 },
+    { issue: "Too Lengthy", count: 167 },
+  ],
+  "cs-2025": [
+    { issue: "Missing Metrics", count: 145 },
+    { issue: "Weak Action Verbs", count: 132 },
+    { issue: "Vague Descriptions", count: 98 },
+    { issue: "Poor Formatting", count: 87 },
+    { issue: "Typos & Grammar", count: 76 },
+    { issue: "Missing Keywords", count: 71 },
+    { issue: "Inconsistent Dates", count: 65 },
+    { issue: "Too Lengthy", count: 48 },
+  ],
+  "business-2025": [
+    { issue: "Weak Action Verbs", count: 156 },
+    { issue: "Missing Metrics", count: 142 },
+    { issue: "Poor Formatting", count: 124 },
+    { issue: "Typos & Grammar", count: 118 },
+    { issue: "Vague Descriptions", count: 95 },
+    { issue: "Missing Keywords", count: 72 },
+    { issue: "Inconsistent Dates", count: 89 },
+    { issue: "Too Lengthy", count: 62 },
+  ],
+  "design-2025": [
+    { issue: "Weak Action Verbs", count: 168 },
+    { issue: "Poor Formatting", count: 156 },
+    { issue: "Missing Metrics", count: 111 },
+    { issue: "Typos & Grammar", count: 118 },
+    { issue: "Vague Descriptions", count: 96 },
+    { issue: "Inconsistent Dates", count: 91 },
+    { issue: "Too Lengthy", count: 57 },
+    { issue: "Missing Keywords", count: 55 },
+  ],
+};
 
 // Mock Data - Interviews
 interface InterviewMetrics {
@@ -261,37 +491,129 @@ const interviewMetricsByCohort: Record<string, InterviewMetrics> = {
   },
 };
 
-const interviewScoreCategories = [
-  { category: "Posture", score: 82 },
-  { category: "Speech", score: 76 },
-  { category: "Answer Quality", score: 78 },
-  { category: "Confidence", score: 74 },
-  { category: "Eye Contact", score: 80 },
-];
+const interviewScoreCategoriesByCohort: Record<string, Array<{ category: string; score: number }>> = {
+  "all": [
+    { category: "Posture", score: 82 },
+    { category: "Speech", score: 76 },
+    { category: "Answer Quality", score: 78 },
+    { category: "Confidence", score: 74 },
+    { category: "Eye Contact", score: 80 },
+  ],
+  "cs-2025": [
+    { category: "Posture", score: 84 },
+    { category: "Speech", score: 79 },
+    { category: "Answer Quality", score: 81 },
+    { category: "Confidence", score: 77 },
+    { category: "Eye Contact", score: 82 },
+  ],
+  "business-2025": [
+    { category: "Posture", score: 81 },
+    { category: "Speech", score: 75 },
+    { category: "Answer Quality", score: 77 },
+    { category: "Confidence", score: 73 },
+    { category: "Eye Contact", score: 79 },
+  ],
+  "design-2025": [
+    { category: "Posture", score: 80 },
+    { category: "Speech", score: 74 },
+    { category: "Answer Quality", score: 76 },
+    { category: "Confidence", score: 72 },
+    { category: "Eye Contact", score: 78 },
+  ],
+};
 
-const interviewCompletionTrend = [
-  { week: "Week 1", interviews: 118 },
-  { week: "Week 2", interviews: 134 },
-  { week: "Week 3", interviews: 142 },
-  { week: "Week 4", interviews: 156 },
-  { week: "Week 5", interviews: 168 },
-  { week: "Week 6", interviews: 174 },
-];
+const interviewCompletionTrendByCohort: Record<string, Array<{ week: string; interviews: number }>> = {
+  "all": [
+    { week: "Week 1", interviews: 118 },
+    { week: "Week 2", interviews: 134 },
+    { week: "Week 3", interviews: 142 },
+    { week: "Week 4", interviews: 156 },
+    { week: "Week 5", interviews: 168 },
+    { week: "Week 6", interviews: 174 },
+  ],
+  "cs-2025": [
+    { week: "Week 1", interviews: 42 },
+    { week: "Week 2", interviews: 48 },
+    { week: "Week 3", interviews: 51 },
+    { week: "Week 4", interviews: 56 },
+    { week: "Week 5", interviews: 59 },
+    { week: "Week 6", interviews: 59 },
+  ],
+  "business-2025": [
+    { week: "Week 1", interviews: 38 },
+    { week: "Week 2", interviews: 44 },
+    { week: "Week 3", interviews: 46 },
+    { week: "Week 4", interviews: 51 },
+    { week: "Week 5", interviews: 54 },
+    { week: "Week 6", interviews: 65 },
+  ],
+  "design-2025": [
+    { week: "Week 1", interviews: 38 },
+    { week: "Week 2", interviews: 42 },
+    { week: "Week 3", interviews: 45 },
+    { week: "Week 4", interviews: 49 },
+    { week: "Week 5", interviews: 55 },
+    { week: "Week 6", interviews: 50 },
+  ],
+};
 
-const interviewTypeScores = [
-  { type: "Technical", avgScore: 7.9 },
-  { type: "Behavioral", avgScore: 8.1 },
-  { type: "Case Study", avgScore: 7.4 },
-  { type: "Leadership", avgScore: 7.7 },
-];
+const interviewTypeScoresByCohort: Record<string, Array<{ type: string; avgScore: number }>> = {
+  "all": [
+    { type: "Technical", avgScore: 7.9 },
+    { type: "Behavioral", avgScore: 8.1 },
+    { type: "Case Study", avgScore: 7.4 },
+    { type: "Leadership", avgScore: 7.7 },
+  ],
+  "cs-2025": [
+    { type: "Technical", avgScore: 8.3 },
+    { type: "Behavioral", avgScore: 8.2 },
+    { type: "Case Study", avgScore: 7.8 },
+    { type: "Leadership", avgScore: 7.9 },
+  ],
+  "business-2025": [
+    { type: "Technical", avgScore: 7.6 },
+    { type: "Behavioral", avgScore: 8.2 },
+    { type: "Case Study", avgScore: 7.5 },
+    { type: "Leadership", avgScore: 8.0 },
+  ],
+  "design-2025": [
+    { type: "Technical", avgScore: 7.5 },
+    { type: "Behavioral", avgScore: 7.9 },
+    { type: "Case Study", avgScore: 7.0 },
+    { type: "Leadership", avgScore: 7.3 },
+  ],
+};
 
-const commonFeedbackAreas = [
-  "Improve eye contact during responses",
-  "Reduce filler words (um, uh, like)",
-  "Provide more specific examples",
-  "Better structure in STAR format",
-  "Speak with more confidence",
-];
+const commonFeedbackAreasByCohort: Record<string, string[]> = {
+  "all": [
+    "Improve eye contact during responses",
+    "Reduce filler words (um, uh, like)",
+    "Provide more specific examples",
+    "Better structure in STAR format",
+    "Speak with more confidence",
+  ],
+  "cs-2025": [
+    "Provide more specific examples",
+    "Better structure in STAR format",
+    "Improve storytelling in behavioral questions",
+    "Reduce technical jargon in explanations",
+    "Show more enthusiasm and energy",
+  ],
+  "business-2025": [
+    "Improve eye contact during responses",
+    "Reduce filler words (um, uh, like)",
+    "Speak with more confidence",
+    "Better quantify business impact",
+    "Practice active listening cues",
+  ],
+  "design-2025": [
+    "Improve eye contact during responses",
+    "Speak with more confidence",
+    "Better articulate design decisions",
+    "Reduce filler words (um, uh, like)",
+    "Practice portfolio presentation flow",
+  ],
+};
 
 // Mock Data - LinkedIn
 interface LinkedInMetrics {
@@ -328,39 +650,204 @@ const linkedinMetricsByCohort: Record<string, LinkedInMetrics> = {
   },
 };
 
-const linkedinScoreDistribution = [
-  { range: "0-20", count: 32 },
-  { range: "21-40", count: 98 },
-  { range: "41-60", count: 287 },
-  { range: "61-80", count: 421 },
-  { range: "81-100", count: 207 },
-];
+const linkedinScoreDistributionByCohort: Record<string, Array<{ range: string; count: number }>> = {
+  "all": [
+    { range: "0-20", count: 32 },
+    { range: "21-40", count: 98 },
+    { range: "41-60", count: 287 },
+    { range: "61-80", count: 421 },
+    { range: "81-100", count: 207 },
+  ],
+  "cs-2025": [
+    { range: "0-20", count: 8 },
+    { range: "21-40", count: 28 },
+    { range: "41-60", count: 92 },
+    { range: "61-80", count: 156 },
+    { range: "81-100", count: 78 },
+  ],
+  "business-2025": [
+    { range: "0-20", count: 12 },
+    { range: "21-40", count: 35 },
+    { range: "41-60", count: 98 },
+    { range: "61-80", count: 138 },
+    { range: "81-100", count: 65 },
+  ],
+  "design-2025": [
+    { range: "0-20", count: 12 },
+    { range: "21-40", count: 35 },
+    { range: "41-60", count: 97 },
+    { range: "61-80", count: 127 },
+    { range: "81-100", count: 64 },
+  ],
+};
 
+const linkedinCommonIssuesByCohort: Record<string, Array<{ issue: string; count: number }>> = {
+  "all": [
+    { issue: "Weak Headline", count: 342 },
+    { issue: "Missing Summary", count: 298 },
+    { issue: "Incomplete Experience", count: 267 },
+    { issue: "Few Skills Listed", count: 234 },
+    { issue: "No Custom URL", count: 198 },
+    { issue: "Missing Keywords", count: 176 },
+  ],
+  "cs-2025": [
+    { issue: "Missing Keywords", count: 89 },
+    { issue: "Few Skills Listed", count: 82 },
+    { issue: "Weak Headline", count: 76 },
+    { issue: "Incomplete Experience", count: 68 },
+    { issue: "Missing Summary", count: 61 },
+    { issue: "No Custom URL", count: 54 },
+  ],
+  "business-2025": [
+    { issue: "Weak Headline", count: 128 },
+    { issue: "Missing Summary", count: 115 },
+    { issue: "Incomplete Experience", count: 98 },
+    { issue: "Few Skills Listed", count: 76 },
+    { issue: "No Custom URL", count: 72 },
+    { issue: "Missing Keywords", count: 45 },
+  ],
+  "design-2025": [
+    { issue: "Weak Headline", count: 138 },
+    { issue: "Missing Summary", count: 122 },
+    { issue: "Incomplete Experience", count: 101 },
+    { issue: "Few Skills Listed", count: 76 },
+    { issue: "No Custom URL", count: 72 },
+    { issue: "Missing Keywords", count: 42 },
+  ],
+};
 
-const linkedinCommonIssues = [
-  { issue: "Weak Headline", count: 342 },
-  { issue: "Missing Summary", count: 298 },
-  { issue: "Incomplete Experience", count: 267 },
-  { issue: "Few Skills Listed", count: 234 },
-  { issue: "No Custom URL", count: 198 },
-  { issue: "Missing Keywords", count: 176 },
-];
-
-const sectionCompleteness = [
-  { section: "Headline", completeness: 85, color: "#10b981" },
-  { section: "Summary", completeness: 72, color: "#3b82f6" },
-  { section: "Experience", completeness: 78, color: "#8b5cf6" },
-  { section: "Skills", completeness: 68, color: "#ec4899" },
-  { section: "Education", completeness: 92, color: "#06b6d4" },
-];
+const sectionCompletenessByCohort: Record<string, Array<{ section: string; completeness: number; color: string }>> = {
+  "all": [
+    { section: "Headline", completeness: 85, color: "#10b981" },
+    { section: "Summary", completeness: 72, color: "#3b82f6" },
+    { section: "Experience", completeness: 78, color: "#8b5cf6" },
+    { section: "Skills", completeness: 68, color: "#ec4899" },
+    { section: "Education", completeness: 92, color: "#06b6d4" },
+  ],
+  "cs-2025": [
+    { section: "Headline", completeness: 88, color: "#10b981" },
+    { section: "Summary", completeness: 76, color: "#3b82f6" },
+    { section: "Experience", completeness: 82, color: "#8b5cf6" },
+    { section: "Skills", completeness: 74, color: "#ec4899" },
+    { section: "Education", completeness: 95, color: "#06b6d4" },
+  ],
+  "business-2025": [
+    { section: "Headline", completeness: 83, color: "#10b981" },
+    { section: "Summary", completeness: 69, color: "#3b82f6" },
+    { section: "Experience", completeness: 76, color: "#8b5cf6" },
+    { section: "Skills", completeness: 65, color: "#ec4899" },
+    { section: "Education", completeness: 91, color: "#06b6d4" },
+  ],
+  "design-2025": [
+    { section: "Headline", completeness: 84, color: "#10b981" },
+    { section: "Summary", completeness: 71, color: "#3b82f6" },
+    { section: "Experience", completeness: 76, color: "#8b5cf6" },
+    { section: "Skills", completeness: 66, color: "#ec4899" },
+    { section: "Education", completeness: 90, color: "#06b6d4" },
+  ],
+};
 
 function AnalyticsContent() {
   const [selectedCohort, setSelectedCohort] = useState("all");
+  const [datePreset, setDatePreset] = useState<DatePreset>("30d");
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: subDays(new Date(), 30),
+    to: new Date(),
+  });
+  
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const validTabs = ["students", "resumes", "interviews", "linkedin"];
   const initialTab = tabParam && validTabs.includes(tabParam) ? tabParam : "students";
   const [activeTab, setActiveTab] = useState(initialTab);
+
+  // Handle date preset change
+  const handleDatePresetChange = (value: DatePreset) => {
+    setDatePreset(value);
+    const now = new Date();
+    switch (value) {
+      case "7d":
+        setDateRange({ from: subDays(now, 7), to: now });
+        break;
+      case "30d":
+        setDateRange({ from: subDays(now, 30), to: now });
+        break;
+      case "3m":
+        setDateRange({ from: subMonths(now, 3), to: now });
+        break;
+      case "6m":
+        setDateRange({ from: subMonths(now, 6), to: now });
+        break;
+      case "1y":
+        setDateRange({ from: startOfYear(now), to: now });
+        break;
+    }
+  };
+
+  // Get date label for display
+  const getDateLabel = () => {
+    switch (datePreset) {
+      case "7d": return "Last 7 days";
+      case "30d": return "Last 30 days";
+      case "3m": return "Last 3 months";
+      case "6m": return "Last 6 months";
+      case "1y": return "This year";
+    }
+  };
+
+  // Helper to scale metrics based on date range
+  const getScaledMetric = (baseValue: number, isCount: boolean = true) => {
+    const multiplier = dateMultipliers[datePreset];
+    if (isCount) {
+      return Math.round(baseValue * multiplier);
+    }
+    // For percentages/scores, apply smaller variation
+    const variance = (multiplier - 1) * 0.05;
+    return Math.round((baseValue * (1 + variance)) * 10) / 10;
+  };
+
+  // Get student metrics based on cohort and date
+  const currentStudentMetrics = {
+    total: getScaledMetric(studentMetricsByCohort[selectedCohort].total),
+    trend: datePreset === "7d" ? "+5%" : datePreset === "3m" ? "+18%" : datePreset === "6m" ? "+32%" : datePreset === "1y" ? "+45%" : studentMetricsByCohort[selectedCohort].trend,
+    newSignups: getScaledMetric(studentMetricsByCohort[selectedCohort].newSignups),
+    signupsTrend: datePreset === "7d" ? "+8%" : datePreset === "3m" ? "+35%" : datePreset === "6m" ? "+52%" : datePreset === "1y" ? "+78%" : studentMetricsByCohort[selectedCohort].signupsTrend,
+    pendingInvites: Math.round(studentMetricsByCohort[selectedCohort].pendingInvites * (datePreset === "7d" ? 0.8 : datePreset === "3m" ? 1.2 : 1)),
+    activeRate: Math.round(studentMetricsByCohort[selectedCohort].activeRate * (datePreset === "7d" ? 1.05 : datePreset === "3m" ? 0.95 : 1)),
+  };
+
+  // Get resume metrics based on cohort and date
+  const currentResumeMetrics = {
+    total: getScaledMetric(resumeMetricsByCohort[selectedCohort].total),
+    downloads: getScaledMetric(resumeMetricsByCohort[selectedCohort].downloads),
+    avgScore: getScaledMetric(resumeMetricsByCohort[selectedCohort].avgScore, false),
+    highPerformers: Math.round(resumeMetricsByCohort[selectedCohort].highPerformers * (datePreset === "7d" ? 0.95 : datePreset === "3m" ? 1.05 : 1)),
+  };
+
+  // Get interview metrics based on cohort and date
+  const currentInterviewMetrics = {
+    total: getScaledMetric(interviewMetricsByCohort[selectedCohort].total),
+    avgOverall: getScaledMetric(interviewMetricsByCohort[selectedCohort].avgOverall, false),
+    avgPosture: getScaledMetric(interviewMetricsByCohort[selectedCohort].avgPosture, false),
+    avgSpeech: getScaledMetric(interviewMetricsByCohort[selectedCohort].avgSpeech, false),
+  };
+
+  // Get LinkedIn metrics based on cohort and date
+  const currentLinkedinMetrics = {
+    uploaded: getScaledMetric(linkedinMetricsByCohort[selectedCohort].uploaded),
+    optimized: getScaledMetric(linkedinMetricsByCohort[selectedCohort].optimized),
+    avgScore: getScaledMetric(linkedinMetricsByCohort[selectedCohort].avgScore, false),
+    highScorers: Math.round(linkedinMetricsByCohort[selectedCohort].highScorers * (datePreset === "7d" ? 0.92 : datePreset === "3m" ? 1.08 : 1)),
+  };
+
+  // Scale chart data based on date
+  const getScaledChartData = <T extends Record<string, unknown>>(data: T[], valueKey: string): T[] => {
+    const multiplier = dateMultipliers[datePreset];
+    return data.map(item => ({
+      ...item,
+      [valueKey]: Math.round((item[valueKey] as number) * multiplier),
+    }));
+  };
 
   return (
     <div className="flex flex-col w-full min-h-screen">
@@ -399,19 +886,37 @@ function AnalyticsContent() {
 
           {/* Students Tab */}
           <TabsContent value="students" className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <h2 className="text-lg font-semibold">Student Analytics</h2>
-              <Select value={selectedCohort} onValueChange={setSelectedCohort}>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Select cohort" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Cohorts</SelectItem>
-                  <SelectItem value="cs-2025">CS 2025</SelectItem>
-                  <SelectItem value="business-2025">Business 2025</SelectItem>
-                  <SelectItem value="design-2025">Design 2025</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Date Filter */}
+                <Select value={datePreset} onValueChange={(value) => handleDatePresetChange(value as DatePreset)}>
+                  <SelectTrigger className="w-[180px]">
+                    <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <SelectValue placeholder="Date range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="7d">Last 7 days</SelectItem>
+                    <SelectItem value="30d">Last 30 days</SelectItem>
+                    <SelectItem value="3m">Last 3 months</SelectItem>
+                    <SelectItem value="6m">Last 6 months</SelectItem>
+                    <SelectItem value="1y">This year</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Cohort Filter */}
+                <Select value={selectedCohort} onValueChange={setSelectedCohort}>
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue placeholder="Select cohort" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Cohorts</SelectItem>
+                    <SelectItem value="cs-2025">CS 2025</SelectItem>
+                    <SelectItem value="business-2025">Business 2025</SelectItem>
+                    <SelectItem value="design-2025">Design 2025</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {/* Top Metrics */}
@@ -426,13 +931,13 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {studentMetricsByCohort[selectedCohort].total.toLocaleString()}
+                            {currentStudentMetrics.total.toLocaleString()}
                           </p>
                             <span className="text-sm font-medium text-emerald-600 flex items-center gap-1">
-                            {studentMetricsByCohort[selectedCohort].trend}
+                            {currentStudentMetrics.trend}
                             </span>
                         </div>
-                        <p className="text-xs text-muted-foreground">from last month</p>
+                        <p className="text-xs text-muted-foreground">{getDateLabel()}</p>
                       </div>
                       <div className="p-2.5 rounded-lg bg-blue-500/10">
                         <Users className="h-4.5 w-4.5 text-blue-600 dark:text-blue-500" />
@@ -452,13 +957,13 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {studentMetricsByCohort[selectedCohort].newSignups}
+                            {currentStudentMetrics.newSignups}
                           </p>
                           <span className="text-sm font-medium text-emerald-600 flex items-center gap-1">
-                            {studentMetricsByCohort[selectedCohort].signupsTrend}
+                            {currentStudentMetrics.signupsTrend}
                           </span>
           </div>
-                        <p className="text-xs text-muted-foreground">this month</p>
+                        <p className="text-xs text-muted-foreground">{getDateLabel()}</p>
         </div>
                       <div className="p-2.5 rounded-lg bg-emerald-500/10">
                         <UserPlus className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-500" />
@@ -478,7 +983,7 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {studentMetricsByCohort[selectedCohort].pendingInvites}
+                            {currentStudentMetrics.pendingInvites}
                           </p>
                         </div>
                         <p className="text-xs text-muted-foreground">yet to sign up</p>
@@ -501,10 +1006,10 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {studentMetricsByCohort[selectedCohort].activeRate}%
+                            {currentStudentMetrics.activeRate}%
                           </p>
           </div>
-                        <p className="text-xs text-muted-foreground">last 7 days</p>
+                        <p className="text-xs text-muted-foreground">{getDateLabel()}</p>
                       </div>
                       <div className="p-2.5 rounded-lg bg-violet-500/10">
                         <Activity className="h-4.5 w-4.5 text-violet-600 dark:text-violet-500" />
@@ -539,7 +1044,7 @@ function AnalyticsContent() {
                         }}
                         className="h-[300px] w-full"
                       >
-                        <LineChart data={signupTrendData}>
+                        <LineChart data={getScaledChartData(signupTrendDataByCohort[selectedCohort], "signups")}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis
                             dataKey="month"
@@ -629,7 +1134,7 @@ function AnalyticsContent() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {activityFunnelData.map((stage) => (
+                      {activityFunnelDataByCohort[selectedCohort].map((stage) => (
                         <div key={stage.stage} className="space-y-2">
                           <div className="flex justify-between text-sm">
                             <div className="flex items-center gap-2">
@@ -667,7 +1172,7 @@ function AnalyticsContent() {
                 <CardContent>
                     <ScrollArea className="h-[280px] pr-4">
                     <div className="space-y-3">
-                        {studentsNeedingAttention.map((student) => (
+                        {studentsNeedingAttentionByCohort[selectedCohort].map((student) => (
                         <div
                           key={student.id}
                           className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
@@ -703,20 +1208,38 @@ function AnalyticsContent() {
 
           {/* Resumes Tab */}
           <TabsContent value="resumes" className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <h2 className="text-lg font-semibold">Resume Analytics</h2>
-              <Select value={selectedCohort} onValueChange={setSelectedCohort}>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Select cohort" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Cohorts</SelectItem>
-                  <SelectItem value="cs-2025">CS 2025</SelectItem>
-                  <SelectItem value="business-2025">Business 2025</SelectItem>
-                  <SelectItem value="design-2025">Design 2025</SelectItem>
-                </SelectContent>
-              </Select>
-        </div>
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Date Filter */}
+                <Select value={datePreset} onValueChange={(value) => handleDatePresetChange(value as DatePreset)}>
+                  <SelectTrigger className="w-[180px]">
+                    <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <SelectValue placeholder="Date range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="7d">Last 7 days</SelectItem>
+                    <SelectItem value="30d">Last 30 days</SelectItem>
+                    <SelectItem value="3m">Last 3 months</SelectItem>
+                    <SelectItem value="6m">Last 6 months</SelectItem>
+                    <SelectItem value="1y">This year</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Cohort Filter */}
+                <Select value={selectedCohort} onValueChange={setSelectedCohort}>
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue placeholder="Select cohort" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Cohorts</SelectItem>
+                    <SelectItem value="cs-2025">CS 2025</SelectItem>
+                    <SelectItem value="business-2025">Business 2025</SelectItem>
+                    <SelectItem value="design-2025">Design 2025</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
             {/* Top Metrics */}
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
@@ -730,10 +1253,10 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {resumeMetricsByCohort[selectedCohort].total.toLocaleString()}
+                            {currentResumeMetrics.total.toLocaleString()}
                           </p>
                         </div>
-                        <p className="text-xs text-muted-foreground">created on platform</p>
+                        <p className="text-xs text-muted-foreground">{getDateLabel()}</p>
                       </div>
                       <div className="p-2.5 rounded-lg bg-blue-500/10">
                         <FileText className="h-4.5 w-4.5 text-blue-600 dark:text-blue-500" />
@@ -753,10 +1276,10 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {resumeMetricsByCohort[selectedCohort].downloads.toLocaleString()}
+                            {currentResumeMetrics.downloads.toLocaleString()}
                           </p>
                         </div>
-                        <p className="text-xs text-muted-foreground">total downloads</p>
+                        <p className="text-xs text-muted-foreground">{getDateLabel()}</p>
                       </div>
                       <div className="p-2.5 rounded-lg bg-emerald-500/10">
                         <Download className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-500" />
@@ -776,7 +1299,7 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {resumeMetricsByCohort[selectedCohort].avgScore}
+                            {currentResumeMetrics.avgScore}
                           </p>
                         </div>
                         <p className="text-xs text-muted-foreground">out of 100</p>
@@ -799,7 +1322,7 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {resumeMetricsByCohort[selectedCohort].highPerformers}%
+                            {currentResumeMetrics.highPerformers}%
                           </p>
                         </div>
                         <p className="text-xs text-muted-foreground">scoring 80+</p>
@@ -813,72 +1336,20 @@ function AnalyticsContent() {
               </AnimatedCard>
             </div>
 
-            {/* Detailed Insights */}
-            <div className="grid gap-6 grid-cols-1 xl:grid-cols-2">
-              {/* Score Distribution */}
-              <FadeIn delay={0.2}>
-          <Card className="rounded-xl shadow-sm">
-            <CardHeader>
-                  <CardTitle className="text-base font-medium">
-                      AI Score Distribution
-                  </CardTitle>
-                    <p className="text-xs text-muted-foreground">
-                      Resume scores across all students
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                      <ChartContainer
-                        config={{
-                          count: {
-                            label: "Resumes",
-                            color: "#3b82f6",
-                          },
-                        }}
-                        className="h-[300px] w-full"
-                      >
-                        <BarChart data={scoreDistributionData}>
-                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                          <XAxis
-                            dataKey="range"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            className="text-xs"
-                          />
-                          <YAxis
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            className="text-xs"
-                          />
-                          <ChartTooltip
-                            cursor={{ fill: "hsl(var(--muted))", opacity: 0.3 }}
-                            content={<ChartTooltipContent />}
-                          />
-                          <Bar
-                            dataKey="count"
-                            fill="var(--color-count)"
-                            radius={[6, 6, 0, 0]}
-                            name="Resumes"
-                          />
-                        </BarChart>
-                      </ChartContainer>
-                  </CardContent>
-                </Card>
-              </FadeIn>
-
-              {/* Score Trend */}
-              <FadeIn delay={0.25}>
-                <Card className="rounded-xl shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-base font-medium">
-                      Resume Score Trend
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground">
-                      Average score improvement over time
-                    </p>
-                  </CardHeader>
-                  <CardContent>
+            {/* Resume Score Trend & Optimization Impact */}
+            <div className="grid gap-6 grid-cols-1 xl:grid-cols-12">
+              <div className="xl:col-span-8">
+                <FadeIn delay={0.2}>
+                  <Card className="rounded-xl shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="text-base font-medium">
+                        Resume Score Trend
+                      </CardTitle>
+                      <p className="text-xs text-muted-foreground">
+                        Average score improvement over time
+                      </p>
+                    </CardHeader>
+                    <CardContent>
                       <ChartContainer
                         config={{
                           score: {
@@ -888,7 +1359,7 @@ function AnalyticsContent() {
                         }}
                         className="h-[300px] w-full"
                       >
-                        <AreaChart data={resumeScoreTrendData}>
+                        <AreaChart data={resumeScoreTrendDataByCohort[selectedCohort]}>
                           <defs>
                             <linearGradient id="fillScore" x1="0" y1="0" x2="0" y2="1">
                               <stop
@@ -932,55 +1403,96 @@ function AnalyticsContent() {
                           />
                         </AreaChart>
                       </ChartContainer>
-                  </CardContent>
-                </Card>
-              </FadeIn>
-                </div>
+                    </CardContent>
+                  </Card>
+                </FadeIn>
+              </div>
 
-            {/* Common Issues & ATS Pass Rate */}
+              <div className="xl:col-span-4">
+                <FadeIn delay={0.25}>
+                  <Card className="rounded-xl shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="text-base font-medium">
+                        Optimization Impact
+                      </CardTitle>
+                      <p className="text-xs text-muted-foreground">
+                        Score improvement after AI optimization
+                      </p>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 p-3 rounded-lg bg-muted/30">
+                          <p className="text-xs text-muted-foreground mb-0.5">Before</p>
+                          <p className="text-2xl font-bold tracking-tight">58.3</p>
+                        </div>
+
+                        <div className="shrink-0">
+                          <TrendingUp className="h-5 w-5 text-emerald-600" />
+                        </div>
+
+                        <div className="flex-1 p-3 rounded-lg bg-emerald-500/10">
+                          <p className="text-xs text-muted-foreground mb-0.5">After</p>
+                          <p className="text-2xl font-bold text-emerald-600 tracking-tight">72.4</p>
+                        </div>
+                      </div>
+
+                      <div className="pt-2">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="text-sm font-medium">Improvement</span>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              Average score increase
+                            </p>
+                          </div>
+                          <span className="text-lg font-bold text-emerald-600">
+                            +14.1 pts
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </FadeIn>
+              </div>
+            </div>
+
+            {/* Detailed Insights */}
             <div className="grid gap-6 grid-cols-1 xl:grid-cols-12">
+              {/* Score Distribution */}
               <div className="xl:col-span-8">
                 <FadeIn delay={0.3}>
                   <Card className="rounded-xl shadow-sm">
                     <CardHeader>
                       <CardTitle className="text-base font-medium">
-                        Most Common Issues
+                        AI Score Distribution
                       </CardTitle>
                       <p className="text-xs text-muted-foreground">
-                        Top issues identified by AI across all resumes
+                        Resume scores across all students
                       </p>
                     </CardHeader>
                     <CardContent>
                       <ChartContainer
                         config={{
                           count: {
-                            label: "Issues Found",
-                            color: "#f59e0b",
+                            label: "Resumes",
+                            color: "#3b82f6",
                           },
                         }}
-                        className="h-[350px] w-full"
+                        className="h-[300px] w-full"
                       >
-                        <BarChart
-                          data={commonIssuesData}
-                          layout="vertical"
-                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                        >
+                        <BarChart data={getScaledChartData(scoreDistributionDataByCohort[selectedCohort], "count")}>
                           <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                           <XAxis
-                            type="number"
+                            dataKey="range"
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
                             className="text-xs"
                           />
                           <YAxis
-                            type="category"
-                            dataKey="issue"
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
                             className="text-xs"
-                            width={150}
                           />
                           <ChartTooltip
                             cursor={{ fill: "hsl(var(--muted))", opacity: 0.3 }}
@@ -989,8 +1501,8 @@ function AnalyticsContent() {
                           <Bar
                             dataKey="count"
                             fill="var(--color-count)"
-                            radius={[0, 6, 6, 0]}
-                            name="Issues Found"
+                            radius={[6, 6, 0, 0]}
+                            name="Resumes"
                           />
                         </BarChart>
                       </ChartContainer>
@@ -999,6 +1511,7 @@ function AnalyticsContent() {
                 </FadeIn>
               </div>
 
+              {/* ATS Pass Rate */}
               <div className="xl:col-span-4">
                 <FadeIn delay={0.35}>
                   <Card className="rounded-xl shadow-sm">
@@ -1081,24 +1594,103 @@ function AnalyticsContent() {
                 </FadeIn>
               </div>
             </div>
+
+            {/* Common Issues */}
+            <div className="grid gap-6 grid-cols-1">
+              <FadeIn delay={0.4}>
+                <Card className="rounded-xl shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-base font-medium">
+                      Most Common Issues
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">
+                      Top issues identified by AI across all resumes
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <ChartContainer
+                      config={{
+                        count: {
+                          label: "Issues Found",
+                          color: "#f59e0b",
+                        },
+                      }}
+                      className="h-[350px] w-full"
+                    >
+                      <BarChart
+                        data={getScaledChartData(commonIssuesDataByCohort[selectedCohort], "count")}
+                        layout="vertical"
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <XAxis
+                          type="number"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          className="text-xs"
+                        />
+                        <YAxis
+                          type="category"
+                          dataKey="issue"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          className="text-xs"
+                          width={150}
+                        />
+                        <ChartTooltip
+                          cursor={{ fill: "hsl(var(--muted))", opacity: 0.3 }}
+                          content={<ChartTooltipContent />}
+                        />
+                        <Bar
+                          dataKey="count"
+                          fill="var(--color-count)"
+                          radius={[0, 6, 6, 0]}
+                          name="Issues Found"
+                        />
+                      </BarChart>
+                    </ChartContainer>
+                  </CardContent>
+                </Card>
+              </FadeIn>
+            </div>
           </TabsContent>
 
           {/* Interviews Tab */}
           <TabsContent value="interviews" className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <h2 className="text-lg font-semibold">Interview Analytics</h2>
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Date Filter */}
+                <Select value={datePreset} onValueChange={(value) => handleDatePresetChange(value as DatePreset)}>
+                  <SelectTrigger className="w-[180px]">
+                    <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <SelectValue placeholder="Date range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="7d">Last 7 days</SelectItem>
+                    <SelectItem value="30d">Last 30 days</SelectItem>
+                    <SelectItem value="3m">Last 3 months</SelectItem>
+                    <SelectItem value="6m">Last 6 months</SelectItem>
+                    <SelectItem value="1y">This year</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Cohort Filter */}
                 <Select value={selectedCohort} onValueChange={setSelectedCohort}>
-                <SelectTrigger className="w-[200px]">
+                  <SelectTrigger className="w-[160px]">
                     <SelectValue placeholder="Select cohort" />
                   </SelectTrigger>
                   <SelectContent>
-                  <SelectItem value="all">All Cohorts</SelectItem>
+                    <SelectItem value="all">All Cohorts</SelectItem>
                     <SelectItem value="cs-2025">CS 2025</SelectItem>
                     <SelectItem value="business-2025">Business 2025</SelectItem>
                     <SelectItem value="design-2025">Design 2025</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
+            </div>
 
             {/* Top Metrics */}
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
@@ -1112,10 +1704,10 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {interviewMetricsByCohort[selectedCohort].total.toLocaleString()}
+                            {currentInterviewMetrics.total.toLocaleString()}
                           </p>
                         </div>
-                        <p className="text-xs text-muted-foreground">completed</p>
+                        <p className="text-xs text-muted-foreground">{getDateLabel()}</p>
                       </div>
                       <div className="p-2.5 rounded-lg bg-blue-500/10">
                         <Video className="h-4.5 w-4.5 text-blue-600 dark:text-blue-500" />
@@ -1135,7 +1727,7 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {interviewMetricsByCohort[selectedCohort].avgOverall}
+                            {currentInterviewMetrics.avgOverall}
                           </p>
                           <span className="text-sm text-muted-foreground">/10</span>
                         </div>
@@ -1159,7 +1751,7 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {interviewMetricsByCohort[selectedCohort].avgPosture}
+                            {currentInterviewMetrics.avgPosture}
                           </p>
                           <span className="text-sm text-muted-foreground">/10</span>
                         </div>
@@ -1183,7 +1775,7 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {interviewMetricsByCohort[selectedCohort].avgSpeech}
+                            {currentInterviewMetrics.avgSpeech}
                           </p>
                           <span className="text-sm text-muted-foreground">/10</span>
                         </div>
@@ -1198,69 +1790,20 @@ function AnalyticsContent() {
               </AnimatedCard>
             </div>
 
-            {/* Detailed Insights */}
-            <div className="grid gap-6 grid-cols-1 xl:grid-cols-2">
-              {/* Score Categories Radar */}
-              <FadeIn delay={0.2}>
-                <Card className="rounded-xl shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-base font-medium">
-                      Score Categories
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground">
-                      Performance across different evaluation criteria
-                    </p>
-            </CardHeader>
-                  <CardContent>
-                      <ChartContainer
-                        config={{
-                          score: {
-                            label: "Score",
-                            color: "#ec4899",
-                          },
-                        }}
-                        className="h-[300px] w-full"
-                      >
-                        <RadarChart data={interviewScoreCategories}>
-                          <PolarGrid className="stroke-muted" strokeDasharray="3 3" />
-                          <PolarAngleAxis
-                            dataKey="category"
-                            className="text-xs font-medium"
-                            tick={{ fill: "hsl(var(--foreground))" }}
-                          />
-                          <PolarRadiusAxis
-                            angle={90}
-                            domain={[0, 100]}
-                            className="text-xs"
-                            tick={{ fill: "hsl(var(--muted-foreground))" }}
-                          />
-                          <Radar
-                            name="Score"
-                            dataKey="score"
-                            stroke="var(--color-score)"
-                            fill="var(--color-score)"
-                            fillOpacity={0.5}
-                            strokeWidth={2}
-                          />
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                        </RadarChart>
-                      </ChartContainer>
-                  </CardContent>
-                </Card>
-              </FadeIn>
-
-              {/* Interview Completion Trend */}
-              <FadeIn delay={0.25}>
-                <Card className="rounded-xl shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="text-base font-medium">
-                      Interview Completion Trend
-                    </CardTitle>
-                    <p className="text-xs text-muted-foreground">
-                      Weekly interview completions
-                    </p>
-                  </CardHeader>
-                  <CardContent>
+            {/* Interview Completion Trend & Optimization Impact */}
+            <div className="grid gap-6 grid-cols-1 xl:grid-cols-12">
+              <div className="xl:col-span-8">
+                <FadeIn delay={0.2}>
+                  <Card className="rounded-xl shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="text-base font-medium">
+                        Interview Completion Trend
+                      </CardTitle>
+                      <p className="text-xs text-muted-foreground">
+                        Weekly interview completions
+                      </p>
+                    </CardHeader>
+                    <CardContent>
                       <ChartContainer
                         config={{
                           interviews: {
@@ -1270,7 +1813,7 @@ function AnalyticsContent() {
                         }}
                         className="h-[300px] w-full"
                       >
-                        <AreaChart data={interviewCompletionTrend}>
+                        <AreaChart data={getScaledChartData(interviewCompletionTrendByCohort[selectedCohort], "interviews")}>
                           <defs>
                             <linearGradient id="fillInterviews" x1="0" y1="0" x2="0" y2="1">
                               <stop
@@ -1313,14 +1856,111 @@ function AnalyticsContent() {
                           />
                         </AreaChart>
                       </ChartContainer>
+                    </CardContent>
+                  </Card>
+                </FadeIn>
+              </div>
+
+              <div className="xl:col-span-4">
+                <FadeIn delay={0.25}>
+                  <Card className="rounded-xl shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="text-base font-medium">
+                        Optimization Impact
+                      </CardTitle>
+                      <p className="text-xs text-muted-foreground">
+                        Score improvement after AI optimization
+                      </p>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 p-3 rounded-lg bg-muted/30">
+                          <p className="text-xs text-muted-foreground mb-0.5">Before</p>
+                          <p className="text-2xl font-bold tracking-tight">6.2</p>
+                        </div>
+
+                        <div className="shrink-0">
+                          <TrendingUp className="h-5 w-5 text-emerald-600" />
+                        </div>
+
+                        <div className="flex-1 p-3 rounded-lg bg-emerald-500/10">
+                          <p className="text-xs text-muted-foreground mb-0.5">After</p>
+                          <p className="text-2xl font-bold text-emerald-600 tracking-tight">7.8</p>
+                        </div>
+                      </div>
+
+                      <div className="pt-2">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="text-sm font-medium">Improvement</span>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              Average score increase
+                            </p>
+                          </div>
+                          <span className="text-lg font-bold text-emerald-600">
+                            +1.6 pts
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </FadeIn>
+              </div>
+            </div>
+
+            {/* Score Categories & Score by Interview Type */}
+            <div className="grid gap-6 grid-cols-1 xl:grid-cols-2">
+              {/* Score Categories Radar */}
+              <FadeIn delay={0.3}>
+                <Card className="rounded-xl shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-base font-medium">
+                      Score Categories
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">
+                      Performance across different evaluation criteria
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <ChartContainer
+                      config={{
+                        score: {
+                          label: "Score",
+                          color: "#ec4899",
+                        },
+                      }}
+                      className="h-[300px] w-full"
+                    >
+                      <RadarChart data={interviewScoreCategoriesByCohort[selectedCohort]}>
+                        <PolarGrid className="stroke-muted" strokeDasharray="3 3" />
+                        <PolarAngleAxis
+                          dataKey="category"
+                          className="text-xs font-medium"
+                          tick={{ fill: "hsl(var(--foreground))" }}
+                        />
+                        <PolarRadiusAxis
+                          angle={90}
+                          domain={[0, 100]}
+                          className="text-xs"
+                          tick={{ fill: "hsl(var(--muted-foreground))" }}
+                        />
+                        <Radar
+                          name="Score"
+                          dataKey="score"
+                          stroke="var(--color-score)"
+                          fill="var(--color-score)"
+                          fillOpacity={0.5}
+                          strokeWidth={2}
+                        />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                      </RadarChart>
+                    </ChartContainer>
                   </CardContent>
                 </Card>
               </FadeIn>
-            </div>
 
-            {/* Interview Type Scores & Common Feedback */}
-            <div className="grid gap-6 grid-cols-1 xl:grid-cols-2">
-              <FadeIn delay={0.3}>
+              {/* Score by Interview Type */}
+              <FadeIn delay={0.35}>
                 <Card className="rounded-xl shadow-sm">
                   <CardHeader>
                     <CardTitle className="text-base font-medium">
@@ -1331,48 +1971,51 @@ function AnalyticsContent() {
                     </p>
                   </CardHeader>
                   <CardContent>
-                      <ChartContainer
-                        config={{
-                          avgScore: {
-                            label: "Avg Score",
-                            color: "#10b981",
-                          },
-                        }}
-                        className="h-[300px] w-full"
-                      >
-                        <BarChart data={interviewTypeScores}>
-                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                          <XAxis
-                            dataKey="type"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            className="text-xs"
-                          />
-                          <YAxis
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            className="text-xs"
-                            domain={[0, 10]}
-                          />
-                          <ChartTooltip
-                            cursor={{ fill: "hsl(var(--muted))", opacity: 0.3 }}
-                            content={<ChartTooltipContent />}
-                          />
-                          <Bar
-                            dataKey="avgScore"
-                            fill="var(--color-avgScore)"
-                            radius={[6, 6, 0, 0]}
-                            name="Avg Score"
-                          />
-                        </BarChart>
-                      </ChartContainer>
+                    <ChartContainer
+                      config={{
+                        avgScore: {
+                          label: "Avg Score",
+                          color: "#10b981",
+                        },
+                      }}
+                      className="h-[300px] w-full"
+                    >
+                      <BarChart data={interviewTypeScoresByCohort[selectedCohort]}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <XAxis
+                          dataKey="type"
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          className="text-xs"
+                        />
+                        <YAxis
+                          tickLine={false}
+                          axisLine={false}
+                          tickMargin={8}
+                          className="text-xs"
+                          domain={[0, 10]}
+                        />
+                        <ChartTooltip
+                          cursor={{ fill: "hsl(var(--muted))", opacity: 0.3 }}
+                          content={<ChartTooltipContent />}
+                        />
+                        <Bar
+                          dataKey="avgScore"
+                          fill="var(--color-avgScore)"
+                          radius={[6, 6, 0, 0]}
+                          name="Avg Score"
+                        />
+                      </BarChart>
+                    </ChartContainer>
                   </CardContent>
                 </Card>
               </FadeIn>
+            </div>
 
-              <FadeIn delay={0.35}>
+            {/* Common Feedback Areas */}
+            <div className="grid gap-6 grid-cols-1">
+              <FadeIn delay={0.4}>
                 <Card className="rounded-xl shadow-sm">
                   <CardHeader>
                     <CardTitle className="text-base font-medium">
@@ -1384,7 +2027,7 @@ function AnalyticsContent() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {commonFeedbackAreas.map((feedback, index) => (
+                      {commonFeedbackAreasByCohort[selectedCohort].map((feedback, index) => (
                         <div
                           key={index}
                           className="flex items-start gap-3 p-3 rounded-lg border bg-card"
@@ -1404,19 +2047,37 @@ function AnalyticsContent() {
 
           {/* LinkedIn Tab */}
           <TabsContent value="linkedin" className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <h2 className="text-lg font-semibold">LinkedIn Analytics</h2>
-              <Select value={selectedCohort} onValueChange={setSelectedCohort}>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Select cohort" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Cohorts</SelectItem>
-                  <SelectItem value="cs-2025">CS 2025</SelectItem>
-                  <SelectItem value="business-2025">Business 2025</SelectItem>
-                  <SelectItem value="design-2025">Design 2025</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Date Filter */}
+                <Select value={datePreset} onValueChange={(value) => handleDatePresetChange(value as DatePreset)}>
+                  <SelectTrigger className="w-[180px]">
+                    <CalendarIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                    <SelectValue placeholder="Date range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="7d">Last 7 days</SelectItem>
+                    <SelectItem value="30d">Last 30 days</SelectItem>
+                    <SelectItem value="3m">Last 3 months</SelectItem>
+                    <SelectItem value="6m">Last 6 months</SelectItem>
+                    <SelectItem value="1y">This year</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Cohort Filter */}
+                <Select value={selectedCohort} onValueChange={setSelectedCohort}>
+                  <SelectTrigger className="w-[160px]">
+                    <SelectValue placeholder="Select cohort" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Cohorts</SelectItem>
+                    <SelectItem value="cs-2025">CS 2025</SelectItem>
+                    <SelectItem value="business-2025">Business 2025</SelectItem>
+                    <SelectItem value="design-2025">Design 2025</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {/* Top Metrics */}
@@ -1431,10 +2092,10 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {linkedinMetricsByCohort[selectedCohort].uploaded.toLocaleString()}
+                            {currentLinkedinMetrics.uploaded.toLocaleString()}
                           </p>
                         </div>
-                        <p className="text-xs text-muted-foreground">analyzed</p>
+                        <p className="text-xs text-muted-foreground">{getDateLabel()}</p>
                       </div>
                       <div className="p-2.5 rounded-lg bg-blue-500/10">
                         <Linkedin className="h-4.5 w-4.5 text-blue-600 dark:text-blue-500" />
@@ -1454,10 +2115,10 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {linkedinMetricsByCohort[selectedCohort].optimized.toLocaleString()}
+                            {currentLinkedinMetrics.optimized.toLocaleString()}
                           </p>
                         </div>
-                        <p className="text-xs text-muted-foreground">profiles enhanced</p>
+                        <p className="text-xs text-muted-foreground">{getDateLabel()}</p>
                       </div>
                       <div className="p-2.5 rounded-lg bg-emerald-500/10">
                         <CheckCircle2 className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-500" />
@@ -1477,7 +2138,7 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {linkedinMetricsByCohort[selectedCohort].avgScore}
+                            {currentLinkedinMetrics.avgScore}
                           </p>
                         </div>
                         <p className="text-xs text-muted-foreground">out of 100</p>
@@ -1500,7 +2161,7 @@ function AnalyticsContent() {
                         </p>
                         <div className="flex items-baseline gap-2">
                           <p className="text-3xl font-bold tracking-tight">
-                            {linkedinMetricsByCohort[selectedCohort].highScorers}%
+                            {currentLinkedinMetrics.highScorers}%
                           </p>
                         </div>
                         <p className="text-xs text-muted-foreground">scoring 80+</p>
@@ -1537,7 +2198,7 @@ function AnalyticsContent() {
                         }}
                         className="h-[300px] w-full"
                       >
-                        <BarChart data={linkedinScoreDistribution}>
+                        <BarChart data={getScaledChartData(linkedinScoreDistributionByCohort[selectedCohort], "count")}>
                           <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                           <XAxis
                             dataKey="range"
@@ -1568,46 +2229,53 @@ function AnalyticsContent() {
                 </Card>
               </FadeIn>
 
-              {/* Section Completeness */}
+              {/* Optimization Impact */}
               <FadeIn delay={0.25}>
                 <Card className="rounded-xl shadow-sm">
                   <CardHeader>
                     <CardTitle className="text-base font-medium">
-                      Section Completeness
+                      Optimization Impact
                     </CardTitle>
                     <p className="text-xs text-muted-foreground">
-                      Profile section completion rates
+                      Score improvement after AI optimization
                     </p>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
-                      {sectionCompleteness.map((section) => (
-                        <div key={section.section} className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <div className="flex items-center gap-2">
-                              <div 
-                                className="h-3 w-3 rounded-full" 
-                                style={{ backgroundColor: section.color }}
-                              />
-                              <span className="font-medium">{section.section}</span>
-                            </div>
-                            <span className="text-muted-foreground">
-                              {section.completeness}%
-                            </span>
-                          </div>
-                          <Progress 
-                            value={section.completeness} 
-                            className="h-2"
-                          />
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 p-3 rounded-lg bg-muted/30">
+                        <p className="text-xs text-muted-foreground mb-0.5">Before</p>
+                        <p className="text-2xl font-bold tracking-tight">54.2</p>
+                      </div>
+
+                      <div className="shrink-0">
+                        <TrendingUp className="h-5 w-5 text-emerald-600" />
+                      </div>
+
+                      <div className="flex-1 p-3 rounded-lg bg-emerald-500/10">
+                        <p className="text-xs text-muted-foreground mb-0.5">After</p>
+                        <p className="text-2xl font-bold text-emerald-600 tracking-tight">68.5</p>
+                      </div>
+                    </div>
+
+                    <div className="pt-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-sm font-medium">Improvement</span>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            Average score increase
+                          </p>
                         </div>
-                      ))}
+                        <span className="text-lg font-bold text-emerald-600">
+                          +14.3 pts
+                        </span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               </FadeIn>
             </div>
 
-            {/* Common Issues & Optimization Impact */}
+            {/* Common Issues & Section Completeness */}
             <div className="grid gap-6 grid-cols-1 xl:grid-cols-12">
               <div className="xl:col-span-8">
                 <FadeIn delay={0.3}>
@@ -1631,7 +2299,7 @@ function AnalyticsContent() {
                         className="h-[300px] w-full"
               >
                 <BarChart 
-                          data={linkedinCommonIssues}
+                          data={getScaledChartData(linkedinCommonIssuesByCohort[selectedCohort], "count")}
                   layout="vertical"
                   margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                 >
@@ -1674,41 +2342,34 @@ function AnalyticsContent() {
                   <Card className="rounded-xl shadow-sm">
                     <CardHeader>
                       <CardTitle className="text-base font-medium">
-                        Optimization Impact
+                        Section Completeness
                       </CardTitle>
                       <p className="text-xs text-muted-foreground">
-                        Score improvement after AI optimization
+                        Profile section completion rates
                       </p>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1 p-3 rounded-lg bg-muted/30">
-                          <p className="text-xs text-muted-foreground mb-0.5">Before</p>
-                          <p className="text-2xl font-bold tracking-tight">54.2</p>
-                        </div>
-
-                        <div className="shrink-0">
-                          <TrendingUp className="h-5 w-5 text-emerald-600" />
-                        </div>
-
-                        <div className="flex-1 p-3 rounded-lg bg-emerald-500/10">
-                          <p className="text-xs text-muted-foreground mb-0.5">After</p>
-                          <p className="text-2xl font-bold text-emerald-600 tracking-tight">68.5</p>
-                        </div>
-                      </div>
-
-                      <div className="pt-2">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="text-sm font-medium">Improvement</span>
-                            <p className="text-xs text-muted-foreground mt-0.5">
-                              Average score increase
-                            </p>
+                    <CardContent>
+                      <div className="space-y-6">
+                        {sectionCompletenessByCohort[selectedCohort].map((section) => (
+                          <div key={section.section} className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                              <div className="flex items-center gap-2">
+                                <div 
+                                  className="h-3 w-3 rounded-full" 
+                                  style={{ backgroundColor: section.color }}
+                                />
+                                <span className="font-medium">{section.section}</span>
+                              </div>
+                              <span className="text-muted-foreground">
+                                {section.completeness}%
+                              </span>
+                            </div>
+                            <Progress 
+                              value={section.completeness} 
+                              className="h-2"
+                            />
                           </div>
-                          <span className="text-lg font-bold text-emerald-600">
-                            +14.3 pts
-                          </span>
-                        </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
