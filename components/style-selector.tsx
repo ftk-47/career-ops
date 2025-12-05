@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Style = "mercel" | "chirp" | "linear" | "winter" | "ggm" | "nexus" | "horizon" | "notion" | "slate" | "azure";
+type Style = "mercel" | "chirp" | "linear" | "winter" | "ggm" | "nexus" | "horizon" | "notion" | "slate" | "azure" | "onyx";
 
 const styles = [
   {
@@ -85,6 +85,13 @@ const styles = [
     description: "Sleek & modern",
     primaryColor: "oklch(0.55 0.18 250)", // Blue
   },
+  {
+    value: "onyx" as Style,
+    label: "Onyx",
+    icon: Sparkles,
+    description: "Charcoal & violet",
+    primaryColor: "oklch(0.68 0.18 285)", // Violet accent
+  },
 ];
 
 export function StyleSelector() {
@@ -92,10 +99,10 @@ export function StyleSelector() {
 
   // Lazy initialization - only runs once on mount
   const [style, setStyle] = useState<Style>(() => {
-    if (typeof window === "undefined") return "horizon";
+    if (typeof window === "undefined") return "slate";
 
     const savedStyle = localStorage.getItem("style") as Style | null;
-    if (savedStyle === "mercel" || savedStyle === "chirp" || savedStyle === "linear" || savedStyle === "winter" || savedStyle === "ggm" || savedStyle === "nexus" || savedStyle === "horizon" || savedStyle === "notion" || savedStyle === "slate" || savedStyle === "azure") {
+    if (savedStyle === "mercel" || savedStyle === "chirp" || savedStyle === "linear" || savedStyle === "winter" || savedStyle === "ggm" || savedStyle === "nexus" || savedStyle === "horizon" || savedStyle === "notion" || savedStyle === "slate" || savedStyle === "azure" || savedStyle === "onyx") {
       return savedStyle;
     }
 
@@ -106,7 +113,7 @@ export function StyleSelector() {
     const root = document.documentElement;
 
     // Remove all style classes
-    root.classList.remove("style-mercel", "style-chirp", "style-linear", "style-winter", "style-ggm", "style-nexus", "style-horizon", "style-notion", "style-slate", "style-azure");
+    root.classList.remove("style-mercel", "style-chirp", "style-linear", "style-winter", "style-ggm", "style-nexus", "style-horizon", "style-notion", "style-slate", "style-azure", "style-onyx");
 
     // Add the new style class
     root.classList.add(`style-${newStyle}`);
