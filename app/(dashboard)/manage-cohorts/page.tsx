@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
-import { EmptyState } from "@/components/empty-state";
+import { HeroEmptyState } from "@/components/hero-empty-state";
+import { useBookingModal } from "@/contexts/booking-modal-context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,7 @@ const mockData: Cohort[] = [
 ];
 
 export default function ManageCohorts() {
+  const { openBookingModal } = useBookingModal();
   const [searchTerm, setSearchTerm] = useState("");
   const [sizeFilter, setSizeFilter] = useState<string>("all");
   const [activeFilter, setActiveFilter] = useState<string>("all");
@@ -65,8 +67,14 @@ export default function ManageCohorts() {
   const [sortConfig, setSortConfig] = useState<{ key: keyof Cohort; direction: "asc" | "desc" } | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [newCohortName, setNewCohortName] = useState("");
+  const [sampleDataLoaded, setSampleDataLoaded] = useState(false);
 
   const filteredAndSortedData = useMemo(() => {
+    // If sample data hasn't been loaded, return empty array
+    if (!sampleDataLoaded) {
+      return [];
+    }
+
     const filtered = mockData.filter((item) => {
       const matchesSearch = item.cohortName.toLowerCase().includes(searchTerm.toLowerCase());
       
@@ -93,7 +101,7 @@ export default function ManageCohorts() {
     }
 
     return filtered;
-  }, [searchTerm, sizeFilter, activeFilter, sortConfig]);
+  }, [searchTerm, sizeFilter, activeFilter, sortConfig, sampleDataLoaded]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -126,7 +134,7 @@ export default function ManageCohorts() {
         title="Manage Cohorts" 
         description="Organize and track your student cohorts"
         actions={
-          <Button onClick={() => setCreateDialogOpen(true)}>
+          <Button onClick={() => openBookingModal("create-cohort")}>
             <Plus className="mr-2 h-4 w-4" />
             Create Cohort
           </Button>
@@ -235,34 +243,69 @@ export default function ManageCohorts() {
         )}
 
         {/* Table */}
-        {filteredAndSortedData.length === 0 ? (
-          <EmptyState
-            icon={GraduationCap}
-            title="No cohorts found"
-            description="Create your first cohort to start organizing students."
-            action={{ label: "Create Cohort", onClick: () => setCreateDialogOpen(true) }}
-          />
-        ) : (
-          <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
-            <Table className="min-w-full">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("cohortName")}>
-                    Cohort Name {sortConfig?.key === "cohortName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("students")}>
-                    Students {sortConfig?.key === "students" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("reviewers")}>
-                    Reviewers {sortConfig?.key === "reviewers" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("createdAt")}>
-                    Created {sortConfig?.key === "createdAt" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+        <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
+          <Table className="min-w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("cohortName")}>
+                  Cohort Name {sortConfig?.key === "cohortName" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("students")}>
+                  Students {sortConfig?.key === "students" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("reviewers")}>
+                  Reviewers {sortConfig?.key === "reviewers" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("createdAt")}>
+                  Created {sortConfig?.key === "createdAt" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            {!sampleDataLoaded || filteredAndSortedData.length === 0 ? (
+              <tbody>
+                <TableRow className="hover:bg-transparent! pointer-events-none">
+                  <TableCell colSpan={6} className="h-[400px] p-0 pointer-events-auto">
+                    <HeroEmptyState
+                      headline={!sampleDataLoaded ? "No cohorts created yet" : "No cohorts found"}
+                      subtext={!sampleDataLoaded 
+                        ? "Create a cohort to group students, track their performance, and generate cohort-level insights."
+                        : "Create your first cohort to start organizing students."}
+                      icon={GraduationCap}
+                      primaryAction={{
+                        label: !sampleDataLoaded ? "Create Cohort" : "Clear Filters",
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            openBookingModal("create-cohort");
+                          } else {
+                            setSearchTerm("");
+                            setSizeFilter("all");
+                            setActiveFilter("all");
+                            setCurrentPage(1);
+                          }
+                        }
+                      }}
+                      secondaryAction={{
+                        label: !sampleDataLoaded ? "Load Sample Data" : "Reset View",
+                        tooltip: !sampleDataLoaded ? "Load a demo cohort with mock students and progress data to see how it works." : undefined,
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            setSampleDataLoaded(true);
+                          } else {
+                            setSampleDataLoaded(false);
+                          }
+                          setSearchTerm("");
+                          setSizeFilter("all");
+                          setActiveFilter("all");
+                          setCurrentPage(1);
+                        }
+                      }}
+                    />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
+              </tbody>
+            ) : (
               <StaggerContainer key={`${currentPage}-${sizeFilter}-${activeFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((cohort) => {
                   return (
@@ -298,9 +341,9 @@ export default function ManageCohorts() {
                   );
                 })}
               </StaggerContainer>
-            </Table>
-          </div>
-        )}
+            )}
+          </Table>
+        </div>
 
         {/* Pagination */}
         {filteredAndSortedData.length > 0 && (

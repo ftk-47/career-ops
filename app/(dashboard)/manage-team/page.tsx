@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/page-header";
-import { EmptyState } from "@/components/empty-state";
+import { HeroEmptyState } from "@/components/hero-empty-state";
+import { useBookingModal } from "@/contexts/booking-modal-context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -79,12 +80,14 @@ const statusVariants: Record<TeamStatus, "success" | "warning"> = {
 };
 
 export default function ManageTeam() {
+  const { openBookingModal } = useBookingModal();
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState<TeamRole | "all">("all");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
   const [sortConfig, setSortConfig] = useState<{ key: keyof TeamMember; direction: "asc" | "desc" } | null>(null);
   const [inviteSheetOpen, setInviteSheetOpen] = useState(false);
+  const [sampleDataLoaded, setSampleDataLoaded] = useState(false);
   
   // Invite form state
   const [inviteName, setInviteName] = useState("");
@@ -94,6 +97,11 @@ export default function ManageTeam() {
   const roles: TeamRole[] = ["Reviewer", "Admin", "Super Admin"];
 
   const filteredAndSortedData = useMemo(() => {
+    // If sample data hasn't been loaded, return empty array
+    if (!sampleDataLoaded) {
+      return [];
+    }
+
     const filtered = mockData.filter((item) => {
       const matchesSearch = 
         item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -113,7 +121,7 @@ export default function ManageTeam() {
     }
 
     return filtered;
-  }, [searchTerm, roleFilter, sortConfig]);
+  }, [searchTerm, roleFilter, sortConfig, sampleDataLoaded]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
@@ -153,7 +161,7 @@ export default function ManageTeam() {
         title="Manage Team" 
         description="Invite and manage your team of reviewers and administrators"
         actions={
-          <Button onClick={() => setInviteSheetOpen(true)}>
+          <Button onClick={() => openBookingModal("invite-member")}>
             <UserPlus className="mr-2 h-4 w-4" />
             Invite Member
           </Button>
@@ -223,36 +231,69 @@ export default function ManageTeam() {
         )}
 
         {/* Table */}
-        {filteredAndSortedData.length === 0 ? (
-          <EmptyState
-            icon={Users}
-            title="No team members found"
-            description="Try adjusting your search or invite your first team member."
-            action={{ label: "Invite Member", onClick: () => setInviteSheetOpen(true) }}
-          />
-        ) : (
-          <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
-            <Table className="min-w-full">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("name")}>
-                    Member {sortConfig?.key === "name" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("email")}>
-                    Email {sortConfig?.key === "email" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("role")}>
-                    Role {sortConfig?.key === "role" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("status")}>
-                    Status {sortConfig?.key === "status" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="cursor-pointer" onClick={() => handleSort("lastActive")}>
-                    Last Active {sortConfig?.key === "lastActive" && (sortConfig.direction === "asc" ? "↑" : "↓")}
-                  </TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+        <div className="rounded-xl border bg-card shadow-sm overflow-x-auto">
+          <Table className="min-w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("name")}>
+                  Member {sortConfig?.key === "name" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("email")}>
+                  Email {sortConfig?.key === "email" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("role")}>
+                  Role {sortConfig?.key === "role" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("status")}>
+                  Status {sortConfig?.key === "status" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="cursor-pointer" onClick={() => handleSort("lastActive")}>
+                  Last Active {sortConfig?.key === "lastActive" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                </TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            {!sampleDataLoaded || filteredAndSortedData.length === 0 ? (
+              <tbody>
+                <TableRow className="hover:bg-transparent! pointer-events-none">
+                  <TableCell colSpan={6} className="h-[400px] p-0 pointer-events-auto">
+                    <HeroEmptyState
+                      headline={!sampleDataLoaded ? "No team members yet" : "No team members found"}
+                      subtext={!sampleDataLoaded 
+                        ? "Invite teammates to help manage cohorts, review submissions, and provide student feedback."
+                        : "Try adjusting your search or invite your first team member."}
+                      icon={Users}
+                      primaryAction={{
+                        label: !sampleDataLoaded ? "Invite Member" : "Clear Filters",
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            openBookingModal("invite-member");
+                          } else {
+                            setSearchTerm("");
+                            setRoleFilter("all");
+                            setCurrentPage(1);
+                          }
+                        }
+                      }}
+                      secondaryAction={{
+                        label: !sampleDataLoaded ? "Load Sample Data" : "Reset View",
+                        tooltip: !sampleDataLoaded ? "Load a mock team to understand roles, permissions, and collaboration views." : undefined,
+                        onClick: () => {
+                          if (!sampleDataLoaded) {
+                            setSampleDataLoaded(true);
+                          } else {
+                            setSampleDataLoaded(false);
+                          }
+                          setSearchTerm("");
+                          setRoleFilter("all");
+                          setCurrentPage(1);
+                        }
+                      }}
+                    />
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
+              </tbody>
+            ) : (
               <StaggerContainer key={`${currentPage}-${roleFilter}-${searchTerm}`} as="tbody">
                 {paginatedData.map((member) => (
                   <StaggerItem key={member.id} as="tr" className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
@@ -306,9 +347,9 @@ export default function ManageTeam() {
                   </StaggerItem>
                 ))}
               </StaggerContainer>
-            </Table>
-          </div>
-        )}
+            )}
+          </Table>
+        </div>
 
         {/* Pagination */}
         {filteredAndSortedData.length > 0 && (

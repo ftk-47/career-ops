@@ -1101,6 +1101,400 @@
   --spacing: 0.25rem;
 }
 
+/* ============================================
+   SLATE STYLE - Sleek & Modern Design
+   ============================================ */
+
+.style-slate.light {
+  --background: oklch(0.985 0.005 70);
+  --foreground: oklch(0.20 0.01 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.01 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.01 260);
+  --primary: oklch(0.55 0.14 195);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.005 70);
+  --secondary-foreground: oklch(0.20 0.01 260);
+  --muted: oklch(0.96 0.005 70);
+  --muted-foreground: oklch(0.50 0.01 260);
+  --accent: oklch(0.96 0.005 70);
+  --accent-foreground: oklch(0.20 0.01 260);
+  --destructive: oklch(0.63 0.19 23.03);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.92 0.005 70);
+  --input: oklch(0.92 0.005 70);
+  --ring: oklch(0.55 0.14 195);
+  --success: oklch(0.55 0.165 145);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.65 0.15 75);
+  --warning-foreground: oklch(0.20 0.01 260);
+  --error: oklch(0.55 0.22 27);
+  --error-foreground: oklch(1 0 0);
+  --info: oklch(0.55 0.14 195);
+  --info-foreground: oklch(1 0 0);
+  --chart-1: oklch(0.55 0.14 195);
+  --chart-2: oklch(0.62 0.16 210);
+  --chart-3: oklch(0.58 0.15 180);
+  --chart-4: oklch(0.65 0.12 165);
+  --chart-5: oklch(0.52 0.16 205);
+  --sidebar: oklch(0.99 0.003 70);
+  --sidebar-foreground: oklch(0.20 0.01 260);
+  --sidebar-primary: oklch(0.55 0.14 195);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.005 70);
+  --sidebar-accent-foreground: oklch(0.20 0.01 260);
+  --sidebar-border: oklch(0.92 0.005 70);
+  --sidebar-ring: oklch(0.55 0.14 195);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: ui-monospace, monospace;
+  --radius: 0.375rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 2px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.06;
+  --shadow-color: hsl(0 0% 0%);
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.04);
+  --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.05);
+  --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.06);
+  --shadow: 0px 2px 4px 0px hsl(0 0% 0% / 0.06);
+  --shadow-md: 0px 4px 6px 0px hsl(0 0% 0% / 0.07);
+  --shadow-lg: 0px 8px 16px 0px hsl(0 0% 0% / 0.08);
+  --shadow-xl: 0px 12px 24px 0px hsl(0 0% 0% / 0.10);
+  --shadow-2xl: 0px 16px 32px 0px hsl(0 0% 0% / 0.12);
+  --tracking-normal: -0.015em;
+  --spacing: 0.25rem;
+}
+
+.style-slate.dark {
+  --background: oklch(0.13 0.01 260);
+  --foreground: oklch(0.95 0.005 260);
+  --card: oklch(0.17 0.01 260);
+  --card-foreground: oklch(0.95 0.005 260);
+  --popover: oklch(0.17 0.01 260);
+  --popover-foreground: oklch(0.95 0.005 260);
+  --primary: oklch(0.65 0.14 195);
+  --primary-foreground: oklch(0.13 0.01 260);
+  --secondary: oklch(0.22 0.01 260);
+  --secondary-foreground: oklch(0.95 0.005 260);
+  --muted: oklch(0.22 0.01 260);
+  --muted-foreground: oklch(0.60 0.01 260);
+  --accent: oklch(0.22 0.01 260);
+  --accent-foreground: oklch(0.95 0.005 260);
+  --destructive: oklch(0.69 0.20 23.91);
+  --destructive-foreground: oklch(0.13 0.01 260);
+  --border: oklch(0.24 0.01 260);
+  --input: oklch(0.24 0.01 260);
+  --ring: oklch(0.65 0.14 195);
+  --success: oklch(0.65 0.18 145);
+  --success-foreground: oklch(0.13 0.01 260);
+  --warning: oklch(0.75 0.16 75);
+  --warning-foreground: oklch(0.13 0.01 260);
+  --error: oklch(0.65 0.24 27);
+  --error-foreground: oklch(1 0 0);
+  --info: oklch(0.65 0.14 195);
+  --info-foreground: oklch(0.13 0.01 260);
+  --chart-1: oklch(0.65 0.14 195);
+  --chart-2: oklch(0.70 0.16 210);
+  --chart-3: oklch(0.66 0.15 180);
+  --chart-4: oklch(0.72 0.12 165);
+  --chart-5: oklch(0.60 0.16 205);
+  --sidebar: oklch(0.16 0.01 260);
+  --sidebar-foreground: oklch(0.95 0.005 260);
+  --sidebar-primary: oklch(0.65 0.14 195);
+  --sidebar-primary-foreground: oklch(0.13 0.01 260);
+  --sidebar-accent: oklch(0.22 0.01 260);
+  --sidebar-accent-foreground: oklch(0.95 0.005 260);
+  --sidebar-border: oklch(0.24 0.01 260);
+  --sidebar-ring: oklch(0.65 0.14 195);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: ui-monospace, monospace;
+  --radius: 0.375rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 2px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.20;
+  --shadow-color: hsl(0 0% 0%);
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.15);
+  --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.18);
+  --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.20);
+  --shadow: 0px 2px 4px 0px hsl(0 0% 0% / 0.22);
+  --shadow-md: 0px 4px 6px 0px hsl(0 0% 0% / 0.24);
+  --shadow-lg: 0px 8px 16px 0px hsl(0 0% 0% / 0.26);
+  --shadow-xl: 0px 12px 24px 0px hsl(0 0% 0% / 0.28);
+  --shadow-2xl: 0px 16px 32px 0px hsl(0 0% 0% / 0.30);
+  --tracking-normal: -0.015em;
+  --spacing: 0.25rem;
+}
+
+/* ============================================
+   AZURE STYLE - Sleek & Modern Design (Blue Variant)
+   ============================================ */
+
+.style-azure.light {
+  --background: oklch(0.985 0.005 240);
+  --foreground: oklch(0.20 0.01 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.20 0.01 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.20 0.01 240);
+  --primary: oklch(0.55 0.18 250);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.005 240);
+  --secondary-foreground: oklch(0.20 0.01 240);
+  --muted: oklch(0.96 0.005 240);
+  --muted-foreground: oklch(0.50 0.01 240);
+  --accent: oklch(0.96 0.005 240);
+  --accent-foreground: oklch(0.20 0.01 240);
+  --destructive: oklch(0.63 0.19 23.03);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.92 0.005 240);
+  --input: oklch(0.92 0.005 240);
+  --ring: oklch(0.55 0.18 250);
+  --success: oklch(0.55 0.165 145);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.65 0.15 75);
+  --warning-foreground: oklch(0.20 0.01 240);
+  --error: oklch(0.55 0.22 27);
+  --error-foreground: oklch(1 0 0);
+  --info: oklch(0.55 0.18 250);
+  --info-foreground: oklch(1 0 0);
+  --chart-1: oklch(0.55 0.18 250);
+  --chart-2: oklch(0.62 0.16 260);
+  --chart-3: oklch(0.58 0.15 240);
+  --chart-4: oklch(0.65 0.12 230);
+  --chart-5: oklch(0.52 0.16 255);
+  --sidebar: oklch(0.99 0.003 240);
+  --sidebar-foreground: oklch(0.20 0.01 240);
+  --sidebar-primary: oklch(0.55 0.18 250);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.96 0.005 240);
+  --sidebar-accent-foreground: oklch(0.20 0.01 240);
+  --sidebar-border: oklch(0.92 0.005 240);
+  --sidebar-ring: oklch(0.55 0.18 250);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: ui-monospace, monospace;
+  --radius: 0.375rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 2px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.06;
+  --shadow-color: hsl(240 80% 50%);
+  --shadow-2xs: 0px 1px 2px 0px hsl(240 80% 50% / 0.04);
+  --shadow-xs: 0px 1px 2px 0px hsl(240 80% 50% / 0.05);
+  --shadow-sm: 0px 1px 3px 0px hsl(240 80% 50% / 0.06);
+  --shadow: 0px 2px 4px 0px hsl(240 80% 50% / 0.06);
+  --shadow-md: 0px 4px 6px 0px hsl(240 80% 50% / 0.07);
+  --shadow-lg: 0px 8px 16px 0px hsl(240 80% 50% / 0.08);
+  --shadow-xl: 0px 12px 24px 0px hsl(240 80% 50% / 0.10);
+  --shadow-2xl: 0px 16px 32px 0px hsl(240 80% 50% / 0.12);
+  --tracking-normal: -0.015em;
+  --spacing: 0.25rem;
+}
+
+.style-azure.dark {
+  --background: oklch(0.13 0.01 240);
+  --foreground: oklch(0.95 0.005 240);
+  --card: oklch(0.17 0.01 240);
+  --card-foreground: oklch(0.95 0.005 240);
+  --popover: oklch(0.17 0.01 240);
+  --popover-foreground: oklch(0.95 0.005 240);
+  --primary: oklch(0.65 0.18 250);
+  --primary-foreground: oklch(0.13 0.01 240);
+  --secondary: oklch(0.22 0.01 240);
+  --secondary-foreground: oklch(0.95 0.005 240);
+  --muted: oklch(0.22 0.01 240);
+  --muted-foreground: oklch(0.60 0.01 240);
+  --accent: oklch(0.22 0.01 240);
+  --accent-foreground: oklch(0.95 0.005 240);
+  --destructive: oklch(0.69 0.20 23.91);
+  --destructive-foreground: oklch(0.13 0.01 240);
+  --border: oklch(0.24 0.01 240);
+  --input: oklch(0.24 0.01 240);
+  --ring: oklch(0.65 0.18 250);
+  --success: oklch(0.65 0.18 145);
+  --success-foreground: oklch(0.13 0.01 240);
+  --warning: oklch(0.75 0.16 75);
+  --warning-foreground: oklch(0.13 0.01 240);
+  --error: oklch(0.65 0.24 27);
+  --error-foreground: oklch(1 0 0);
+  --info: oklch(0.65 0.18 250);
+  --info-foreground: oklch(0.13 0.01 240);
+  --chart-1: oklch(0.65 0.18 250);
+  --chart-2: oklch(0.70 0.16 260);
+  --chart-3: oklch(0.66 0.15 240);
+  --chart-4: oklch(0.72 0.12 230);
+  --chart-5: oklch(0.60 0.16 255);
+  --sidebar: oklch(0.16 0.01 240);
+  --sidebar-foreground: oklch(0.95 0.005 240);
+  --sidebar-primary: oklch(0.65 0.18 250);
+  --sidebar-primary-foreground: oklch(0.13 0.01 240);
+  --sidebar-accent: oklch(0.22 0.01 240);
+  --sidebar-accent-foreground: oklch(0.95 0.005 240);
+  --sidebar-border: oklch(0.24 0.01 240);
+  --sidebar-ring: oklch(0.65 0.18 250);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: ui-monospace, monospace;
+  --radius: 0.375rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 2px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.20;
+  --shadow-color: hsl(240 80% 30%);
+  --shadow-2xs: 0px 1px 2px 0px hsl(240 80% 30% / 0.15);
+  --shadow-xs: 0px 1px 2px 0px hsl(240 80% 30% / 0.18);
+  --shadow-sm: 0px 1px 3px 0px hsl(240 80% 30% / 0.20);
+  --shadow: 0px 2px 4px 0px hsl(240 80% 30% / 0.22);
+  --shadow-md: 0px 4px 6px 0px hsl(240 80% 30% / 0.24);
+  --shadow-lg: 0px 8px 16px 0px hsl(240 80% 30% / 0.26);
+  --shadow-xl: 0px 12px 24px 0px hsl(240 80% 30% / 0.28);
+  --shadow-2xl: 0px 16px 32px 0px hsl(240 80% 30% / 0.30);
+  --tracking-normal: -0.015em;
+  --spacing: 0.25rem;
+}
+
+/* ============================================
+   ONYX STYLE - Charcoal & Violet SaaS Design
+   ============================================ */
+
+.style-onyx.light {
+  --background: oklch(0.980 0.003 265);
+  --foreground: oklch(0.18 0.01 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.01 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.01 250);
+  --primary: oklch(0.58 0.24 255);
+  --primary-foreground: oklch(0.98 0 0); /* brighter text for buttons */
+  --secondary: oklch(0.945 0.003 270);
+  --secondary-foreground: oklch(0.24 0.01 260);
+  --muted: oklch(0.94 0.003 270);
+  --muted-foreground: oklch(0.52 0.01 260);
+  --accent: oklch(0.88 0.02 280);
+  --accent-foreground: oklch(0.18 0.01 250);
+  --destructive: oklch(0.63 0.19 23.03);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.90 0.004 260);
+  --input: oklch(0.90 0.004 260);
+  --ring: oklch(0.58 0.24 255);
+  --success: oklch(0.60 0.16 145);
+  --success-foreground: oklch(0.08 0.01 260);
+  --warning: oklch(0.70 0.12 80);
+  --warning-foreground: oklch(0.20 0.01 250);
+  --error: oklch(0.58 0.23 22);
+  --error-foreground: oklch(1 0 0);
+  --info: oklch(0.60 0.22 255);
+  --info-foreground: oklch(0.98 0 0);
+  --chart-1: oklch(0.60 0.22 255);
+  --chart-2: oklch(0.56 0.18 275);
+  --chart-3: oklch(0.64 0.16 235);
+  --chart-4: oklch(0.52 0.12 250);
+  --chart-5: oklch(0.68 0.12 265);
+  --sidebar: oklch(0.99 0.003 250);
+  --sidebar-foreground: oklch(0.20 0.01 250);
+  --sidebar-primary: oklch(0.60 0.22 255);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.95 0.004 270);
+  --sidebar-accent-foreground: oklch(0.20 0.01 250);
+  --sidebar-border: oklch(0.90 0.005 250);
+  --sidebar-ring: oklch(0.60 0.22 255);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: ui-monospace, monospace;
+  --radius: 0.5rem;
+  --shadow-x: 0px;
+  --shadow-y: 1px;
+  --shadow-blur: 8px;
+  --shadow-spread: -2px;
+  --shadow-opacity: 0.09;
+  --shadow-color: oklch(0 0 0);
+  --shadow-2xs: 0px 1px 2px -1px oklch(0 0 0 / 0.06);
+  --shadow-xs: 0px 2px 4px -2px oklch(0 0 0 / 0.08);
+  --shadow-sm: 0px 3px 6px -2px oklch(0 0 0 / 0.10);
+  --shadow: 0px 4px 10px -3px oklch(0 0 0 / 0.12);
+  --shadow-md: 0px 8px 16px -4px oklch(0 0 0 / 0.14);
+  --shadow-lg: 0px 12px 24px -6px oklch(0 0 0 / 0.16);
+  --shadow-xl: 0px 18px 32px -8px oklch(0 0 0 / 0.18);
+  --shadow-2xl: 0px 24px 48px -12px oklch(0 0 0 / 0.20);
+  --tracking-normal: -0.013em;
+  --spacing: 0.22rem;
+}
+
+.style-onyx.dark {
+  --background: oklch(0.11 0.01 260);
+  --foreground: oklch(0.96 0.005 240);
+  --card: oklch(0.16 0.01 250);
+  --card-foreground: oklch(0.96 0.005 240);
+  --popover: oklch(0.16 0.01 250);
+  --popover-foreground: oklch(0.96 0.005 240);
+  --primary: oklch(0.70 0.24 255);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.20 0.01 250);
+  --secondary-foreground: oklch(0.92 0.005 240);
+  --muted: oklch(0.20 0.01 250);
+  --muted-foreground: oklch(0.65 0.01 250);
+  --accent: oklch(0.26 0.02 285);
+  --accent-foreground: oklch(0.92 0.005 240);
+  --destructive: oklch(0.69 0.20 23.91);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.22 0.01 250);
+  --input: oklch(0.24 0.01 250);
+  --ring: oklch(0.70 0.24 255);
+  --success: oklch(0.66 0.16 145);
+  --success-foreground: oklch(0.98 0 0);
+  --warning: oklch(0.76 0.12 80);
+  --warning-foreground: oklch(0.98 0 0);
+  --error: oklch(0.65 0.24 27);
+  --error-foreground: oklch(1 0 0);
+  --info: oklch(0.72 0.23 255);
+  --info-foreground: oklch(0.98 0 0);
+  --chart-1: oklch(0.72 0.23 255);
+  --chart-2: oklch(0.62 0.18 275);
+  --chart-3: oklch(0.66 0.15 235);
+  --chart-4: oklch(0.56 0.12 250);
+  --chart-5: oklch(0.72 0.12 265);
+  --sidebar: oklch(0.16 0.01 250);
+  --sidebar-foreground: oklch(0.92 0.005 240);
+  --sidebar-primary: oklch(0.70 0.24 255);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.22 0.02 275);
+  --sidebar-accent-foreground: oklch(0.92 0.005 240);
+  --sidebar-border: oklch(0.24 0.01 250);
+  --sidebar-ring: oklch(0.70 0.24 255);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: ui-monospace, monospace;
+  --radius: 0.5rem;
+  --shadow-x: 0px;
+  --shadow-y: 2px;
+  --shadow-blur: 12px;
+  --shadow-spread: -2px;
+  --shadow-opacity: 0.16;
+  --shadow-color: oklch(0 0 0);
+  --shadow-2xs: 0px 1px 2px -1px oklch(0 0 0 / 0.10);
+  --shadow-xs: 0px 2px 5px -2px oklch(0 0 0 / 0.14);
+  --shadow-sm: 0px 4px 9px -3px oklch(0 0 0 / 0.18);
+  --shadow: 0px 7px 14px -4px oklch(0 0 0 / 0.22);
+  --shadow-md: 0px 10px 20px -6px oklch(0 0 0 / 0.26);
+  --shadow-lg: 0px 14px 28px -7px oklch(0 0 0 / 0.30);
+  --shadow-xl: 0px 20px 36px -10px oklch(0 0 0 / 0.34);
+  --shadow-2xl: 0px 28px 52px -12px oklch(0 0 0 / 0.38);
+  --tracking-normal: -0.013em;
+  --spacing: 0.22rem;
+}
+
+/* ============================================
+   (Removed) DAWN STYLE
+   ============================================ */
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -1209,6 +1603,281 @@
 
   .style-nexus [data-slot="button"] {
     @apply font-semibold;
+  }
+
+  /* Azure Theme Enhancements - Compact, modern typography and spacing (Blue variant) */
+  .style-azure {
+    --spacing: 0.25rem;
+  }
+
+  .style-azure body {
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  .style-azure h1 {
+    @apply text-xl font-semibold tracking-tight;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .style-azure h2 {
+    @apply text-sm font-semibold;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+
+  .style-azure h3 {
+    font-size: 0.8125rem; /* 13px */
+    @apply font-semibold;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  /* Card spacing - more compact */
+  .style-azure [data-slot="card"] {
+    @apply py-5;
+  }
+
+  .style-azure [data-slot="card-header"] {
+    @apply px-5 pb-3;
+  }
+
+  .style-azure [data-slot="card-content"] {
+    @apply px-5;
+  }
+
+  .style-azure [data-slot="card-footer"] {
+    @apply px-5 pt-3;
+  }
+
+  /* Button styles - compact */
+  .style-azure [data-slot="button"] {
+    @apply font-medium;
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.01em;
+  }
+
+  /* Sidebar menu button - compact height */
+  .style-azure [data-slot="sidebar-menu-button"] {
+    @apply h-9;
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.01em;
+  }
+
+  /* Table styles */
+  .style-azure table th {
+    @apply text-xs font-medium;
+    letter-spacing: 0em;
+  }
+
+  .style-azure table td {
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.01em;
+  }
+
+  /* Input styles */
+  .style-azure input,
+  .style-azure textarea,
+  .style-azure select {
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.01em;
+  }
+
+  /* Labels and captions */
+  .style-azure label {
+    font-size: 0.6875rem; /* 11px */
+    @apply font-medium;
+    letter-spacing: 0.01em;
+  }
+
+  /* Badges - compact */
+  .style-azure [data-slot="badge"] {
+    font-size: 0.6875rem; /* 11px */
+    @apply font-medium;
+    letter-spacing: 0em;
+  }
+
+  /* Slate Theme Enhancements - Compact, modern typography and spacing */
+  .style-slate {
+    --spacing: 0.25rem;
+  }
+
+  .style-slate body {
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+  }
+
+  .style-slate h1 {
+    @apply text-xl font-semibold tracking-tight;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .style-slate h2 {
+    @apply text-sm font-semibold;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+
+  .style-slate h3 {
+    font-size: 0.8125rem; /* 13px */
+    @apply font-semibold;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  /* Card spacing - more compact */
+  .style-slate [data-slot="card"] {
+    @apply py-5;
+  }
+
+  .style-slate [data-slot="card-header"] {
+    @apply px-5 pb-3;
+  }
+
+  .style-slate [data-slot="card-content"] {
+    @apply px-5;
+  }
+
+  .style-slate [data-slot="card-footer"] {
+    @apply px-5 pt-3;
+  }
+
+  /* Button styles - compact */
+  .style-slate [data-slot="button"] {
+    @apply font-medium;
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.01em;
+  }
+
+  /* Sidebar menu button - compact height */
+  .style-slate [data-slot="sidebar-menu-button"] {
+    @apply h-9;
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.01em;
+  }
+
+  /* Table styles */
+  .style-slate table th {
+    @apply text-xs font-medium;
+    letter-spacing: 0em;
+  }
+
+  .style-slate table td {
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.01em;
+  }
+
+  /* Input styles */
+  .style-slate input,
+  .style-slate textarea,
+  .style-slate select {
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.01em;
+  }
+
+  /* Labels and captions */
+  .style-slate label {
+    font-size: 0.6875rem; /* 11px */
+    @apply font-medium;
+    letter-spacing: 0.01em;
+  }
+
+  /* Badges - compact */
+  .style-slate [data-slot="badge"] {
+    font-size: 0.6875rem; /* 11px */
+    @apply font-medium;
+    letter-spacing: 0em;
+  }
+
+  /* Onyx Theme Enhancements - Charcoal + Mint SaaS */
+  .style-onyx {
+    --spacing: 0.22rem;
+  }
+
+  .style-onyx body {
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.48;
+    letter-spacing: -0.013em;
+  }
+
+  .style-onyx h1 {
+    @apply text-xl font-semibold tracking-tight;
+    line-height: 1.2;
+    letter-spacing: -0.021em;
+  }
+
+  .style-onyx h2 {
+    @apply text-sm font-semibold;
+    line-height: 1.3;
+    letter-spacing: -0.016em;
+  }
+
+  .style-onyx h3 {
+    font-size: 0.8125rem; /* 13px */
+    @apply font-semibold;
+    line-height: 1.32;
+    letter-spacing: -0.011em;
+  }
+
+  .style-onyx [data-slot="card"] {
+    @apply py-4;
+  }
+
+  .style-onyx [data-slot="card-header"] {
+    @apply px-4 pb-3;
+  }
+
+  .style-onyx [data-slot="card-content"] {
+    @apply px-4;
+  }
+
+  .style-onyx [data-slot="card-footer"] {
+    @apply px-4 pt-3;
+  }
+
+  .style-onyx [data-slot="button"] {
+    @apply font-medium;
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.012em;
+  }
+
+  .style-onyx [data-slot="sidebar-menu-button"] {
+    @apply h-9;
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.012em;
+  }
+
+  .style-onyx table th {
+    @apply text-xs font-medium;
+    letter-spacing: 0em;
+  }
+
+  .style-onyx table td {
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.012em;
+  }
+
+  .style-onyx input,
+  .style-onyx textarea,
+  .style-onyx select {
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: -0.012em;
+  }
+
+  .style-onyx label {
+    font-size: 0.6875rem; /* 11px */
+    @apply font-medium;
+    letter-spacing: 0.01em;
+  }
+
+  .style-onyx [data-slot="badge"] {
+    font-size: 0.6875rem; /* 11px */
+    @apply font-medium;
+    letter-spacing: 0em;
   }
 
   /* Notion Theme Enhancements - Clean, minimal typography and spacing */
