@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { format, subDays, subMonths, startOfYear } from "date-fns";
 import { AnimatedCard } from "@/components/motion/animated-card";
@@ -13,6 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -27,6 +35,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   ChartContainer,
   ChartTooltip,
@@ -69,6 +80,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 // Date filter types
 type DatePreset = "7d" | "30d" | "3m" | "6m" | "1y" | "custom";
@@ -681,6 +693,37 @@ const linkedinScoreDistributionByCohort: Record<string, Array<{ range: string; c
   ],
 };
 
+type AttentionStudent = (typeof studentsNeedingAttentionByCohort)["all"][number];
+
+const messageTemplates: Record<string, (student: AttentionStudent) => string> = {
+  "Resume Score < 40": (student) => `Hi ${student.name},
+
+Your resume score is below 40. Please review the suggestions on Hiration (format, impact, results), make the updates, and re-upload for feedback.
+
+Once you’ve done that, I’m happy to schedule a 1:1 to go over it together.`,
+  "No Interview Practice": (student) => `Hi ${student.name},
+
+I noticed you haven’t completed any mock interviews yet. Take a practice set this week so we can identify gaps early and boost your confidence.
+
+After you try one, I’m happy to schedule a 1:1 to review your answers together.`,
+  "Profile Incomplete": (student) => `Hi ${student.name},
+
+Your profile is still missing key details. Please finish your summary, experiences, and skills so we can match you to the right opportunities.
+
+Once it’s updated, I’m happy to schedule a 1:1 to refine it with you.`,
+  "Resume Score Stagnant": (student) => `Hi ${student.name},
+
+Your resume score hasn’t improved lately. Revisit the Hiration suggestions (format, impact, results) and iterate on the top items.
+
+After you make changes, I’m happy to schedule a 1:1 to fine-tune together.`,
+};
+
+const defaultMessageTemplate = (student: AttentionStudent) => `Hi ${student.name},
+
+I noticed ${student.issue}. Please review the suggestions on Hiration (format, impact, results), make the updates, and re-upload for feedback.
+
+Once you’ve done that, I’m happy to schedule a 1:1 to go over it together.`;
+
 const linkedinCommonIssuesByCohort: Record<string, Array<{ issue: string; count: number }>> = {
   "all": [
     { issue: "Weak Headline", count: 342 },
@@ -754,12 +797,50 @@ function AnalyticsContent() {
     from: subDays(new Date(), 30),
     to: new Date(),
   });
+  const messageTextareaRef = useRef<HTMLTextAreaElement>(null);
   
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const validTabs = ["students", "resumes", "interviews", "linkedin"];
   const initialTab = tabParam && validTabs.includes(tabParam) ? tabParam : "students";
   const [activeTab, setActiveTab] = useState(initialTab);
+  const [isMessageOpen, setIsMessageOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<AttentionStudent | null>(null);
+  const [messageSubject, setMessageSubject] = useState("");
+  const [messageBody, setMessageBody] = useState("");
+
+  const buildMessageTemplate = (student: AttentionStudent) => {
+    const template = messageTemplates[student.issue];
+    return template ? template(student) : defaultMessageTemplate(student);
+  };
+
+  const handleDialogChange = (open: boolean) => {
+    setIsMessageOpen(open);
+    if (!open) {
+      setSelectedStudent(null);
+      setMessageSubject("");
+      setMessageBody("");
+    }
+  };
+
+  const openMessageDialog = (student: AttentionStudent) => {
+    setSelectedStudent(student);
+    setMessageSubject(`Follow-up: ${student.issue}`);
+    setMessageBody(buildMessageTemplate(student));
+    setIsMessageOpen(true);
+  };
+
+  const handleSendMessage = () => {
+    if (!selectedStudent || !messageBody.trim() || !messageSubject.trim()) return;
+    toast.success("Message sent");
+    handleDialogChange(false);
+  };
+
+  useEffect(() => {
+    if (isMessageOpen) {
+      messageTextareaRef.current?.focus();
+    }
+  }, [isMessageOpen]);
 
   // Handle date preset change
   const handleDatePresetChange = (value: DatePreset) => {
@@ -1193,7 +1274,13 @@ function AnalyticsContent() {
                               {student.issue}
                             </Badge>
                           </div>
-                          <Button size="icon" variant="ghost" className="shrink-0">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="shrink-0"
+                            aria-label={`Message ${student.name}`}
+                            onClick={() => openMessageDialog(student)}
+                          >
                             <Mail className="h-4 w-4" />
                           </Button>
                         </div>
@@ -1202,6 +1289,60 @@ function AnalyticsContent() {
                   </ScrollArea>
                 </CardContent>
               </Card>
+              <Dialog open={isMessageOpen} onOpenChange={handleDialogChange}>
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader className="space-y-1.5">
+                    <DialogTitle>Send outreach</DialogTitle>
+                    <DialogDescription>
+                      This sends a quick nudge to help the student get unstuck.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="message-to">To</Label>
+                      <Input
+                        id="message-to"
+                        value={selectedStudent?.name ?? ""}
+                        readOnly
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="message-subject">Subject</Label>
+                      <Input
+                        id="message-subject"
+                        value={messageSubject}
+                        onChange={(event) => setMessageSubject(event.target.value)}
+                        placeholder="Follow-up subject"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="message-body">Message</Label>
+                      <Textarea
+                        id="message-body"
+                        ref={messageTextareaRef}
+                        className="min-h-[180px]"
+                        value={messageBody}
+                        onChange={(event) => setMessageBody(event.target.value)}
+                        placeholder="Write a quick note..."
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter className="gap-3 sm:gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleDialogChange(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSendMessage}
+                      disabled={!messageBody.trim() || !messageSubject.trim()}
+                    >
+                      Send
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </FadeIn>
           </div>
           </TabsContent>
