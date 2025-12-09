@@ -724,6 +724,97 @@ I noticed ${student.issue}. Please review the suggestions on Hiration (format, i
 
 Once you’ve done that, I’m happy to schedule a 1:1 to go over it together.`;
 
+const funnelMessageTemplates: Record<string, { subject: string; body: string }> = {
+  "Invited": {
+    subject: "Welcome to Career Ops!",
+    body: `Hi there,
+
+You've been invited to join Career Ops - your comprehensive career development platform. We're excited to have you on board!
+
+Career Ops helps you build a strong professional profile, prepare for interviews, and connect with opportunities that align with your goals.
+
+Next steps:
+1. Sign up using your invite link
+2. Complete your profile
+3. Start exploring the platform
+
+If you have any questions, feel free to reach out. We're here to help you succeed!
+
+Best regards,
+The Career Ops Team`
+  },
+  "Signed Up": {
+    subject: "Complete Your Profile - Let's Get Started!",
+    body: `Hi there,
+
+Thanks for signing up for Career Ops! You're one step closer to advancing your career.
+
+To get the most out of the platform, please complete your profile by adding:
+- Your professional summary
+- Work experiences
+- Skills and competencies
+- Career goals
+
+A complete profile helps us provide personalized recommendations and match you with the right opportunities.
+
+Take 10 minutes today to finish your profile and unlock all features.
+
+Best regards,
+The Career Ops Team`
+  },
+  "Active (7d)": {
+    subject: "Keep Up the Great Work!",
+    body: `Hi there,
+
+We've noticed you're actively using Career Ops - that's fantastic! Consistent engagement is key to career success.
+
+Here are some ways to maximize your progress:
+- Complete practice interviews
+- Update your resume based on feedback
+- Optimize your LinkedIn profile
+- Explore job opportunities
+
+Your dedication is paying off. Keep up the momentum!
+
+Best regards,
+The Career Ops Team`
+  },
+  "Profile Complete": {
+    subject: "You're All Set! Here's What's Next",
+    body: `Hi there,
+
+Congratulations! Your profile is complete. You're now ready to take full advantage of everything Career Ops has to offer.
+
+Recommended next steps:
+1. Take a practice interview to identify areas for improvement
+2. Run your resume through our scoring system
+3. Optimize your LinkedIn profile
+4. Start applying to opportunities
+
+You're well-positioned for success. Let's keep the momentum going!
+
+Best regards,
+The Career Ops Team`
+  },
+  "Engaged": {
+    subject: "Continue Your Journey to Success",
+    body: `Hi there,
+
+You're making excellent progress on Career Ops! Your engagement shows real commitment to your career development.
+
+Keep leveraging the platform by:
+- Regularly practicing interviews
+- Iterating on your resume
+- Staying active in the community
+- Tracking your application progress
+
+Success is built through consistent effort, and you're doing great. Keep it up!
+
+Best regards,
+The Career Ops Team`
+  }
+};
+
 const linkedinCommonIssuesByCohort: Record<string, Array<{ issue: string; count: number }>> = {
   "all": [
     { issue: "Weak Headline", count: 342 },
@@ -808,6 +899,13 @@ function AnalyticsContent() {
   const [selectedStudent, setSelectedStudent] = useState<AttentionStudent | null>(null);
   const [messageSubject, setMessageSubject] = useState("");
   const [messageBody, setMessageBody] = useState("");
+  
+  // Funnel message state
+  const [isFunnelMessageOpen, setIsFunnelMessageOpen] = useState(false);
+  const [selectedFunnelStage, setSelectedFunnelStage] = useState<string>("");
+  const [funnelMessageSubject, setFunnelMessageSubject] = useState("");
+  const [funnelMessageBody, setFunnelMessageBody] = useState("");
+  const funnelMessageTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const buildMessageTemplate = (student: AttentionStudent) => {
     const template = messageTemplates[student.issue];
@@ -841,6 +939,40 @@ function AnalyticsContent() {
       messageTextareaRef.current?.focus();
     }
   }, [isMessageOpen]);
+
+  // Funnel message handlers
+  const handleFunnelDialogChange = (open: boolean) => {
+    setIsFunnelMessageOpen(open);
+    if (!open) {
+      setSelectedFunnelStage("");
+      setFunnelMessageSubject("");
+      setFunnelMessageBody("");
+    }
+  };
+
+  const openFunnelMessageDialog = (stage: string) => {
+    setSelectedFunnelStage(stage);
+    const template = funnelMessageTemplates[stage];
+    if (template) {
+      setFunnelMessageSubject(template.subject);
+      setFunnelMessageBody(template.body);
+    }
+    setIsFunnelMessageOpen(true);
+  };
+
+  const handleSendFunnelMessage = () => {
+    if (!funnelMessageBody.trim() || !funnelMessageSubject.trim()) return;
+    const stageData = activityFunnelDataByCohort[selectedCohort].find(s => s.stage === selectedFunnelStage);
+    const count = stageData?.count || 0;
+    toast.success(`Message sent to all ${count} users in "${selectedFunnelStage}" stage`);
+    handleFunnelDialogChange(false);
+  };
+
+  useEffect(() => {
+    if (isFunnelMessageOpen) {
+      funnelMessageTextareaRef.current?.focus();
+    }
+  }, [isFunnelMessageOpen]);
 
   // Handle date preset change
   const handleDatePresetChange = (value: DatePreset) => {
@@ -1217,17 +1349,26 @@ function AnalyticsContent() {
                     <div className="space-y-4">
                       {activityFunnelDataByCohort[selectedCohort].map((stage) => (
                         <div key={stage.stage} className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <div className="flex items-center gap-2">
+                          <div className="flex justify-between items-center gap-3">
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
                               <div 
-                                className="h-3 w-3 rounded-full" 
+                                className="h-3 w-3 rounded-full flex-shrink-0" 
                                 style={{ backgroundColor: stage.color }}
                               />
-                              <span className="font-medium">{stage.stage}</span>
+                              <span className="font-medium text-sm">{stage.stage}</span>
+                              <span className="text-muted-foreground text-sm">
+                                {stage.count} ({stage.percentage}%)
+                              </span>
                             </div>
-                            <span className="text-muted-foreground">
-                              {stage.count} ({stage.percentage}%)
-                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 gap-1.5 flex-shrink-0"
+                              onClick={() => openFunnelMessageDialog(stage.stage)}
+                            >
+                              <MessageSquare className="h-3.5 w-3.5" />
+                              <span className="text-xs font-medium">Message</span>
+                            </Button>
                           </div>
                           <Progress 
                             value={stage.percentage} 
@@ -1339,6 +1480,54 @@ function AnalyticsContent() {
                       disabled={!messageBody.trim() || !messageSubject.trim()}
                     >
                       Send
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              {/* Funnel Message Dialog */}
+              <Dialog open={isFunnelMessageOpen} onOpenChange={handleFunnelDialogChange}>
+                <DialogContent className="sm:max-w-lg">
+                  <DialogHeader className="space-y-1.5">
+                    <DialogTitle>Message Users in &quot;{selectedFunnelStage}&quot; Stage</DialogTitle>
+                    <DialogDescription>
+                      Send a message to all {activityFunnelDataByCohort[selectedCohort].find(s => s.stage === selectedFunnelStage)?.count || 0} users in this funnel stage.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="funnel-message-subject">Subject</Label>
+                      <Input
+                        id="funnel-message-subject"
+                        value={funnelMessageSubject}
+                        onChange={(event) => setFunnelMessageSubject(event.target.value)}
+                        placeholder="Email subject"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="funnel-message-body">Message</Label>
+                      <Textarea
+                        id="funnel-message-body"
+                        ref={funnelMessageTextareaRef}
+                        className="min-h-[240px]"
+                        value={funnelMessageBody}
+                        onChange={(event) => setFunnelMessageBody(event.target.value)}
+                        placeholder="Write your message..."
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter className="gap-3 sm:gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => handleFunnelDialogChange(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSendFunnelMessage}
+                      disabled={!funnelMessageBody.trim() || !funnelMessageSubject.trim()}
+                    >
+                      Send to All
                     </Button>
                   </DialogFooter>
                 </DialogContent>
