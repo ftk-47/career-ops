@@ -17,9 +17,6 @@ const BookingModalContext = createContext<BookingModalContextType | undefined>(
 export function BookingModalProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [contextType, setContextType] = useState<BookingContextType>("generic");
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
 
   const openBookingModal = (type: BookingContextType) => {
     setContextType(type);
@@ -30,9 +27,6 @@ export function BookingModalProvider({ children }: { children: ReactNode }) {
     setIsOpen(false);
     // Reset state after animation completes
     setTimeout(() => {
-      setCurrentStep(1);
-      setSelectedDate(undefined);
-      setSelectedTime(undefined);
       setContextType("generic");
     }, 200);
   };
@@ -58,12 +52,6 @@ export function BookingModalProvider({ children }: { children: ReactNode }) {
         open={isOpen}
         onOpenChange={handleOpenChange}
         contextType={contextType}
-        currentStep={currentStep}
-        onStepChange={setCurrentStep}
-        selectedDate={selectedDate}
-        onDateChange={setSelectedDate}
-        selectedTime={selectedTime}
-        onTimeChange={setSelectedTime}
       />
     </BookingModalContext.Provider>
   );

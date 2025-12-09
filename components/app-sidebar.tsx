@@ -11,8 +11,6 @@ import {
   ListChecks,
   Users,
   UserRound,
-  ChevronLeft,
-  Check,
   BookOpen,
   User,
   Settings,
@@ -22,6 +20,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { PopupModal } from "react-calendly";
 import { useMode, type Mode } from "@/contexts/mode-context";
 
 import {
@@ -43,12 +42,6 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -164,53 +157,14 @@ export function AppSidebar() {
     items: category.items.filter(item => (item.modes as readonly Mode[]).includes(mode))
   })).filter(category => category.items.length > 0);
   
-  // Booking modal state
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [bookingStep, setBookingStep] = useState(1);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState<string | undefined>(undefined);
+  // Calendly modal state
+  const [isCalendlyOpen, setIsCalendlyOpen] = useState(false);
+  const [rootElement] = useState<HTMLElement | null>(
+    typeof window !== 'undefined' ? document.body : null
+  );
   
   // My Account dropdown state
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
-
-  // Time slots from 9 AM to 5 PM in 1-hour intervals
-  const timeSlots = [
-    "9:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "12:00 PM",
-    "1:00 PM",
-    "2:00 PM",
-    "3:00 PM",
-    "4:00 PM",
-    "5:00 PM",
-  ];
-
-  // Reset modal state when closed
-  const handleCloseModal = () => {
-    setIsBookingOpen(false);
-    setTimeout(() => {
-      setBookingStep(1);
-      setSelectedDate(undefined);
-      setSelectedTime(undefined);
-    }, 200);
-  };
-
-  // Get dialog title based on current step
-  const getDialogTitle = () => {
-    switch (bookingStep) {
-      case 1:
-        return "Select a Date";
-      case 2:
-        return "Select a Time";
-      case 3:
-        return "Confirm Your Booking";
-      case 4:
-        return "Thank you for booking!";
-      default:
-        return "Book Consultation";
-    }
-  };
 
   return (
     <>
@@ -332,7 +286,7 @@ export function AppSidebar() {
                   Get setup guidance and best practices support.
                   </CardDescription>
               <Button
-                onClick={() => setIsBookingOpen(true)}
+                onClick={() => setIsCalendlyOpen(true)}
                 className="w-full text-xs h-8"
                 size="sm"
               >
@@ -387,150 +341,15 @@ export function AppSidebar() {
       <SidebarRail />
     </Sidebar>
       
-      {/* Booking Modal */}
-      <Dialog open={isBookingOpen} onOpenChange={handleCloseModal}>
-        <DialogContent className="max-w-md">
-              <DialogTitle className={bookingStep === 4 ? "text-center text-xl" : ""}>
-                {getDialogTitle()}
-              </DialogTitle>
-              {bookingStep === 1 && (
-                <p className="text-sm text-muted-foreground mt-2 mb-2">
-                  Select a date to book your consultation
-                </p>
-              )}
-              {bookingStep === 2 && selectedDate && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {selectedDate.toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-              )}
-
-          {/* Step 1: Calendar Selection */}
-          {bookingStep === 1 && (
-            <div className="flex flex-col items-center gap-4">
-              <CalendarComponent
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => {
-                  setSelectedDate(date);
-                  if (date) {
-                    setBookingStep(2);
-                  }
-                }}
-                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                className="rounded-md border"
-              />
-            </div>
-          )}
-
-          {/* Step 2: Time Slot Selection */}
-          {bookingStep === 2 && selectedDate && (
-            <>
-              <div className="grid grid-cols-3 gap-2 py-4">
-                {timeSlots.map((time) => (
-                  <Button
-                    key={time}
-                    variant={selectedTime === time ? "default" : "outline"}
-                    onClick={() => {
-                      setSelectedTime(time);
-                      setBookingStep(3);
-                    }}
-                    className="w-full"
-                  >
-                    {time}
-                  </Button>
-                ))}
-              </div>
-              <Button
-                variant="ghost"
-                onClick={() => setBookingStep(1)}
-                className="w-full"
-              >
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Back to Calendar
-              </Button>
-            </>
-          )}
-
-          {/* Step 3: Booking Confirmation */}
-          {bookingStep === 3 && selectedDate && selectedTime && (
-            <div className="flex flex-col gap-4 py-4">
-              <div className="rounded-lg border p-4 space-y-3 bg-muted/30">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">
-                    {selectedDate.toLocaleDateString("en-US", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <UserRound className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">{selectedTime}</span>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setBookingStep(2)}
-                  className="flex-1"
-                >
-                  <ChevronLeft className="h-4 w-4 mr-2" />
-                  Back
-                </Button>
-                <Button
-                  onClick={() => setBookingStep(4)}
-                  className="flex-1"
-                >
-                  Confirm Booking
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 4: Thank You Message */}
-          {bookingStep === 4 && selectedDate && selectedTime && (
-            <div className="flex flex-col items-center gap-4 py-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Check className="h-8 w-8 text-primary" />
-              </div>
-              <p className="text-sm text-muted-foreground text-center">
-                Your consultation has been successfully scheduled.
-              </p>
-              <div className="rounded-lg border p-4 space-y-3 bg-muted/30 w-full">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">
-                    {selectedDate.toLocaleDateString("en-US", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <UserRound className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">{selectedTime}</span>
-                </div>
-              </div>
-              <Button
-                onClick={handleCloseModal}
-                className="w-full"
-              >
-                Close
-              </Button>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Calendly Modal */}
+      {rootElement && (
+        <PopupModal
+          url="https://calendly.com/explore-hiration-s-career-suite/hiration-demo-in"
+          onModalClose={() => setIsCalendlyOpen(false)}
+          open={isCalendlyOpen}
+          rootElement={rootElement}
+        />
+      )}
     </>
   );
 }
