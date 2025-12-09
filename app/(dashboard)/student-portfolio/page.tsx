@@ -19,6 +19,15 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
 import { Combobox } from "@/components/ui/combobox";
 import {
@@ -183,6 +192,12 @@ function StudentPortfolioContent() {
     const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: "asc" | "desc" } | null>(null);
     const [sampleDataLoaded, setSampleDataLoaded] = useState(!!studentParam);
     const [selectedStudentEmail, setSelectedStudentEmail] = useState<string | null>(studentParam);
+    
+    // Message dialog state
+    const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
+    const [messageSubject, setMessageSubject] = useState("");
+    const [messageBody, setMessageBody] = useState("");
+    const [isMessageSent, setIsMessageSent] = useState(false);
 
     const submissionTypes: SubmissionType[] = ["Resume", "Cover Letter", "Interview", "LinkedIn Profile"];
     const statuses: SubmissionStatus[] = ["Pending", "In Review", "Completed", "Rejected"];
@@ -329,13 +344,26 @@ function StudentPortfolioContent() {
             return "text-red-600 dark:text-red-500";
         };
 
-        const getScoreBgColor = (score: number | null) => {
-            if (score === null) return "bg-muted";
-            if (score >= 90) return "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800";
-            if (score >= 75) return "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800";
-            if (score >= 60) return "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800";
-            return "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800";
-        };
+    const getScoreBgColor = (score: number | null) => {
+        if (score === null) return "bg-muted";
+        if (score >= 90) return "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800";
+        if (score >= 75) return "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800";
+        if (score >= 60) return "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800";
+        return "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800";
+    };
+
+    const handleSendMessage = () => {
+        // Mock send action
+        setIsMessageSent(true);
+        
+        // Reset after 2 seconds
+        setTimeout(() => {
+            setIsMessageSent(false);
+            setIsMessageDialogOpen(false);
+            setMessageSubject("");
+            setMessageBody("");
+        }, 2000);
+    };
 
         return (
             <div className="flex flex-col min-h-screen">
@@ -399,15 +427,24 @@ function StudentPortfolioContent() {
                                                 <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
                                                 <span>Active</span>
                                             </div>
+                                            <Button 
+                                                variant="outline" 
+                                                size="sm" 
+                                                onClick={() => setIsMessageDialogOpen(true)}
+                                                className="h-7 text-xs"
+                                            >
+                                                <Mail className="mr-1.5 h-3 w-3" />
+                                                Message
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                {/* Overall Score */}
+                                {/* Career Readiness Score */}
                                 <div className={`rounded-lg border p-4 ${getScoreBgColor(overallScore)} md:min-w-[200px]`}>
                                     <div className="flex items-center gap-2 mb-2">
                                         <Award className="h-4 w-4 text-primary" />
-                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Overall Score</p>
+                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Career Readiness Score</p>
                                     </div>
                                     <div className="flex items-baseline gap-2 mb-3">
                                         <span className={`text-3xl font-bold ${getScoreColor(overallScore)}`}>
@@ -432,6 +469,85 @@ function StudentPortfolioContent() {
                             </div>
                         </div>
                     </motion.div>
+
+                    {/* Message Dialog */}
+                    <Dialog open={isMessageDialogOpen} onOpenChange={(open) => {
+                        setIsMessageDialogOpen(open);
+                        if (!open && !isMessageSent) {
+                            setMessageSubject("");
+                            setMessageBody("");
+                        }
+                    }}>
+                        <DialogContent className="sm:max-w-[500px]">
+                            {!isMessageSent ? (
+                                <>
+                                    <DialogHeader>
+                                        <DialogTitle>Send Message to {studentInfo.studentName}</DialogTitle>
+                                        <DialogDescription>
+                                            Compose a message to send to this student. This is a mock action.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <div className="space-y-4 py-4">
+                                        <div className="space-y-2">
+                                            <label htmlFor="subject" className="text-sm font-medium">
+                                                Subject
+                                            </label>
+                                            <Input
+                                                id="subject"
+                                                placeholder="Enter subject..."
+                                                value={messageSubject}
+                                                onChange={(e) => setMessageSubject(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label htmlFor="message" className="text-sm font-medium">
+                                                Message
+                                            </label>
+                                            <Textarea
+                                                id="message"
+                                                placeholder="Write your message..."
+                                                value={messageBody}
+                                                onChange={(e) => setMessageBody(e.target.value)}
+                                                rows={12}
+                                                className="min-h-[200px]"
+                                            />
+                                        </div>
+                                    </div>
+                                    <DialogFooter>
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => {
+                                                setIsMessageDialogOpen(false);
+                                                setMessageSubject("");
+                                                setMessageBody("");
+                                            }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button 
+                                            onClick={handleSendMessage}
+                                            disabled={!messageSubject.trim() || !messageBody.trim()}
+                                        >
+                                            <Mail className="mr-2 h-4 w-4" />
+                                            Send Message
+                                        </Button>
+                                    </DialogFooter>
+                                </>
+                            ) : (
+                                <div className="py-8">
+                                    <div className="flex flex-col items-center justify-center space-y-3">
+                                        <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
+                                            <Mail className="h-6 w-6 text-green-600 dark:text-green-500" />
+                                        </div>
+                                        <DialogTitle className="text-center">Message Sent!</DialogTitle>
+                                        <DialogDescription className="text-center">
+                                            Your message has been sent to {studentInfo.studentName}.
+                                        </DialogDescription>
+                                    </div>
+                                </div>
+                            )}
+                        </DialogContent>
+                    </Dialog>
 
                     {/* Score Dashboard - Individual Submission Type Scores */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
