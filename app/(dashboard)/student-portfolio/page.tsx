@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
@@ -165,7 +165,7 @@ const calculateOverallScore = (submissions: Submission[]): number => {
     return Math.round(sum / scoredSubmissions.length);
 };
 
-export default function StudentPortfolio() {
+function StudentPortfolioContent() {
     const { openBookingModal } = useBookingModal();
     const searchParams = useSearchParams();
     
@@ -1033,5 +1033,13 @@ export default function StudentPortfolio() {
                 )}
             </main>
         </div>
+    );
+}
+
+export default function StudentPortfolio() {
+    return (
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+            <StudentPortfolioContent />
+        </Suspense>
     );
 }
