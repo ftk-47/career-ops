@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/page-header";
 import { HeroEmptyState } from "@/components/hero-empty-state";
 import { useBookingModal } from "@/contexts/booking-modal-context";
@@ -10,6 +11,14 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { StaggerContainer, StaggerItem } from "@/components/motion/stagger-list";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { motion } from "framer-motion";
 import { Combobox } from "@/components/ui/combobox";
 import {
@@ -45,6 +54,10 @@ import {
     ExternalLink,
     User,
     Briefcase,
+    ArrowLeft,
+    Award,
+    Calendar,
+    TrendingUp,
 } from "lucide-react";
 
 type SubmissionStatus = "Pending" | "In Review" | "Completed" | "Rejected";
@@ -107,8 +120,43 @@ const submissionTypeIcons: Record<SubmissionType, React.ElementType> = {
     "LinkedIn Profile": Linkedin,
 };
 
+// Generate consistent mock scores based on submission ID and status
+const generateMockScore = (submissionId: string, status: SubmissionStatus): number | null => {
+    // Only completed and rejected submissions have scores
+    if (status === "Pending" || status === "In Review") return null;
+    
+    // Use submission ID to generate consistent scores
+    const seed = parseInt(submissionId) || 1;
+    const baseScore = (seed * 17) % 30; // Generate a number between 0-29
+    
+    if (status === "Completed") {
+        return 80 + baseScore % 16; // 80-95
+    } else if (status === "Rejected") {
+        return 50 + baseScore % 21; // 50-70
+    }
+    
+    return null;
+};
+
+// Calculate overall score from all completed submissions
+const calculateOverallScore = (submissions: Submission[]): number => {
+    const scoredSubmissions = submissions
+        .map(s => generateMockScore(s.id, s.status))
+        .filter((score): score is number => score !== null);
+    
+    if (scoredSubmissions.length === 0) return 0;
+    
+    const sum = scoredSubmissions.reduce((acc, score) => acc + score, 0);
+    return Math.round(sum / scoredSubmissions.length);
+};
+
 export default function StudentPortfolio() {
     const { openBookingModal } = useBookingModal();
+    const searchParams = useSearchParams();
+    
+    // Get student param from URL
+    const studentParam = searchParams.get('student');
+    
     const [searchTerm, setSearchTerm] = useState("");
     const [typeFilter, setTypeFilter] = useState<SubmissionType | "all">("all");
     const [statusFilter, setStatusFilter] = useState<SubmissionStatus | "all">("all");
@@ -118,7 +166,8 @@ export default function StudentPortfolio() {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Submission; direction: "asc" | "desc" } | null>(null);
-    const [sampleDataLoaded, setSampleDataLoaded] = useState(false);
+    const [sampleDataLoaded, setSampleDataLoaded] = useState(!!studentParam);
+    const [selectedStudentEmail, setSelectedStudentEmail] = useState<string | null>(studentParam);
 
     const submissionTypes: SubmissionType[] = ["Resume", "Cover Letter", "Interview", "LinkedIn Profile"];
     const statuses: SubmissionStatus[] = ["Pending", "In Review", "Completed", "Rejected"];
@@ -206,8 +255,7 @@ export default function StudentPortfolio() {
     };
 
     const handleStudentClick = (email: string) => {
-        setStudentFilter(email);
-        setCurrentPage(1);
+        setSelectedStudentEmail(email);
     };
 
     const clearAllFilters = () => {
@@ -225,6 +273,330 @@ export default function StudentPortfolio() {
         cohortFilter !== "all",
         studentFilter !== "all",
     ].filter(Boolean).length;
+
+    // Student Profile View Component
+    if (selectedStudentEmail) {
+        const studentSubmissions = mockData.filter(s => s.studentEmail === selectedStudentEmail);
+        const studentInfo = studentSubmissions[0];
+        
+        if (!studentInfo) {
+            setSelectedStudentEmail(null);
+            return null;
+        }
+
+        const overallScore = calculateOverallScore(studentSubmissions);
+        
+        // Group submissions by type with their scores
+        const submissionsByType = submissionTypes.reduce((acc, type) => {
+            const submissions = studentSubmissions.filter(s => s.submissionType === type);
+            if (submissions.length > 0) {
+                const scores = submissions
+                    .map(s => generateMockScore(s.id, s.status))
+                    .filter((score): score is number => score !== null);
+                const avgScore = scores.length > 0 
+                    ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
+                    : null;
+                acc[type] = { submissions, avgScore };
+            }
+            return acc;
+        }, {} as Record<string, { submissions: Submission[]; avgScore: number | null }>);
+
+        // Sort submissions chronologically (most recent first)
+        const sortedSubmissions = [...studentSubmissions].sort((a, b) => 
+            new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+        );
+
+        const getScoreColor = (score: number | null) => {
+            if (score === null) return "text-muted-foreground";
+            if (score >= 90) return "text-green-600 dark:text-green-500";
+            if (score >= 75) return "text-blue-600 dark:text-blue-500";
+            if (score >= 60) return "text-yellow-600 dark:text-yellow-500";
+            return "text-red-600 dark:text-red-500";
+        };
+
+        const getScoreBgColor = (score: number | null) => {
+            if (score === null) return "bg-muted";
+            if (score >= 90) return "bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800";
+            if (score >= 75) return "bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800";
+            if (score >= 60) return "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800";
+            return "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800";
+        };
+
+        return (
+            <div className="flex flex-col min-h-screen">
+                <PageHeader
+                    title="Student Portfolio"
+                    description="Comprehensive database of all student submissions and career materials across all reviewers"
+                />
+                <main className="p-4 space-y-4 w-full max-w-7xl mx-auto">
+                    {/* Breadcrumb Navigation */}
+                    <div className="space-y-2">
+                        <Breadcrumb>
+                            <BreadcrumbList>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink 
+                                        onClick={() => setSelectedStudentEmail(null)}
+                                        className="cursor-pointer hover:text-primary text-sm"
+                                    >
+                                        Student Portfolio
+                                    </BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage className="text-sm">{studentInfo.studentName}</BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </BreadcrumbList>
+                        </Breadcrumb>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedStudentEmail(null)}
+                            className="h-8 px-2 text-xs"
+                        >
+                            <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
+                            Back to All Students
+                        </Button>
+                    </div>
+
+                    {/* Profile Header */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-lg border bg-card shadow-sm"
+                    >
+                        <div className="p-6">
+                            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                                {/* Student Info */}
+                                <div className="flex gap-4 items-center flex-1">
+                                    <Avatar className="h-16 w-16">
+                                        <AvatarFallback className="bg-primary/10 text-primary text-xl font-semibold">
+                                            {getInitials(studentInfo.studentName)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <h2 className="text-xl font-semibold mb-1">{studentInfo.studentName}</h2>
+                                        <p className="text-sm text-muted-foreground mb-2">{studentInfo.studentEmail}</p>
+                                        <div className="flex items-center gap-2">
+                                            <Badge variant="secondary" className="text-xs">
+                                                {studentInfo.cohort}
+                                            </Badge>
+                                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                                <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+                                                <span>Active</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {/* Overall Score */}
+                                <div className={`rounded-lg border p-4 ${getScoreBgColor(overallScore)} md:min-w-[200px]`}>
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <Award className="h-4 w-4 text-primary" />
+                                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Overall Score</p>
+                                    </div>
+                                    <div className="flex items-baseline gap-2 mb-3">
+                                        <span className={`text-3xl font-bold ${getScoreColor(overallScore)}`}>
+                                            {overallScore}
+                                        </span>
+                                        <span className="text-lg text-muted-foreground">/100</span>
+                                    </div>
+                                    <div className="h-2 bg-background/50 rounded-full overflow-hidden">
+                                        <motion.div 
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${overallScore}%` }}
+                                            transition={{ duration: 0.8, ease: "easeOut" }}
+                                            className={`h-full ${
+                                                overallScore >= 90 ? "bg-green-600" :
+                                                overallScore >= 75 ? "bg-blue-600" :
+                                                overallScore >= 60 ? "bg-yellow-600" :
+                                                "bg-red-600"
+                                            }`}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* Score Dashboard - Individual Submission Type Scores */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        {submissionTypes.map((type, index) => {
+                            const data = submissionsByType[type];
+                            const TypeIcon = submissionTypeIcons[type];
+                            const score = data?.avgScore ?? null;
+                            const count = data?.submissions.length ?? 0;
+                            const hasLink = score !== null && count > 0;
+                            
+                            // Get appropriate view text based on type
+                            const getViewText = () => {
+                                if (type === "Resume") return "View Resume";
+                                if (type === "Cover Letter") return "View Cover Letter";
+                                if (type === "Interview") return "View Interview";
+                                if (type === "LinkedIn Profile") return "View LinkedIn";
+                                return "View";
+                            };
+
+                            return (
+                                <motion.div
+                                    key={type}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.1 + index * 0.05 }}
+                                    className={`rounded-lg border p-4 ${
+                                        score !== null ? getScoreBgColor(score) : "bg-card"
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center gap-1.5">
+                                            <TypeIcon className="h-3.5 w-3.5 text-muted-foreground" />
+                                            <p className="text-xs font-medium text-muted-foreground">{type}</p>
+                                        </div>
+                                        {hasLink && (
+                                            <button 
+                                                className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-background/80 transition-colors text-xs text-muted-foreground"
+                                                disabled
+                                            >
+                                                <span>{getViewText()}</span>
+                                                <ExternalLink className="h-3 w-3" />
+                                            </button>
+                                        )}
+                                    </div>
+                                    {score !== null ? (
+                                        <>
+                                            <div className="flex items-end gap-1">
+                                                <span className={`text-2xl font-bold ${getScoreColor(score)}`}>
+                                                    {score}
+                                                </span>
+                                                <span className="text-sm text-muted-foreground mb-0.5">/100</span>
+                                            </div>
+                                            <p className="text-[10px] text-muted-foreground mt-1.5">
+                                                {count} submission{count !== 1 ? 's' : ''}
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <div className="flex flex-col items-start">
+                                            <span className="text-xl font-bold text-muted-foreground">—</span>
+                                            <p className="text-[10px] text-muted-foreground mt-1.5">
+                                                {count > 0 ? `${count} pending` : 'No submissions'}
+                                            </p>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Timeline Section */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="rounded-lg border bg-card shadow-sm p-4"
+                    >
+                        <div className="flex items-center gap-2 mb-4">
+                            <TrendingUp className="h-4 w-4 text-primary" />
+                            <h3 className="text-base font-semibold">Submission Timeline</h3>
+                        </div>
+
+                        <div className="space-y-4">
+                            {sortedSubmissions.map((submission, index) => {
+                                const TypeIcon = submissionTypeIcons[submission.submissionType];
+                                const score = generateMockScore(submission.id, submission.status);
+                                const isLinkedIn = submission.submissionType === "LinkedIn Profile";
+                                const isResume = submission.submissionType === "Resume";
+                                const isInterview = submission.submissionType === "Interview";
+
+                                return (
+                                    <motion.div
+                                        key={submission.id}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.4 + index * 0.05 }}
+                                        className="relative pl-6 pb-4 border-l-2 border-muted last:pb-0"
+                                    >
+                                        {/* Timeline dot */}
+                                        <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background" />
+                                        
+                                        <div className="rounded-lg border bg-card/50 p-3 hover:bg-accent/50 transition-colors">
+                                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                                                <div className="flex items-start gap-2.5 flex-1">
+                                                    <div className="p-1.5 rounded-md bg-primary/10">
+                                                        <TypeIcon className="h-4 w-4 text-primary" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <h4 className="text-sm font-semibold">{submission.submissionType}</h4>
+                                                            <Badge variant={statusVariants[submission.status]} className="text-[10px] h-5">
+                                                                {submission.status}
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                                                            <Calendar className="h-3 w-3" />
+                                                            {new Date(submission.submittedAt).toLocaleDateString("en-US", { 
+                                                                month: "short", 
+                                                                day: "numeric", 
+                                                                year: "numeric" 
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                {score !== null && (
+                                                    <div className={`px-3 py-1.5 rounded-md border ${getScoreBgColor(score)}`}>
+                                                        <p className="text-[10px] text-muted-foreground mb-0.5">Score</p>
+                                                        <p className={`text-lg font-bold ${getScoreColor(score)}`}>
+                                                            {score}
+                                                            <span className="text-xs text-muted-foreground">/100</span>
+                                                        </p>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <div className="flex items-center gap-1.5 text-xs">
+                                                    <User className="h-3 w-3 text-muted-foreground" />
+                                                    <span className="text-muted-foreground">Reviewed by:</span>
+                                                    <span className="font-medium">{submission.assignedReviewer}</span>
+                                                </div>
+
+                                                {submission.feedback && (
+                                                    <div className="p-2 rounded-md bg-muted/50 text-xs">
+                                                        <p className="font-medium mb-0.5">Feedback:</p>
+                                                        <p className="text-muted-foreground">{submission.feedback}</p>
+                                                    </div>
+                                                )}
+
+                                                <div className="flex flex-wrap gap-1.5 pt-1">
+                                                    {isResume && (
+                                                        <Button variant="outline" size="sm" disabled className="h-7 text-xs">
+                                                            <FileText className="mr-1.5 h-3 w-3" />
+                                                            View Resume
+                                                        </Button>
+                                                    )}
+                                                    {isInterview && (
+                                                        <Button variant="outline" size="sm" disabled className="h-7 text-xs">
+                                                            <Video className="mr-1.5 h-3 w-3" />
+                                                            View Interview
+                                                        </Button>
+                                                    )}
+                                                    {isLinkedIn && submission.linkedinProfileUrl && (
+                                                        <Button variant="outline" size="sm" disabled className="h-7 text-xs">
+                                                            <Linkedin className="mr-1.5 h-3 w-3" />
+                                                            View LinkedIn
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </motion.div>
+                </main>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col min-h-screen">

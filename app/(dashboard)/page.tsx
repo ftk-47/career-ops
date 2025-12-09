@@ -49,48 +49,53 @@ import {
 const studentsNeedingAttention = [
   {
     id: 1,
-    name: "Alex Morgan",
-    email: "alex.m@university.edu",
-    issue: "Resume score below 40",
+    name: "Alice Johnson",
+    email: "alice.j@university.edu",
+    cohort: "Fall 2024 - CS",
+    issue: "Resume score below 60",
     badgeType: "Low Score",
     badgeVariant: "warning" as const,
-    initials: "AM",
+    initials: "AJ",
   },
   {
     id: 2,
-    name: "Sarah Jenkins",
-    email: "sarah.j@university.edu",
-    issue: "No activity in 15 days",
-    badgeType: "Inactive",
+    name: "Bob Smith",
+    email: "bob.s@university.edu",
+    cohort: "Fall 2024 - Business",
+    issue: "Cover Letter needs improvement",
+    badgeType: "In Review",
     badgeVariant: "secondary" as const,
-    initials: "SJ",
+    initials: "BS",
   },
   {
     id: 3,
-    name: "Michael Chen",
-    email: "michael.c@university.edu",
-    issue: "Profile only 30% complete",
-    badgeType: "Incomplete",
-    badgeVariant: "error" as const,
-    initials: "MC",
+    name: "Carol Williams",
+    email: "carol.w@university.edu",
+    cohort: "Spring 2025 - Engineering",
+    issue: "Interview preparation needed",
+    badgeType: "Needs Practice",
+    badgeVariant: "warning" as const,
+    initials: "CW",
   },
   {
     id: 4,
-    name: "Jessica Wu",
-    email: "jessica.w@university.edu",
-    issue: "No interview practice started",
-    badgeType: "Low Score",
-    badgeVariant: "warning" as const,
-    initials: "JW",
+    name: "David Brown",
+    email: "david.b@university.edu",
+    cohort: "Fall 2024 - CS",
+    issue: "No recent activity",
+    badgeType: "Pending",
+    badgeVariant: "secondary" as const,
+    initials: "DB",
   },
   {
     id: 5,
-    name: "David Park",
-    email: "david.p@university.edu",
-    issue: "Resume stagnant at 55",
-    badgeType: "Low Score",
-    badgeVariant: "warning" as const,
-    initials: "DP",
+    name: "Emma Davis",
+    email: "emma.d@university.edu",
+    cohort: "Fall 2024 - Business",
+    issue: "Resume rejected, needs resubmission",
+    badgeType: "Rejected",
+    badgeVariant: "error" as const,
+    initials: "ED",
   },
 ];
 
@@ -431,14 +436,16 @@ export default function Dashboard() {
                                 </Badge>
                               </TableCell>
                               <TableCell className="text-right">
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  className="group/btn hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
-                                >
-                                  View Student
-                                  <ArrowUpRight className="h-3.5 w-3.5 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
-                                </Button>
+                                <Link href={`/student-portfolio?student=${encodeURIComponent(student.email)}`}>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    className="group/btn hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                                  >
+                                    View Student
+                                    <ArrowUpRight className="h-3.5 w-3.5 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
+                                  </Button>
+                                </Link>
                               </TableCell>
                             </StaggerItem>
                           ))}
@@ -528,14 +535,16 @@ export default function Dashboard() {
                                 </Badge>
                               </TableCell>
                               <TableCell className="text-right">
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  className="group/btn hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
-                                >
-                                  View Student
-                                  <ArrowUpRight className="h-3.5 w-3.5 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
-                                </Button>
+                                <Link href={`/student-portfolio?student=${encodeURIComponent(student.email)}`}>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    className="group/btn hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+                                  >
+                                    View Student
+                                    <ArrowUpRight className="h-3.5 w-3.5 ml-1.5 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform duration-200" />
+                                  </Button>
+                                </Link>
                               </TableCell>
                             </StaggerItem>
                           ))}
