@@ -390,6 +390,37 @@ const scoreDistributionDataByCohort: Record<string, Array<{ range: string; count
   ],
 };
 
+const resumeScoreStagesDataByCohort: Record<string, Array<{ range: string; count: number; percentage: number; color: string }>> = {
+  "all": [
+    { range: "0-20", count: 45, percentage: 2, color: "#ef4444" },
+    { range: "21-40", count: 128, percentage: 7, color: "#f97316" },
+    { range: "41-60", count: 342, percentage: 19, color: "#eab308" },
+    { range: "61-80", count: 876, percentage: 47, color: "#3b82f6" },
+    { range: "81-100", count: 459, percentage: 25, color: "#10b981" },
+  ],
+  "cs-2025": [
+    { range: "0-20", count: 12, percentage: 2, color: "#ef4444" },
+    { range: "21-40", count: 38, percentage: 6, color: "#f97316" },
+    { range: "41-60", count: 102, percentage: 16, color: "#eab308" },
+    { range: "61-80", count: 312, percentage: 49, color: "#3b82f6" },
+    { range: "81-100", count: 176, percentage: 27, color: "#10b981" },
+  ],
+  "business-2025": [
+    { range: "0-20", count: 16, percentage: 3, color: "#ef4444" },
+    { range: "21-40", count: 45, percentage: 8, color: "#f97316" },
+    { range: "41-60", count: 118, percentage: 20, color: "#eab308" },
+    { range: "61-80", count: 278, percentage: 46, color: "#3b82f6" },
+    { range: "81-100", count: 143, percentage: 24, color: "#10b981" },
+  ],
+  "design-2025": [
+    { range: "0-20", count: 17, percentage: 3, color: "#ef4444" },
+    { range: "21-40", count: 45, percentage: 7, color: "#f97316" },
+    { range: "41-60", count: 122, percentage: 20, color: "#eab308" },
+    { range: "61-80", count: 286, percentage: 47, color: "#3b82f6" },
+    { range: "81-100", count: 140, percentage: 23, color: "#10b981" },
+  ],
+};
+
 const resumeScoreTrendDataByCohort: Record<string, Array<{ week: string; score: number }>> = {
   "all": [
     { week: "Week 1", score: 68.2 },
@@ -627,6 +658,37 @@ const commonFeedbackAreasByCohort: Record<string, string[]> = {
   ],
 };
 
+const interviewPerformanceStagesByCohort: Record<string, Array<{ category: string; count: number; percentage: number; color: string }>> = {
+  "all": [
+    { category: "Posture", count: 245, percentage: 20, color: "#10b981" },
+    { category: "Speech Clarity", count: 387, percentage: 31, color: "#f97316" },
+    { category: "Answer Quality", count: 312, percentage: 25, color: "#eab308" },
+    { category: "Confidence", count: 421, percentage: 34, color: "#ef4444" },
+    { category: "Eye Contact", count: 289, percentage: 23, color: "#3b82f6" },
+  ],
+  "cs-2025": [
+    { category: "Posture", count: 78, percentage: 18, color: "#10b981" },
+    { category: "Speech Clarity", count: 135, percentage: 31, color: "#f97316" },
+    { category: "Answer Quality", count: 98, percentage: 23, color: "#eab308" },
+    { category: "Confidence", count: 142, percentage: 33, color: "#ef4444" },
+    { category: "Eye Contact", count: 89, percentage: 21, color: "#3b82f6" },
+  ],
+  "business-2025": [
+    { category: "Posture", count: 82, percentage: 21, color: "#10b981" },
+    { category: "Speech Clarity", count: 123, percentage: 32, color: "#f97316" },
+    { category: "Answer Quality", count: 105, percentage: 27, color: "#eab308" },
+    { category: "Confidence", count: 138, percentage: 36, color: "#ef4444" },
+    { category: "Eye Contact", count: 95, percentage: 25, color: "#3b82f6" },
+  ],
+  "design-2025": [
+    { category: "Posture", count: 85, percentage: 21, color: "#10b981" },
+    { category: "Speech Clarity", count: 129, percentage: 32, color: "#f97316" },
+    { category: "Answer Quality", count: 109, percentage: 27, color: "#eab308" },
+    { category: "Confidence", count: 141, percentage: 35, color: "#ef4444" },
+    { category: "Eye Contact", count: 105, percentage: 26, color: "#3b82f6" },
+  ],
+};
+
 // Mock Data - LinkedIn
 interface LinkedInMetrics {
   uploaded: number;
@@ -690,6 +752,37 @@ const linkedinScoreDistributionByCohort: Record<string, Array<{ range: string; c
     { range: "41-60", count: 97 },
     { range: "61-80", count: 127 },
     { range: "81-100", count: 64 },
+  ],
+};
+
+const linkedinScoreStagesDataByCohort: Record<string, Array<{ range: string; count: number; percentage: number; color: string }>> = {
+  "all": [
+    { range: "0-20", count: 32, percentage: 3, color: "#ef4444" },
+    { range: "21-40", count: 98, percentage: 9, color: "#f97316" },
+    { range: "41-60", count: 287, percentage: 28, color: "#eab308" },
+    { range: "61-80", count: 421, percentage: 40, color: "#3b82f6" },
+    { range: "81-100", count: 207, percentage: 20, color: "#10b981" },
+  ],
+  "cs-2025": [
+    { range: "0-20", count: 8, percentage: 2, color: "#ef4444" },
+    { range: "21-40", count: 28, percentage: 8, color: "#f97316" },
+    { range: "41-60", count: 92, percentage: 25, color: "#eab308" },
+    { range: "61-80", count: 156, percentage: 43, color: "#3b82f6" },
+    { range: "81-100", count: 78, percentage: 22, color: "#10b981" },
+  ],
+  "business-2025": [
+    { range: "0-20", count: 12, percentage: 3, color: "#ef4444" },
+    { range: "21-40", count: 35, percentage: 10, color: "#f97316" },
+    { range: "41-60", count: 98, percentage: 28, color: "#eab308" },
+    { range: "61-80", count: 138, percentage: 40, color: "#3b82f6" },
+    { range: "81-100", count: 65, percentage: 19, color: "#10b981" },
+  ],
+  "design-2025": [
+    { range: "0-20", count: 12, percentage: 4, color: "#ef4444" },
+    { range: "21-40", count: 35, percentage: 10, color: "#f97316" },
+    { range: "41-60", count: 97, percentage: 29, color: "#eab308" },
+    { range: "61-80", count: 127, percentage: 38, color: "#3b82f6" },
+    { range: "81-100", count: 64, percentage: 19, color: "#10b981" },
   ],
 };
 
@@ -815,6 +908,301 @@ The Career Ops Team`
   }
 };
 
+const resumeStageMessageTemplates: Record<string, { subject: string; body: string }> = {
+  "0-20": {
+    subject: "Let's Improve Your Resume Score",
+    body: `Hi there,
+
+Your resume score is currently in the 0-20 range. This is a great opportunity to make significant improvements that will catch recruiters' attention.
+
+Key areas to focus on:
+- Use strong action verbs at the start of each bullet point
+- Add quantifiable metrics and results
+- Fix formatting inconsistencies
+- Eliminate typos and grammatical errors
+- Include relevant keywords for your target roles
+
+Our AI-powered resume analyzer can guide you through each improvement. Upload your updated resume to track your progress!
+
+Best regards,
+The Career Ops Team`
+  },
+  "21-40": {
+    subject: "Resume Improvement Action Items",
+    body: `Hi there,
+
+Your resume score is in the 21-40 range. With focused improvements, you can significantly boost your score and attract more recruiter interest.
+
+Priority improvements:
+- Strengthen your bullet points with measurable achievements
+- Improve formatting and visual consistency
+- Add missing sections (summary, skills, certifications)
+- Use industry-specific keywords
+- Remove generic phrases and add specifics
+
+Review the detailed feedback in your dashboard and implement the top 5 suggestions this week.
+
+Best regards,
+The Career Ops Team`
+  },
+  "41-60": {
+    subject: "Push Your Resume to the Next Level",
+    body: `Hi there,
+
+Your resume score is in the 41-60 range - you're making progress! Let's push it higher to stand out in competitive applicant pools.
+
+Next-level improvements:
+- Refine your professional summary to highlight unique value
+- Ensure every bullet point shows impact with numbers
+- Optimize formatting for ATS systems
+- Tailor keywords for your target industry
+- Add relevant certifications or projects
+
+You're halfway there - keep iterating based on AI feedback to break into the 60+ range!
+
+Best regards,
+The Career Ops Team`
+  },
+  "61-80": {
+    subject: "Almost There - Resume Polish Tips",
+    body: `Hi there,
+
+Excellent work! Your resume score is in the 61-80 range. You're close to having a top-tier resume that will impress recruiters.
+
+Final polish suggestions:
+- Fine-tune language for maximum impact
+- Ensure perfect consistency in formatting
+- Verify all metrics are specific and impressive
+- Add any missing keywords for your target roles
+- Get peer or mentor feedback on content
+
+With these refinements, you'll join the top 25% of candidates. Keep going!
+
+Best regards,
+The Career Ops Team`
+  },
+  "81-100": {
+    subject: "Excellent Resume - Keep It Fresh!",
+    body: `Hi there,
+
+Congratulations! Your resume score is in the 81-100 range. You have a strong, polished resume that showcases your achievements effectively.
+
+To maintain excellence:
+- Update regularly with new accomplishments
+- Tailor for each application
+- Keep metrics current and impressive
+- Stay current with industry keywords
+- Review quarterly to ensure it remains competitive
+
+Your resume is working for you - now focus on interview prep and networking!
+
+Best regards,
+The Career Ops Team`
+  }
+};
+
+const interviewStageMessageTemplates: Record<string, { subject: string; body: string }> = {
+  "Posture": {
+    subject: "Improve Your Interview Posture",
+    body: `Hi there,
+
+Our AI analysis shows that posture is an area where you can improve during interviews. Body language speaks volumes to interviewers!
+
+Tips to improve your posture:
+- Sit up straight with shoulders back
+- Keep your feet flat on the floor
+- Lean slightly forward to show engagement
+- Avoid slouching or leaning back too far
+- Maintain an open, confident stance
+
+Practice in front of a mirror or record yourself to build awareness. Good posture projects confidence and professionalism.
+
+Schedule another mock interview to track your improvement!
+
+Best regards,
+The Career Ops Team`
+  },
+  "Speech Clarity": {
+    subject: "Enhance Your Communication Skills",
+    body: `Hi there,
+
+Improving speech clarity will help you communicate your ideas more effectively in interviews. Clear communication is essential for making a strong impression.
+
+Focus areas for clearer speech:
+- Slow down your speaking pace
+- Reduce filler words (um, uh, like)
+- Enunciate clearly and project your voice
+- Pause between thoughts for emphasis
+- Practice articulating technical terms
+
+Try recording yourself answering common questions and listening back. You'll notice patterns and areas for improvement.
+
+Keep practicing - clear communication is a learned skill!
+
+Best regards,
+The Career Ops Team`
+  },
+  "Answer Quality": {
+    subject: "Strengthen Your Interview Responses",
+    body: `Hi there,
+
+Improving the quality of your answers will significantly boost your interview performance. Structured, specific responses make you memorable to interviewers.
+
+How to enhance answer quality:
+- Use the STAR method (Situation, Task, Action, Result)
+- Provide specific examples with measurable outcomes
+- Keep answers concise (60-90 seconds)
+- Connect your experience to the role requirements
+- Practice common questions beforehand
+
+Review high-quality answer examples in our interview library and model your responses after them.
+
+Schedule a mock interview to practice!
+
+Best regards,
+The Career Ops Team`
+  },
+  "Confidence": {
+    subject: "Build Interview Confidence",
+    body: `Hi there,
+
+Building confidence is key to interview success. Confident candidates make interviewers feel assured about their abilities.
+
+Strategies to boost confidence:
+- Prepare thoroughly - know your stories inside out
+- Practice with mock interviews regularly
+- Research the company and role deeply
+- Remember your accomplishments and value
+- Use positive self-talk before interviews
+- Start with easier questions to build momentum
+
+Confidence comes from preparation and practice. The more you practice, the more natural it will feel.
+
+You've got this!
+
+Best regards,
+The Career Ops Team`
+  },
+  "Eye Contact": {
+    subject: "Master Eye Contact in Interviews",
+    body: `Hi there,
+
+Good eye contact demonstrates engagement, confidence, and sincerity. It's one of the most impactful non-verbal cues in interviews.
+
+Tips for better eye contact:
+- Look directly at the camera in virtual interviews
+- In panel interviews, distribute eye contact among all interviewers
+- Maintain eye contact 50-70% of the time
+- Look away naturally while thinking, then return
+- Avoid staring - blink naturally
+- Practice with a friend or in front of a mirror
+
+Remember: In virtual interviews, looking at the camera (not the screen) creates eye contact!
+
+Practice makes perfect. Schedule another mock interview to improve!
+
+Best regards,
+The Career Ops Team`
+  }
+};
+
+const linkedinStageMessageTemplates: Record<string, { subject: string; body: string }> = {
+  "0-20": {
+    subject: "Start Building Your LinkedIn Profile",
+    body: `Hi there,
+
+Your LinkedIn profile score is in the 0-20 range. A strong LinkedIn profile is essential for career opportunities - let's get started!
+
+Priority steps to build your profile:
+- Add a professional profile photo
+- Write a compelling headline (not just your job title)
+- Create a summary that tells your story
+- Add your work experiences with descriptions
+- List relevant skills (aim for 10+ skills)
+
+Even a basic complete profile will dramatically improve your visibility to recruiters. Start today!
+
+Best regards,
+The Career Ops Team`
+  },
+  "21-40": {
+    subject: "LinkedIn Profile Needs Attention",
+    body: `Hi there,
+
+Your LinkedIn profile score is in the 21-40 range. You have a foundation, but significant improvements will increase your visibility to recruiters.
+
+Key improvements needed:
+- Enhance your headline with keywords and value proposition
+- Expand your summary to showcase achievements
+- Add accomplishments to your experience sections
+- Request recommendations from colleagues
+- Join industry groups and engage
+- Customize your profile URL
+
+A well-optimized profile can open doors you didn't know existed. Invest the time!
+
+Best regards,
+The Career Ops Team`
+  },
+  "41-60": {
+    subject: "Optimize Your LinkedIn Profile",
+    body: `Hi there,
+
+Your LinkedIn profile score is in the 41-60 range. You're on the right track! Let's optimize it to attract more opportunities.
+
+Optimization strategies:
+- Add rich media (presentations, projects, articles)
+- Include specific metrics in your descriptions
+- Feature your top skills prominently
+- Publish articles or share insights
+- Engage with your network regularly
+- Complete all profile sections
+
+A fully optimized profile positions you as a strong candidate. You're halfway there!
+
+Best regards,
+The Career Ops Team`
+  },
+  "61-80": {
+    subject: "Polish Your LinkedIn Presence",
+    body: `Hi there,
+
+Great work! Your LinkedIn profile score is in the 61-80 range. With some final touches, you'll have an outstanding professional presence.
+
+Final polish suggestions:
+- Refine your headline for maximum impact
+- Add recent accomplishments and projects
+- Get more endorsements for key skills
+- Share thought leadership content
+- Engage meaningfully with your network
+- Ensure all information is current
+
+You're close to having a profile that stands out. Keep refining!
+
+Best regards,
+The Career Ops Team`
+  },
+  "81-100": {
+    subject: "Maintain Your Strong LinkedIn Profile",
+    body: `Hi there,
+
+Excellent! Your LinkedIn profile score is in the 81-100 range. You have a strong, professional presence that attracts opportunities.
+
+Keep your profile working for you:
+- Update regularly with new achievements
+- Share insights and engage with your network
+- Keep your skills current
+- Maintain an active presence with posts/comments
+- Respond promptly to connection requests
+- Continue building your personal brand
+
+Your profile is optimized - now leverage it for networking and opportunities!
+
+Best regards,
+The Career Ops Team`
+  }
+};
+
 const linkedinCommonIssuesByCohort: Record<string, Array<{ issue: string; count: number }>> = {
   "all": [
     { issue: "Weak Headline", count: 342 },
@@ -907,6 +1295,27 @@ function AnalyticsContent() {
   const [funnelMessageBody, setFunnelMessageBody] = useState("");
   const funnelMessageTextareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Resume stage messaging
+  const [isResumeStageMessageOpen, setIsResumeStageMessageOpen] = useState(false);
+  const [selectedResumeStage, setSelectedResumeStage] = useState<string>("");
+  const [resumeStageMessageSubject, setResumeStageMessageSubject] = useState("");
+  const [resumeStageMessageBody, setResumeStageMessageBody] = useState("");
+  const resumeStageMessageTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Interview stage messaging  
+  const [isInterviewStageMessageOpen, setIsInterviewStageMessageOpen] = useState(false);
+  const [selectedInterviewStage, setSelectedInterviewStage] = useState<string>("");
+  const [interviewStageMessageSubject, setInterviewStageMessageSubject] = useState("");
+  const [interviewStageMessageBody, setInterviewStageMessageBody] = useState("");
+  const interviewStageMessageTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // LinkedIn stage messaging
+  const [isLinkedinStageMessageOpen, setIsLinkedinStageMessageOpen] = useState(false);
+  const [selectedLinkedinStage, setSelectedLinkedinStage] = useState<string>("");
+  const [linkedinStageMessageSubject, setLinkedinStageMessageSubject] = useState("");
+  const [linkedinStageMessageBody, setLinkedinStageMessageBody] = useState("");
+  const linkedinStageMessageTextareaRef = useRef<HTMLTextAreaElement>(null);
+
   const buildMessageTemplate = (student: AttentionStudent) => {
     const template = messageTemplates[student.issue];
     return template ? template(student) : defaultMessageTemplate(student);
@@ -973,6 +1382,108 @@ function AnalyticsContent() {
       funnelMessageTextareaRef.current?.focus();
     }
   }, [isFunnelMessageOpen]);
+
+  // Resume stage message handlers
+  const handleResumeStageDialogChange = (open: boolean) => {
+    setIsResumeStageMessageOpen(open);
+    if (!open) {
+      setSelectedResumeStage("");
+      setResumeStageMessageSubject("");
+      setResumeStageMessageBody("");
+    }
+  };
+
+  const openResumeStageMessageDialog = (stage: string) => {
+    setSelectedResumeStage(stage);
+    const template = resumeStageMessageTemplates[stage];
+    if (template) {
+      setResumeStageMessageSubject(template.subject);
+      setResumeStageMessageBody(template.body);
+    }
+    setIsResumeStageMessageOpen(true);
+  };
+
+  const handleSendResumeStageMessage = () => {
+    if (!resumeStageMessageBody.trim() || !resumeStageMessageSubject.trim()) return;
+    const stageData = resumeScoreStagesDataByCohort[selectedCohort].find(s => s.range === selectedResumeStage);
+    const count = stageData?.count || 0;
+    toast.success(`Message sent to all ${count} students with resume score ${selectedResumeStage}`);
+    handleResumeStageDialogChange(false);
+  };
+
+  useEffect(() => {
+    if (isResumeStageMessageOpen) {
+      resumeStageMessageTextareaRef.current?.focus();
+    }
+  }, [isResumeStageMessageOpen]);
+
+  // Interview stage message handlers
+  const handleInterviewStageDialogChange = (open: boolean) => {
+    setIsInterviewStageMessageOpen(open);
+    if (!open) {
+      setSelectedInterviewStage("");
+      setInterviewStageMessageSubject("");
+      setInterviewStageMessageBody("");
+    }
+  };
+
+  const openInterviewStageMessageDialog = (stage: string) => {
+    setSelectedInterviewStage(stage);
+    const template = interviewStageMessageTemplates[stage];
+    if (template) {
+      setInterviewStageMessageSubject(template.subject);
+      setInterviewStageMessageBody(template.body);
+    }
+    setIsInterviewStageMessageOpen(true);
+  };
+
+  const handleSendInterviewStageMessage = () => {
+    if (!interviewStageMessageBody.trim() || !interviewStageMessageSubject.trim()) return;
+    const stageData = interviewPerformanceStagesByCohort[selectedCohort].find(s => s.category === selectedInterviewStage);
+    const count = stageData?.count || 0;
+    toast.success(`Message sent to all ${count} students needing help with ${selectedInterviewStage}`);
+    handleInterviewStageDialogChange(false);
+  };
+
+  useEffect(() => {
+    if (isInterviewStageMessageOpen) {
+      interviewStageMessageTextareaRef.current?.focus();
+    }
+  }, [isInterviewStageMessageOpen]);
+
+  // LinkedIn stage message handlers
+  const handleLinkedinStageDialogChange = (open: boolean) => {
+    setIsLinkedinStageMessageOpen(open);
+    if (!open) {
+      setSelectedLinkedinStage("");
+      setLinkedinStageMessageSubject("");
+      setLinkedinStageMessageBody("");
+    }
+  };
+
+  const openLinkedinStageMessageDialog = (stage: string) => {
+    setSelectedLinkedinStage(stage);
+    const template = linkedinStageMessageTemplates[stage];
+    if (template) {
+      setLinkedinStageMessageSubject(template.subject);
+      setLinkedinStageMessageBody(template.body);
+    }
+    setIsLinkedinStageMessageOpen(true);
+  };
+
+  const handleSendLinkedinStageMessage = () => {
+    if (!linkedinStageMessageBody.trim() || !linkedinStageMessageSubject.trim()) return;
+    const stageData = linkedinScoreStagesDataByCohort[selectedCohort].find(s => s.range === selectedLinkedinStage);
+    const count = stageData?.count || 0;
+    toast.success(`Message sent to all ${count} students with LinkedIn score ${selectedLinkedinStage}`);
+    handleLinkedinStageDialogChange(false);
+  };
+
+  useEffect(() => {
+    if (isLinkedinStageMessageOpen) {
+      linkedinStageMessageTextareaRef.current?.focus();
+    }
+  }, [isLinkedinStageMessageOpen]);
 
   // Handle date preset change
   const handleDatePresetChange = (value: DatePreset) => {
@@ -1841,83 +2352,49 @@ function AnalyticsContent() {
                 </FadeIn>
               </div>
 
-              {/* ATS Pass Rate */}
+              {/* Resume Score Stages */}
               <div className="xl:col-span-4">
                 <FadeIn delay={0.35}>
                   <Card className="rounded-xl shadow-sm">
                     <CardHeader>
                       <CardTitle className="text-base font-medium">
-                        ATS Pass Rate
+                        Resume Score Stages
                       </CardTitle>
                       <p className="text-xs text-muted-foreground">
-                        Resumes passing ATS checks
+                        Students by score range
                       </p>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="font-medium">Overall Pass Rate</span>
-                          <span className="text-muted-foreground">87%</span>
-                        </div>
-                        <Progress value={87} className="h-3" />
-                      </div>
-
+                    <CardContent>
                       <div className="space-y-4">
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <div className="flex items-center gap-2">
-                              <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                              <span>Formatting</span>
+                        {resumeScoreStagesDataByCohort[selectedCohort].map((stage) => (
+                          <div key={stage.range} className="space-y-2">
+                            <div className="flex justify-between items-center gap-3">
+                              <div className="flex items-center gap-2 flex-1 min-w-0">
+                                <div 
+                                  className="h-3 w-3 rounded-full flex-shrink-0" 
+                                  style={{ backgroundColor: stage.color }}
+                                />
+                                <span className="font-medium text-sm">{stage.range}</span>
+                                <span className="text-muted-foreground text-sm">
+                                  {stage.count} ({stage.percentage}%)
+                                </span>
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 gap-1.5 flex-shrink-0"
+                                onClick={() => openResumeStageMessageDialog(stage.range)}
+                              >
+                                <MessageSquare className="h-3.5 w-3.5" />
+                                <span className="text-xs font-medium">Message</span>
+                              </Button>
                             </div>
-                            <span className="text-muted-foreground">92%</span>
+                            <Progress 
+                              value={stage.percentage} 
+                              className="h-3"
+                            />
                           </div>
-                          <Progress 
-                            value={92} 
-                            className="h-2"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <div className="flex items-center gap-2">
-                              <div className="h-2.5 w-2.5 rounded-full bg-blue-500" />
-                              <span>Keywords</span>
-                            </div>
-                            <span className="text-muted-foreground">85%</span>
-                          </div>
-                          <Progress 
-                            value={85} 
-                            className="h-2"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <div className="flex items-center gap-2">
-                              <div className="h-2.5 w-2.5 rounded-full bg-violet-500" />
-                              <span>Structure</span>
-                            </div>
-                            <span className="text-muted-foreground">89%</span>
-                          </div>
-                          <Progress 
-                            value={89} 
-                            className="h-2"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <div className="flex items-center gap-2">
-                              <div className="h-2.5 w-2.5 rounded-full bg-amber-500" />
-                              <span>Content Quality</span>
-                            </div>
-                            <span className="text-muted-foreground">83%</span>
-                          </div>
-                          <Progress 
-                            value={83} 
-                            className="h-2"
-                          />
-                        </div>
+                        ))}
                       </div>
                     </CardContent>
                   </Card>
@@ -1985,6 +2462,54 @@ function AnalyticsContent() {
                 </Card>
               </FadeIn>
             </div>
+
+            {/* Resume Stage Message Dialog */}
+            <Dialog open={isResumeStageMessageOpen} onOpenChange={handleResumeStageDialogChange}>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader className="space-y-1.5">
+                  <DialogTitle>Message Students with Resume Score {selectedResumeStage}</DialogTitle>
+                  <DialogDescription>
+                    Send a message to all {resumeScoreStagesDataByCohort[selectedCohort].find(s => s.range === selectedResumeStage)?.count || 0} students with resume scores in this range.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="resume-stage-message-subject">Subject</Label>
+                    <Input
+                      id="resume-stage-message-subject"
+                      value={resumeStageMessageSubject}
+                      onChange={(event) => setResumeStageMessageSubject(event.target.value)}
+                      placeholder="Email subject"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="resume-stage-message-body">Message</Label>
+                    <Textarea
+                      id="resume-stage-message-body"
+                      ref={resumeStageMessageTextareaRef}
+                      className="min-h-[240px]"
+                      value={resumeStageMessageBody}
+                      onChange={(event) => setResumeStageMessageBody(event.target.value)}
+                      placeholder="Write your message..."
+                    />
+                  </div>
+                </div>
+                <DialogFooter className="gap-3 sm:gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleResumeStageDialogChange(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSendResumeStageMessage}
+                    disabled={!resumeStageMessageBody.trim() || !resumeStageMessageSubject.trim()}
+                  >
+                    Send to All
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
 
           {/* Interviews Tab */}
@@ -2343,9 +2868,58 @@ function AnalyticsContent() {
               </FadeIn>
             </div>
 
-            {/* Common Feedback Areas */}
+            {/* Interview Performance Stages */}
             <div className="grid gap-6 grid-cols-1">
               <FadeIn delay={0.4}>
+                <Card className="rounded-xl shadow-sm">
+                  <CardHeader>
+                    <CardTitle className="text-base font-medium">
+                      Performance Improvement Areas
+                    </CardTitle>
+                    <p className="text-xs text-muted-foreground">
+                      Students needing help by category
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {interviewPerformanceStagesByCohort[selectedCohort].map((stage) => (
+                        <div key={stage.category} className="space-y-2">
+                          <div className="flex justify-between items-center gap-3">
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <div 
+                                className="h-3 w-3 rounded-full flex-shrink-0" 
+                                style={{ backgroundColor: stage.color }}
+                              />
+                              <span className="font-medium text-sm">{stage.category}</span>
+                              <span className="text-muted-foreground text-sm">
+                                {stage.count} ({stage.percentage}%)
+                              </span>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="h-8 gap-1.5 flex-shrink-0"
+                              onClick={() => openInterviewStageMessageDialog(stage.category)}
+                            >
+                              <MessageSquare className="h-3.5 w-3.5" />
+                              <span className="text-xs font-medium">Message</span>
+                            </Button>
+                          </div>
+                          <Progress 
+                            value={stage.percentage} 
+                            className="h-3"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </FadeIn>
+            </div>
+
+            {/* Common Feedback Areas */}
+            <div className="grid gap-6 grid-cols-1">
+              <FadeIn delay={0.45}>
                 <Card className="rounded-xl shadow-sm">
                   <CardHeader>
                     <CardTitle className="text-base font-medium">
@@ -2373,6 +2947,54 @@ function AnalyticsContent() {
                 </Card>
               </FadeIn>
             </div>
+
+            {/* Interview Stage Message Dialog */}
+            <Dialog open={isInterviewStageMessageOpen} onOpenChange={handleInterviewStageDialogChange}>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader className="space-y-1.5">
+                  <DialogTitle>Message Students Needing Help with {selectedInterviewStage}</DialogTitle>
+                  <DialogDescription>
+                    Send a message to all {interviewPerformanceStagesByCohort[selectedCohort].find(s => s.category === selectedInterviewStage)?.count || 0} students who need improvement in this area.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="interview-stage-message-subject">Subject</Label>
+                    <Input
+                      id="interview-stage-message-subject"
+                      value={interviewStageMessageSubject}
+                      onChange={(event) => setInterviewStageMessageSubject(event.target.value)}
+                      placeholder="Email subject"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="interview-stage-message-body">Message</Label>
+                    <Textarea
+                      id="interview-stage-message-body"
+                      ref={interviewStageMessageTextareaRef}
+                      className="min-h-[240px]"
+                      value={interviewStageMessageBody}
+                      onChange={(event) => setInterviewStageMessageBody(event.target.value)}
+                      placeholder="Write your message..."
+                    />
+                  </div>
+                </div>
+                <DialogFooter className="gap-3 sm:gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleInterviewStageDialogChange(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSendInterviewStageMessage}
+                    disabled={!interviewStageMessageBody.trim() || !interviewStageMessageSubject.trim()}
+                  >
+                    Send to All
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
 
           {/* LinkedIn Tab */}
@@ -2672,31 +3294,40 @@ function AnalyticsContent() {
                   <Card className="rounded-xl shadow-sm">
                     <CardHeader>
                       <CardTitle className="text-base font-medium">
-                        Section Completeness
+                        LinkedIn Score Stages
                       </CardTitle>
                       <p className="text-xs text-muted-foreground">
-                        Profile section completion rates
+                        Students by profile score range
                       </p>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-6">
-                        {sectionCompletenessByCohort[selectedCohort].map((section) => (
-                          <div key={section.section} className="space-y-2">
-                            <div className="flex justify-between text-sm">
-                              <div className="flex items-center gap-2">
+                      <div className="space-y-4">
+                        {linkedinScoreStagesDataByCohort[selectedCohort].map((stage) => (
+                          <div key={stage.range} className="space-y-2">
+                            <div className="flex justify-between items-center gap-3">
+                              <div className="flex items-center gap-2 flex-1 min-w-0">
                                 <div 
-                                  className="h-3 w-3 rounded-full" 
-                                  style={{ backgroundColor: section.color }}
+                                  className="h-3 w-3 rounded-full flex-shrink-0" 
+                                  style={{ backgroundColor: stage.color }}
                                 />
-                                <span className="font-medium">{section.section}</span>
+                                <span className="font-medium text-sm">{stage.range}</span>
+                                <span className="text-muted-foreground text-sm">
+                                  {stage.count} ({stage.percentage}%)
+                                </span>
                               </div>
-                              <span className="text-muted-foreground">
-                                {section.completeness}%
-                              </span>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-8 gap-1.5 flex-shrink-0"
+                                onClick={() => openLinkedinStageMessageDialog(stage.range)}
+                              >
+                                <MessageSquare className="h-3.5 w-3.5" />
+                                <span className="text-xs font-medium">Message</span>
+                              </Button>
                             </div>
                             <Progress 
-                              value={section.completeness} 
-                              className="h-2"
+                              value={stage.percentage} 
+                              className="h-3"
                             />
                           </div>
                         ))}
@@ -2706,6 +3337,54 @@ function AnalyticsContent() {
                 </FadeIn>
               </div>
             </div>
+
+            {/* LinkedIn Stage Message Dialog */}
+            <Dialog open={isLinkedinStageMessageOpen} onOpenChange={handleLinkedinStageDialogChange}>
+              <DialogContent className="sm:max-w-lg">
+                <DialogHeader className="space-y-1.5">
+                  <DialogTitle>Message Students with LinkedIn Score {selectedLinkedinStage}</DialogTitle>
+                  <DialogDescription>
+                    Send a message to all {linkedinScoreStagesDataByCohort[selectedCohort].find(s => s.range === selectedLinkedinStage)?.count || 0} students with LinkedIn scores in this range.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedin-stage-message-subject">Subject</Label>
+                    <Input
+                      id="linkedin-stage-message-subject"
+                      value={linkedinStageMessageSubject}
+                      onChange={(event) => setLinkedinStageMessageSubject(event.target.value)}
+                      placeholder="Email subject"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedin-stage-message-body">Message</Label>
+                    <Textarea
+                      id="linkedin-stage-message-body"
+                      ref={linkedinStageMessageTextareaRef}
+                      className="min-h-[240px]"
+                      value={linkedinStageMessageBody}
+                      onChange={(event) => setLinkedinStageMessageBody(event.target.value)}
+                      placeholder="Write your message..."
+                    />
+                  </div>
+                </div>
+                <DialogFooter className="gap-3 sm:gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleLinkedinStageDialogChange(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSendLinkedinStageMessage}
+                    disabled={!linkedinStageMessageBody.trim() || !linkedinStageMessageSubject.trim()}
+                  >
+                    Send to All
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
         </Tabs>
       </main>
