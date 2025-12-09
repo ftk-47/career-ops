@@ -80,12 +80,15 @@ interface Submission {
 
 const mockData: Submission[] = [
     { id: "1", studentName: "Alice Johnson", studentEmail: "alice.j@university.edu", submissionType: "Resume", cohort: "Fall 2024 - CS", status: "Completed", submittedAt: "2024-11-19", assignedReviewer: "Dr. Sarah Chen" },
+    { id: "1a", studentName: "Alice Johnson", studentEmail: "alice.j@university.edu", submissionType: "Cover Letter", cohort: "Fall 2024 - CS", status: "Completed", submittedAt: "2024-11-17", assignedReviewer: "Dr. Sarah Chen" },
     { id: "2", studentName: "Alice Johnson", studentEmail: "alice.j@university.edu", submissionType: "LinkedIn Profile", cohort: "Fall 2024 - CS", status: "Completed", submittedAt: "2024-11-18", assignedReviewer: "Prof. Michael Lee", linkedinProfileUrl: "https://linkedin.com/in/alicejohnson", reviewDate: "2024-11-19", feedback: "Excellent profile structure. Consider adding more specific achievements in your headline and about section." },
     { id: "3", studentName: "Bob Smith", studentEmail: "bob.s@university.edu", submissionType: "Cover Letter", cohort: "Fall 2024 - Business", status: "In Review", submittedAt: "2024-11-18", assignedReviewer: "Prof. Michael Lee" },
     { id: "4", studentName: "Bob Smith", studentEmail: "bob.s@university.edu", submissionType: "Resume", cohort: "Fall 2024 - Business", status: "Completed", submittedAt: "2024-11-15", assignedReviewer: "Dr. Sarah Chen" },
-    { id: "5", studentName: "Carol Williams", studentEmail: "carol.w@university.edu", submissionType: "Interview", cohort: "Spring 2025 - Engineering", status: "Completed", submittedAt: "2024-11-17", assignedReviewer: "Dr. Sarah Chen" },
+    { id: "5", studentName: "Carol Williams", studentEmail: "carol.w@university.edu", submissionType: "Interview", cohort: "Spring 2025 - Engineering", status: "Pending", submittedAt: "2024-11-17", assignedReviewer: "Dr. Sarah Chen" },
+    { id: "5a", studentName: "Carol Williams", studentEmail: "carol.w@university.edu", submissionType: "Resume", cohort: "Spring 2025 - Engineering", status: "Completed", submittedAt: "2024-11-15", assignedReviewer: "Dr. Sarah Chen" },
     { id: "6", studentName: "Carol Williams", studentEmail: "carol.w@university.edu", submissionType: "LinkedIn Profile", cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-16", assignedReviewer: "Ms. Emily Davis", linkedinProfileUrl: "https://linkedin.com/in/carolwilliams", reviewDate: "2024-11-17", feedback: "Good start! Expand your experience descriptions with quantifiable results." },
     { id: "7", studentName: "David Brown", studentEmail: "david.b@university.edu", submissionType: "Resume", cohort: "Fall 2024 - CS", status: "Pending", submittedAt: "2024-11-16", assignedReviewer: "Ms. Emily Davis" },
+    { id: "7a", studentName: "David Brown", studentEmail: "david.b@university.edu", submissionType: "Cover Letter", cohort: "Fall 2024 - CS", status: "Pending", submittedAt: "2024-10-20", assignedReviewer: "Ms. Emily Davis" },
     { id: "8", studentName: "Emma Davis", studentEmail: "emma.d@university.edu", submissionType: "Resume", cohort: "Fall 2024 - Business", status: "Rejected", submittedAt: "2024-11-15", assignedReviewer: "Prof. Michael Lee" },
     { id: "9", studentName: "Emma Davis", studentEmail: "emma.d@university.edu", submissionType: "Cover Letter", cohort: "Fall 2024 - Business", status: "Completed", submittedAt: "2024-11-12", assignedReviewer: "Dr. James Wilson" },
     { id: "10", studentName: "Frank Miller", studentEmail: "frank.m@university.edu", submissionType: "Cover Letter", cohort: "Spring 2025 - Engineering", status: "In Review", submittedAt: "2024-11-14", assignedReviewer: "Dr. James Wilson" },
@@ -124,6 +127,18 @@ const submissionTypeIcons: Record<SubmissionType, React.ElementType> = {
 const generateMockScore = (submissionId: string, status: SubmissionStatus): number | null => {
     // Only completed and rejected submissions have scores
     if (status === "Pending" || status === "In Review") return null;
+    
+    // Specific score overrides for dashboard issues
+    const scoreOverrides: Record<string, number> = {
+        "1": 58,   // Alice Johnson - Resume score below 60
+        "1a": 55,  // Alice Johnson - Cover Letter low score
+        "4": 88,   // Bob Smith - Resume good score
+        "5a": 82,  // Carol Williams - Resume good score
+    };
+    
+    if (scoreOverrides[submissionId]) {
+        return scoreOverrides[submissionId];
+    }
     
     // Use submission ID to generate consistent scores
     const seed = parseInt(submissionId) || 1;
